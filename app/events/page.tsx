@@ -44,7 +44,7 @@ const sampleEvents = [
     address: "310 E New Hampshire St #700Orlando, FL 32804, USA",
     description:
       "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.",
-    image: " /wasteknotorlando/asset/RecycledHorrorsArtWorkShop.jpg",
+    image: "/wasteknotorlando/asset/RecycledHorrorsArtWorkShop.jpg",
     alt: "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.",
   },
   {

@@ -90,12 +90,12 @@ const volunteerPageData = {
     {
       quote: "FREEZE RAY",
       author: "GRU",
-      image: " /wasteknotorlando/asset/Gru.jpg",
+      image: "/wasteknotorlando/asset/Gru.jpg",
     },
     {
       quote: "BANANAAAAA",
       author: "MINION",
-      image: " /wasteknotorlando/asset/minion.jpg",
+      image: "/wasteknotorlando/asset/minion.jpg",
     },
   ],
 };
