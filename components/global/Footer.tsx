@@ -43,16 +43,16 @@ const SectionHeader = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-const LogoNameImage = styled("img")(({ theme }) => ({
+const LogoNameImage = styled("img")({
   width: "100%",
   maxWidth: "280px",
   height: "auto",
   // is this readable?
   filter: `
-    drop-shadow(0px 0px 1px rgba(198, 211, 204, 0.7))
-    drop-shadow(0px 0px 8px rgba(36, 90, 48, 0.3))
-  `,
-}));
+      drop-shadow(0px 0px 1px rgba(198, 211, 204, 0.7))
+      drop-shadow(0px 0px 8px rgba(36, 90, 48, 0.3))
+    `,
+});
 
 const FooterLink = styled(MuiLink)({
   color: "inherit",

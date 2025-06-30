@@ -7,7 +7,12 @@ import React, {
   useContext,
   useEffect,
 } from "react";
-import { createTheme, responsiveFontSizes, Theme } from "@mui/material/styles";
+import {
+  createTheme,
+  responsiveFontSizes,
+  Theme,
+  ThemeOptions,
+} from "@mui/material/styles";
 import { deepmerge } from "@mui/utils";
 import originalBaseTheme from "@/theme/theme";
 
@@ -28,12 +33,14 @@ const AccessibilityContext = createContext<
 export const useAccessibility = () => {
   const context = useContext(AccessibilityContext);
   if (context === undefined) {
-    throw new Error("useAccessibility not in right context");
+    throw new Error(
+      "useAccessibility must be used within an AccessibilityProvider"
+    );
   }
   return context;
 };
 
-const highContrastTheme = {
+const highContrastTheme: ThemeOptions = {
   palette: {
     mode: "dark",
     primary: {
@@ -55,18 +62,13 @@ const highContrastTheme = {
   },
 };
 
-const dyslexicFontTheme = {
+const dyslexicFontTheme: ThemeOptions = {
   typography: {
     fontFamily: '"OpenDyslexic", "Arial", sans-serif',
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: (theme: any) => `
-        ${
-          typeof theme.components?.MuiCssBaseline?.styleOverrides === "string"
-            ? theme.components.MuiCssBaseline.styleOverrides
-            : ""
-        }
+      styleOverrides: `
         @font-face {
           font-family: 'OpenDyslexic';
           src: url('/fonts/OpenDyslexic-Regular.woff2') format('woff2');
@@ -114,7 +116,7 @@ export const AccessibilityProvider = ({
       newTheme = createTheme(deepmerge(newTheme, highContrastTheme));
     }
     if (isDyslexicFont) {
-      newTheme = createTheme(deepmerge(newTheme, dyslexicFontTheme as any));
+      newTheme = createTheme(deepmerge(newTheme, dyslexicFontTheme));
     }
     return responsiveFontSizes(newTheme);
   }, [isHighContrast, isDyslexicFont]);

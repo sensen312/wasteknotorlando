@@ -25,24 +25,24 @@ const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-const PageSubtitle = styled(Typography)(({ theme }) => ({
+const PageSubtitle = styled(Typography)({
   margin: "0 auto",
-  marginBottom: theme.spacing(4),
-}));
+  marginBottom: "theme.spacing(4)",
+});
 
-const ActionButtons = styled(Stack)(({ theme }) => ({
+const ActionButtons = styled(Stack)({
   justifyContent: "center",
-}));
+});
 
 const ContentSection = styled("section")(({ theme }) => ({
   marginTop: theme.spacing(8),
   marginBottom: theme.spacing(8),
 }));
 
-const SectionTitle = styled(Typography)(({ theme }) => ({
+const SectionTitle = styled(Typography)({
   textAlign: "center",
-  marginBottom: theme.spacing(5),
-}));
+  marginBottom: "theme.spacing(5)",
+});
 
 const VolunteerCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -66,9 +66,9 @@ const VolunteerQuote = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-const VolunteerAuthor = styled(Typography)(({ theme }) => ({
+const VolunteerAuthor = styled(Typography)({
   fontWeight: "bold",
-}));
+});
 
 // For TinaCMS
 const volunteerPageData = {
