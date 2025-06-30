@@ -72,11 +72,6 @@ const eventsData: Event[] = [
   },
 ];
 
-interface PageProps {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
 // Change with Tina later
 export async function generateStaticParams() {
   return eventsData.map((event) => ({
@@ -92,7 +87,11 @@ async function getEventData(params: {
   return Promise.resolve(event);
 }
 
-export default async function IndividualEventPage({ params }: PageProps) {
+export default async function IndividualEventPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const eventData = await getEventData(params);
 
   return <EventDisplay eventData={eventData} />;
