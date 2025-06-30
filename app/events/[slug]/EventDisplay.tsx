@@ -22,6 +22,22 @@ import {
   CheckCircleOutline,
 } from "@mui/icons-material";
 
+interface EventType {
+  id: number;
+  slug: string;
+  type: string;
+  title: string;
+  date: string;
+  time: string;
+  description: string;
+  image: string;
+  address: string;
+  instagramLink: string;
+  googleMapsLink: string;
+  appleMapsLink: string;
+  embedMapSrc?: string;
+}
+
 const PageContainer = styled(Container)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -103,23 +119,26 @@ const AddressBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
 }));
 
-const MapPlaceholder = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+const MapContainer = styled(Box)({
   width: "100%",
   height: "100%",
-  backgroundColor: "#e0e0e0",
-}));
+  minHeight: "450px",
+  borderRadius: "inherit",
+  overflow: "hidden",
+});
 
-export default function EventDisplay({ eventData }: { eventData: any }) {
+export default function EventDisplay({
+  eventData,
+}: {
+  eventData: EventType | undefined;
+}) {
   const [copied, setCopied] = useState(false);
 
   if (!eventData) {
     return (
       <PageContainer maxWidth="lg">
         <Typography variant="h4" component="h1" align="center">
-          How did you get here???
+          Event not found. How did you get here?
         </Typography>
       </PageContainer>
     );
@@ -134,7 +153,7 @@ export default function EventDisplay({ eventData }: { eventData: any }) {
         setTimeout(() => setCopied(false), 2000);
       })
       .catch((err) => {
-        console.error("Bruh: ", err);
+        console.error("Failed to copy address: ", err);
       });
   };
 
@@ -242,16 +261,17 @@ export default function EventDisplay({ eventData }: { eventData: any }) {
         <Cell>
           <ContentPaper elevation={3}>
             {eventData.embedMapSrc && (
-              <iframe
-                src={eventData.embedMapSrc}
-                width="100%"
-                height="450"
-                style={{ border: 0, borderRadius: "8px", marginTop: "20px" }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title={`Google Map for ${eventData.title}`}
-              ></iframe>
+              <MapContainer>
+                <iframe
+                  src={eventData.embedMapSrc}
+                  width="100%"
+                  height="100%"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`Google Map for ${eventData.title}`}
+                />
+              </MapContainer>
             )}
           </ContentPaper>
         </Cell>

@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import {
-  Box,
   Container,
   Typography,
   Grid,
@@ -69,23 +68,6 @@ const VolunteerQuote = styled(Typography)(({ theme }) => ({
 
 const VolunteerAuthor = styled(Typography)(({ theme }) => ({
   fontWeight: "bold",
-}));
-
-const PositionCard = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  backgroundColor: theme.palette.background.paper,
-}));
-
-const PositionTitle = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(1),
-}));
-
-const PositionDescription = styled(Typography)(({ theme }) => ({
-  flexGrow: 1,
-  marginBottom: theme.spacing(2),
 }));
 
 // For TinaCMS
@@ -160,7 +142,7 @@ export default function VolunteerPage() {
               <VolunteerCard>
                 <VolunteerAvatar alt={volunteer.author} src={volunteer.image} />
                 <VolunteerQuote variant="body1" component="blockquote">
-                  "{volunteer.quote}"
+                  &ldquo;{volunteer.quote}&rdquo;
                 </VolunteerQuote>
                 <VolunteerAuthor variant="h5" component="cite">
                   - {volunteer.author}

@@ -55,10 +55,10 @@ const MissionTextContent = styled(Box)(({ theme }) => ({
   textAlign: "center",
 }));
 
-const MissionStatementText = styled(Typography)(({ theme }) => ({
+const MissionStatementText = styled(Typography)({
   fontSize: "1.1rem",
   lineHeight: 1.7,
-}));
+});
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
@@ -74,13 +74,13 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const TeamMemberCard = styled(Card)(({ theme }) => ({
+const TeamMemberCard = styled(Card)({
   textAlign: "center",
   height: "100%",
   minWidth: "300px",
   display: "flex",
   flexDirection: "column",
-}));
+});
 
 const TeamMemberImage = styled(CardMedia)({
   aspectRatio: "1 / 1",

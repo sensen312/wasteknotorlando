@@ -9,10 +9,8 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  Grid,
 } from "@mui/material";
 import { FavoriteBorder, Event, People, Email } from "@mui/icons-material";
-import NextLink from "next/link";
 
 const BannerCard = styled(Card)(({ theme }) => ({
   position: "relative",
@@ -48,13 +46,13 @@ const BannerOverlay = styled(Box)(({ theme }) => ({
   },
 }));
 
-const BannerTitle = styled(Typography)(({ theme }) => ({
+const BannerTitle = styled(Typography)({
   textShadow: "2px 1px 30px rgb(5, 41, 12)",
-}));
+});
 
-const BannerSubtitle = styled(Typography)(({ theme }) => ({
+const BannerSubtitle = styled(Typography)({
   textShadow: "1px 1px 12px rgba(0,0,0,1)",
-}));
+});
 
 const KeyLinksWrapper = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(8),
