@@ -73,9 +73,8 @@ const eventsData: Event[] = [
 ];
 
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 // Change with Tina later
