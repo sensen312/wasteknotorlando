@@ -11,7 +11,6 @@ interface Event {
   title: string;
   date: string;
   time?: string;
-  [key: string]: any;
 }
 
 interface InteractiveCalendarProps {
@@ -127,7 +126,7 @@ export default function InteractiveCalendar({
   const month = currentDate.getMonth();
 
   const eventsForMonth = useMemo(() => {
-    const eventsMap = new Map<number, Event[]>();
+    const eventsMap = new Map<number, (Event & { dateObj: Date })[]>();
     events.forEach((event) => {
       const eventDate = new Date(event.date);
       eventDate.setMinutes(
