@@ -1,6 +1,5 @@
 import React from "react";
 import EventDisplay from "./EventDisplay";
-import type { NextPage } from "next";
 
 interface Event {
   id: number;
@@ -33,11 +32,11 @@ const eventsData: Event[] = [
     address: "310 E New Hampshire St #700, Orlando, FL 32804, USA",
     instagramLink: "https://www.instagram.com/WasteKnotOrlando",
     googleMapsLink:
-      "https://maps.google.com/?q=310+E+New+Hampshire+St+%23700,+Orlando,+FL+32804",
+      "https://www.google.com/maps/place/28%C2%B034'03.1%22N+81%C2%B022'25.4%22W/@28.5675188,-81.3762927,17z/data=!3m1!4b1!4m4!3m3!8m2!3d28.5675188!4d-81.3737178?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D",
     appleMapsLink:
-      "https://maps.apple.com/?address=310%20E%20New%20Hampshire%20St,%20Unit%20700,%20Orlando,%20FL%20%2032804,%20United%20States",
+      "https://maps.apple.com/directions?destination=310+E+New+Hampshire+St%2C+310+E+New+Hampshire+St+Orlando%2C+FL++32804+United+States&mode=driving",
     embedMapSrc:
-      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.921306323131!2d-81.369873!3d28.572093!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e77b062b1a5a9d%3A0x6b41e6a14e41d3!2s310%20E%20New%20Hampshire%20St%20%23700%2C%20Orlando%2C%20FL%2032804%2C%20USA!5e0!3m2!1sen!2s!4v1627883391238!5m2!1sen!2s",
+      "https://maps.google.com/maps?q=310%20E%20New%20Hampshire%20St%20%23700%2C%20Orlando%2C%20FL%2032804%2C%20USA&t=&z=15&ie=UTF8&iwloc=&output=embed",
   },
   {
     id: 2,
@@ -88,11 +87,12 @@ async function getEventData(params: {
   return Promise.resolve(event);
 }
 
-const IndividualEventPage: NextPage<{ params: { slug: string } }> = async ({
+export default async function IndividualEventPage({
   params,
-}) => {
+}: {
+  params: { slug: string };
+}) {
   const eventData = await getEventData(params);
-  return <EventDisplay eventData={eventData} />;
-};
 
-export default IndividualEventPage;
+  return <EventDisplay eventData={eventData} />;
+}
