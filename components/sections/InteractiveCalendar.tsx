@@ -1,7 +1,15 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import NextLink from "next/link";
-import { Box, Typography, Paper, IconButton, Link } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  IconButton,
+  Link,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
@@ -54,12 +62,12 @@ const WeekDayText = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const DaysGrid = styled(Box)({
+const DaysGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(7, 1fr)",
-  gridAutoRows: "150px",
+  gridAutoRows: theme.breakpoints.down("sm") ? "13vw" : "150px",
   gap: "4px",
-});
+}));
 
 const DayCell = styled(Box)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
@@ -68,6 +76,7 @@ const DayCell = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
+  position: "relative",
 }));
 
 const DayNumber = styled(Typography)(({ theme }) => ({
@@ -83,6 +92,17 @@ const EventsContainer = styled(Box)({
   marginTop: "4px",
 });
 
+// Dots for mobile so you can see it
+const EventDotsContainer = styled(Box)({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "4px",
+  padding: "2px",
+  position: "absolute",
+  top: "24px",
+  left: "4px",
+});
+
 const EventItem = styled(Link)(({ theme }) => ({
   display: "block",
   backgroundColor: theme.palette.primary.light,
@@ -95,6 +115,14 @@ const EventItem = styled(Link)(({ theme }) => ({
   "&:hover": {
     backgroundColor: theme.palette.primary.main,
   },
+}));
+
+const EventDot = styled(Link)(({ theme }) => ({
+  height: "8px",
+  width: "8px",
+  backgroundColor: theme.palette.secondary.main,
+  borderRadius: "50%",
+  display: "inline-block",
 }));
 
 const EventTitleText = styled(Typography)({
@@ -121,6 +149,8 @@ export default function InteractiveCalendar({
   events,
 }: InteractiveCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -153,6 +183,8 @@ export default function InteractiveCalendar({
   }, [year, month, events]);
 
   const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+  // To make it consistent Jan is 1
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const calendarDays = [];
@@ -190,7 +222,11 @@ export default function InteractiveCalendar({
           <IconButton onClick={handlePrevMonth} aria-label="Previous month">
             <ChevronLeft />
           </IconButton>
-          <Typography variant="h4" component="h3">
+          <Typography
+            variant={isMobile ? "h5" : "h4"}
+            component="h3"
+            sx={{ textAlign: "center" }}
+          >
             {currentDate.toLocaleString("default", { month: "long" })} {year}
           </Typography>
           <IconButton onClick={handleNextMonth} aria-label="Next month">
@@ -200,7 +236,7 @@ export default function InteractiveCalendar({
         <WeekDaysGrid>
           {daysOfWeek.map((day) => (
             <WeekDayText key={day} variant="body2">
-              {day}
+              {isMobile ? day.substring(0, 3) : day}
             </WeekDayText>
           ))}
         </WeekDaysGrid>
@@ -209,21 +245,35 @@ export default function InteractiveCalendar({
             dayObj.day ? (
               <DayCell key={dayObj.key}>
                 <DayNumber>{dayObj.day}</DayNumber>
-                <EventsContainer>
-                  {dayObj.events.map((event) => (
-                    <EventItem
-                      key={event.id}
-                      component={NextLink}
-                      href={`/events/${event.slug}`}
-                      passHref
-                    >
-                      <EventTitleText>{event.title}</EventTitleText>
-                      {event.time && (
-                        <EventTimeText>{event.time}</EventTimeText>
-                      )}
-                    </EventItem>
-                  ))}
-                </EventsContainer>
+                {isMobile ? (
+                  <EventDotsContainer>
+                    {dayObj.events.map((event) => (
+                      <EventDot
+                        key={event.id}
+                        component={NextLink}
+                        href={`/events/${event.slug}`}
+                        passHref
+                        aria-label={`Event: ${event.title}`}
+                      />
+                    ))}
+                  </EventDotsContainer>
+                ) : (
+                  <EventsContainer>
+                    {dayObj.events.map((event) => (
+                      <EventItem
+                        key={event.id}
+                        component={NextLink}
+                        href={`/events/${event.slug}`}
+                        passHref
+                      >
+                        <EventTitleText>{event.title}</EventTitleText>
+                        {event.time && (
+                          <EventTimeText>{event.time}</EventTimeText>
+                        )}
+                      </EventItem>
+                    ))}
+                  </EventsContainer>
+                )}
               </DayCell>
             ) : (
               <DayCellBlank key={dayObj.key} />
