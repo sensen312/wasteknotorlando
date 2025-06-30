@@ -99,12 +99,24 @@ const aboutPageData = {
     "Our mission is to provide a welcoming space where the Orlando community can divert post consumer goods from the trash through reuse.",
   logo: {
     alt: "WasteKnot Orlando Logo",
-    image: "/assets/logo.png",
+    image: " /wasteknotorlando/asset/logo.png",
   },
   team: [
-    { name: "Gru", role: "GLORIOUS LEADER", image: "/assets/Gru.jpg" },
-    { name: "Minion2", role: "Role2", image: "/assets/minion.jpg" },
-    { name: "Minion3", role: "Role3", image: "/assets/minion2.jpg" },
+    {
+      name: "Gru",
+      role: "GLORIOUS LEADER",
+      image: " /wasteknotorlando/asset/Gru.jpg",
+    },
+    {
+      name: "Minion2",
+      role: "Role2",
+      image: " /wasteknotorlando/asset/minion.jpg",
+    },
+    {
+      name: "Minion3",
+      role: "Role3",
+      image: " /wasteknotorlando/asset/minion2.jpg",
+    },
   ],
 };
 

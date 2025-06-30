@@ -69,7 +69,7 @@ const Footer = () => (
       <FooterLayoutContainer>
         <FooterSection>
           <LogoNameImage
-            src={"/assets/logoinsidename2.png"}
+            src={" /wasteknotorlando/asset/logoinsidename2.png"}
             alt={"WasteKnot Orlando Logo"}
           />
         </FooterSection>
