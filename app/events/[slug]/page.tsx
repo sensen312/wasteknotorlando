@@ -1,8 +1,24 @@
 import React from "react";
 import EventDisplay from "./EventDisplay";
 
+interface Event {
+  id: number;
+  slug: string;
+  type: string;
+  title: string;
+  date: string;
+  time: string;
+  description: string;
+  image: string;
+  address: string;
+  instagramLink: string;
+  googleMapsLink: string;
+  appleMapsLink: string;
+  embedMapSrc?: string;
+}
+
 // Source from Tina Later
-const eventsData = [
+const eventsData: Event[] = [
   {
     id: 1,
     slug: "event-one-slug",
@@ -13,7 +29,7 @@ const eventsData = [
     description:
       "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.Provided supplies: Canvas, glue, recycled materials (you can also bring some of your own) Suggested donation: $10-$40 (sliding scale) TUA members can attend for free.",
     image: "/assets/RecycledHorrorsArtWorkShop.jpg",
-    address: "310 E New Hampshire St #700Orlando, FL 32804, USA",
+    address: "310 E New Hampshire St #700, Orlando, FL 32804, USA",
     instagramLink: "https://www.instagram.com/WasteKnotOrlando",
     googleMapsLink:
       "https://www.google.com/maps/place/28%C2%B034'03.1%22N+81%C2%B022'25.4%22W/@28.5675188,-81.3762927,17z/data=!3m1!4b1!4m4!3m3!8m2!3d28.5675188!4d-81.3737178?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D",
@@ -56,6 +72,12 @@ const eventsData = [
   },
 ];
 
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
 // Change with Tina later
 export async function generateStaticParams() {
   return eventsData.map((event) => ({
@@ -64,17 +86,14 @@ export async function generateStaticParams() {
 }
 
 // Basically simulates server
-async function getEventData(params: { slug: string }) {
+async function getEventData(params: {
+  slug: string;
+}): Promise<Event | undefined> {
   const event = eventsData.find((e) => e.slug === params.slug);
   return Promise.resolve(event);
 }
 
-export default async function IndividualEventPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  // There is still an analyzer error idk how to fix it atm
+export default async function IndividualEventPage({ params }: PageProps) {
   const eventData = await getEventData(params);
 
   return <EventDisplay eventData={eventData} />;
