@@ -176,7 +176,7 @@ const Header = () => {
         <Toolbar disableGutters>
           <LogoLink component={NextLink} href="/">
             <LogoImage
-              src="/wasteknotorlando/asset/namelogo.png"
+              src="/wasteknotorlando/assets/namelogo.png"
               alt="WasteKnot Orlando Logo"
               width={180}
               height={40}

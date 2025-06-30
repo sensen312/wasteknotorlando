@@ -106,7 +106,7 @@ const FeaturedEventBanner = () => (
       <BannerActionArea href="https://www.zeffy.com/en-US/ticketing/81825-recycled-horrors-art-workshop">
         <BannerImage
           component="img"
-          image="/wasteknotorlando/asset/RecycledHorrorsArtWorkShop.jpg"
+          image="/wasteknotorlando/assets/RecycledHorrorsArtWorkShop.jpg"
           alt="Recycled Horror Workshop"
         />
         <BannerOverlay>
