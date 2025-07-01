@@ -129,7 +129,7 @@ export default function DonatePage() {
               startIcon={<Favorite />}
               size="large"
             >
-              STUFF
+              DONATE
             </Button>
           </Box>
         </ColumnOne>
