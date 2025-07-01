@@ -93,14 +93,43 @@ const ReadingGuide = () => {
   return <div className="reading-guide" style={{ top: `${top}px` }} />;
 };
 
+const getFromLocalStorage = (key: string, defaultValue: boolean): boolean => {
+  if (typeof window !== "undefined") {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : defaultValue;
+  }
+  return defaultValue;
+};
+
 export const AccessibilityProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [isHighContrast, setIsHighContrast] = useState(false);
-  const [isDyslexicFont, setIsDyslexicFont] = useState(false);
-  const [isReadingGuideEnabled, setIsReadingGuideEnabled] = useState(false);
+  const [isHighContrast, setIsHighContrast] = useState<boolean>(() =>
+    getFromLocalStorage("isHighContrast", false)
+  );
+  const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(() =>
+    getFromLocalStorage("isDyslexicFont", false)
+  );
+  const [isReadingGuideEnabled, setIsReadingGuideEnabled] = useState<boolean>(
+    () => getFromLocalStorage("isReadingGuideEnabled", false)
+  );
+
+  useEffect(() => {
+    localStorage.setItem("isHighContrast", JSON.stringify(isHighContrast));
+  }, [isHighContrast]);
+
+  useEffect(() => {
+    localStorage.setItem("isDyslexicFont", JSON.stringify(isDyslexicFont));
+  }, [isDyslexicFont]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "isReadingGuideEnabled",
+      JSON.stringify(isReadingGuideEnabled)
+    );
+  }, [isReadingGuideEnabled]);
 
   const toggleHighContrast = () => setIsHighContrast((prev) => !prev);
   const toggleDyslexicFont = () => setIsDyslexicFont((prev) => !prev);
