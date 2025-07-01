@@ -2,10 +2,10 @@
 
 import React, {
   createContext,
-  useState,
   useMemo,
   useContext,
-  useEffect,
+  useCallback,
+  useSyncExternalStore,
 } from "react";
 import {
   createTheme,
@@ -15,6 +15,29 @@ import {
 } from "@mui/material/styles";
 import { deepmerge } from "@mui/utils";
 import originalBaseTheme from "@/theme/theme";
+
+function getLocalStorageItem(key: string) {
+  // makes sure its from local storage
+  if (typeof window === "undefined") {
+    return null;
+  }
+  return localStorage.getItem(key);
+}
+
+function setLocalStorageItem(key: string, value: any) {
+  if (typeof window === "undefined") {
+    console.warn(`Tried setting localStorage key “${key}” on the server ;-;`);
+    return;
+  }
+  localStorage.setItem(key, value);
+  window.dispatchEvent(new Event("storage"));
+}
+
+// makes react re-render component with new value
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
 
 interface AccessibilityContextType {
   toggleHighContrast: () => void;
@@ -31,7 +54,7 @@ const AccessibilityContext = createContext<
 >(undefined);
 
 export const useAccessibility = () => {
-  const context = useContext(AccessibilityContext);
+  const context = useContext(AibilityContext);
   if (context === undefined) {
     throw new Error(
       "useAccessibility must be used within an AccessibilityProvider"
@@ -66,7 +89,7 @@ const dyslexicFontTheme: ThemeOptions = {
   typography: {
     fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif',
     h1: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
-    h2: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h2: { fontFamily: '"OpenDyslexic", "Hccesselvetica", "Arial", sans-serif' },
     h3: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
     h4: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
     h5: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
@@ -77,84 +100,40 @@ const dyslexicFontTheme: ThemeOptions = {
   },
 };
 
-const ReadingGuide = () => {
-  const [top, setTop] = useState(0);
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setTop(event.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
-  return <div className="reading-guide" style={{ top: `${top}px` }} />;
-};
-
-const getFromLocalStorage = (key: string, defaultValue: boolean): boolean => {
-  if (typeof window !== "undefined") {
-    const storedValue = localStorage.getItem(key);
-    return storedValue ? JSON.parse(storedValue) : defaultValue;
-  }
-  return defaultValue;
-};
-
 export const AccessibilityProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [isHighContrast, setIsHighContrast] = useState<boolean>(false);
-  const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(false);
-  const [isReadingGuideEnabled, setIsReadingGuideEnabled] =
-    useState<boolean>(false);
-  const [isMounted, setIsMounted] = useState(false);
+  // synchronously reads the value from localStorage
+  const isHighContrast = useSyncExternalStore(
+    subscribe,
+    () => JSON.parse(getLocalStorageItem("isHighContrast") || "false"),
+    () => false
+  );
+  const isDyslexicFont = useSyncExternalStore(
+    subscribe,
+    () => JSON.parse(getLocalStorageItem("isDyslexicFont") || "false"),
+    () => false
+  );
+  const isReadingGuideEnabled = useSyncExternalStore(
+    subscribe,
+    () => JSON.parse(getLocalStorageItem("isReadingGuideEnabled") || "false"),
+    () => false
+  );
 
-  useEffect(() => {
-    const storedHighContrast = localStorage.getItem("isHighContrast");
-    if (storedHighContrast) {
-      setIsHighContrast(JSON.parse(storedHighContrast));
-    }
+  // now we directly write to local storage
+  const toggleHighContrast = useCallback(() => {
+    setLocalStorageItem("isHighContrast", !isHighContrast);
+  }, [isHighContrast]);
 
-    const storedDyslexicFont = localStorage.getItem("isDyslexicFont");
-    if (storedDyslexicFont) {
-      setIsDyslexicFont(JSON.parse(storedDyslexicFont));
-    }
+  const toggleDyslexicFont = useCallback(() => {
+    setLocalStorageItem("isDyslexicFont", !isDyslexicFont);
+  }, [isDyslexicFont]);
 
-    const storedReadingGuide = localStorage.getItem("isReadingGuideEnabled");
-    if (storedReadingGuide) {
-      setIsReadingGuideEnabled(JSON.parse(storedReadingGuide));
-    }
-
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("isHighContrast", JSON.stringify(isHighContrast));
-    }
-  }, [isHighContrast, isMounted]);
-
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem("isDyslexicFont", JSON.stringify(isDyslexicFont));
-    }
-  }, [isDyslexicFont, isMounted]);
-
-  useEffect(() => {
-    if (isMounted) {
-      localStorage.setItem(
-        "isReadingGuideEnabled",
-        JSON.stringify(isReadingGuideEnabled)
-      );
-    }
-  }, [isReadingGuideEnabled, isMounted]);
-
-  const toggleHighContrast = () => setIsHighContrast((prev) => !prev);
-  const toggleDyslexicFont = () => setIsDyslexicFont((prev) => !prev);
-  const toggleReadingGuide = () => setIsReadingGuideEnabled((prev) => !prev);
+  const toggleReadingGuide = useCallback(() => {
+    setLocalStorageItem("isReadingGuideEnabled", !isReadingGuideEnabled);
+  }, [isReadingGuideEnabled]);
 
   const activeTheme = useMemo(() => {
     let themeOptions: ThemeOptions = {};
@@ -164,9 +143,19 @@ export const AccessibilityProvider = ({
     if (isDyslexicFont) {
       themeOptions = deepmerge(themeOptions, dyslexicFontTheme);
     }
-    let newTheme = createTheme(deepmerge(originalBaseTheme, themeOptions));
+    const newTheme = createTheme(deepmerge(originalBaseTheme, themeOptions));
     return responsiveFontSizes(newTheme);
   }, [isHighContrast, isDyslexicFont]);
+
+  const ReadingGuide = () => {
+    const [top, setTop] = React.useState(0);
+    React.useEffect(() => {
+      const handleMouseMove = (event: MouseEvent) => setTop(event.clientY);
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, []);
+    return <div className="reading-guide" style={{ top: `${top}px` }} />;
+  };
 
   const contextValue = {
     toggleHighContrast,
@@ -177,10 +166,6 @@ export const AccessibilityProvider = ({
     isReadingGuideEnabled,
     activeTheme,
   };
-
-  if (!isMounted) {
-    return null;
-  }
 
   return (
     <AccessibilityContext.Provider value={contextValue}>
