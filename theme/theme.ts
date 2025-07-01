@@ -78,15 +78,15 @@ let theme = createTheme({
       font-style: normal;
       font-display: swap;
       font-weight: 400;
-      src: url(/wasteknotorlando/fonts/Kaleko105Book.woff) format('woff');
+      src: url(/wasteknotorlando/fonts/Kaleko105Bold.woff) format('woff');
       }
       @font-face {
-      font-family: 'Kaleko 105';
+      font-family: 'OpenDyslexic';
+      src: url('/wasteknotorlando/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+      font-weight: normal;
       font-style: normal;
       font-display: swap;
-      font-weight: 700;
-      src: url/wasteknotorlando//fonts/Kaleko105Bold.woff) format('woff');
-      }
+        }
     `,
     },
     MuiButton: {

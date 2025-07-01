@@ -64,20 +64,16 @@ const highContrastTheme: ThemeOptions = {
 
 const dyslexicFontTheme: ThemeOptions = {
   typography: {
-    fontFamily: '"OpenDyslexic", "Arial", sans-serif',
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
-        @font-face {
-          font-family: 'OpenDyslexic';
-          src: url('/wasteknotorlando/fonts/OpenDyslexic-Regular.woff2') format('woff2');
-          font-weight: normal;
-          font-style: normal;
-          font-display: swap;
-        }
-      `,
-    },
+    fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif',
+    h1: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h2: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h3: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h4: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h5: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    h6: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    body1: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    body2: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
+    button: { fontFamily: '"OpenDyslexic", "Helvetica", "Arial", sans-serif' },
   },
 };
 
