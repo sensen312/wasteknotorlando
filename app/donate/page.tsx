@@ -80,7 +80,7 @@ const ListHeader = styled(Typography)(({ theme }) => ({
 const ListsRowContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  [theme.breakpoints.up("sm")]: {
+  [theme.breakpoints.up("xs")]: {
     flexDirection: "row",
   },
   alignItems: "flex-start",
@@ -92,7 +92,7 @@ const ListsRowContainer = styled(Box)(({ theme }) => ({
 
 const ListWrapper = styled(Box)(({ theme }) => ({
   width: "100%",
-  [theme.breakpoints.up("sm")]: {
+  [theme.breakpoints.up("xs")]: {
     flex: 1,
   },
 }));

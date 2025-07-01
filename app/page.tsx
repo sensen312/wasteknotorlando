@@ -82,8 +82,8 @@ const StyledKeyLinkButton = styled(Button)(({ theme }) => ({
   textAlign: "center",
   borderRadius: theme.shape.borderRadius * 4,
   transition: "all 0.3s ease",
-  [theme.breakpoints.up("sm")]: {
-    width: "70%",
+  [theme.breakpoints.up("xs")]: {
+    width: "70vw",
   },
   [theme.breakpoints.up("md")]: {
     width: 300,

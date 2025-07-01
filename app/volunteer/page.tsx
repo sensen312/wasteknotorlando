@@ -23,6 +23,13 @@ const PageHeader = styled("section")(({ theme }) => ({
 
 const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
+
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "clamp(1.7rem, 7vw, 2.25rem)",
+      letterSpacing: "0.5px",
+    },
+  }),
 }));
 
 const PageSubtitle = styled(Typography)(({ theme }) => ({
