@@ -25,10 +25,10 @@ const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-const PageSubtitle = styled(Typography)({
+const PageSubtitle = styled(Typography)(({ theme }) => ({
   margin: "0 auto",
-  marginBottom: "theme.spacing(4)",
-});
+  marginBottom: theme.spacing(4),
+}));
 
 const ActionButtons = styled(Stack)({
   justifyContent: "center",
@@ -39,10 +39,10 @@ const ContentSection = styled("section")(({ theme }) => ({
   marginBottom: theme.spacing(8),
 }));
 
-const SectionTitle = styled(Typography)({
+const SectionTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
-  marginBottom: "theme.spacing(5)",
-});
+  marginBottom: theme.spacing(5),
+}));
 
 const VolunteerCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),

@@ -71,7 +71,7 @@ const dyslexicFontTheme: ThemeOptions = {
       styleOverrides: `
         @font-face {
           font-family: 'OpenDyslexic';
-          src: url('/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+          src: url('/wasteknotorlando/fonts/OpenDyslexic-Regular.woff2') format('woff2');
           font-weight: normal;
           font-style: normal;
           font-display: swap;
