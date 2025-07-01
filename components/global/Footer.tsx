@@ -48,10 +48,12 @@ const LogoNameImage = styled("img")({
   maxWidth: "280px",
   height: "auto",
   // is this readable?
+  /*
   filter: `
       drop-shadow(0px 0px 1px rgba(198, 211, 204, 0.7))
       drop-shadow(0px 0px 8px rgba(36, 90, 48, 0.3))
     `,
+  */
 });
 
 const FooterLink = styled(MuiLink)({
@@ -69,7 +71,7 @@ const Footer = () => (
       <FooterLayoutContainer>
         <FooterSection>
           <LogoNameImage
-            src={"/wasteknotorlando/assets/logoinsidename2.png"}
+            src={"/wasteknotorlando/assets/logoinsidename.png"}
             alt={"WasteKnot Orlando Logo"}
           />
         </FooterSection>
