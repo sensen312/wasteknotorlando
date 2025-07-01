@@ -54,7 +54,7 @@ const AccessibilityContext = createContext<
 >(undefined);
 
 export const useAccessibility = () => {
-  const context = useContext(AibilityContext);
+  const context = useContext(AccessibilityContext);
   if (context === undefined) {
     throw new Error(
       "useAccessibility must be used within an AccessibilityProvider"
