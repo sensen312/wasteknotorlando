@@ -74,7 +74,7 @@ const StyledKeyLinkButton = styled(Button)(({ theme }) => ({
   border: "2px solid",
   borderColor: theme.palette.primary.main,
   color: theme.palette.primary.main,
-  height: 120,
+  height: 150,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -82,12 +82,11 @@ const StyledKeyLinkButton = styled(Button)(({ theme }) => ({
   textAlign: "center",
   borderRadius: theme.shape.borderRadius * 4,
   transition: "all 0.3s ease",
-  width: "80%",
   [theme.breakpoints.up("sm")]: {
-    width: "60%",
+    width: "70%",
   },
   [theme.breakpoints.up("md")]: {
-    width: 200,
+    width: 300,
   },
   "&:hover": {
     backgroundColor: theme.palette.secondary.main,
@@ -126,13 +125,17 @@ const KeyLinks = () => {
   const linkItems = [
     {
       title: "Donate",
-      href: "/donate",
+      href: "/wasteknotornaldo/donate",
       icon: <FavoriteBorder fontSize="large" />,
     },
-    { title: "Events", href: "/events", icon: <Event fontSize="large" /> },
+    {
+      title: "Events",
+      href: "/wasteknotornaldo/events",
+      icon: <Event fontSize="large" />,
+    },
     {
       title: "Work With Us",
-      href: "/volunteer",
+      href: "/wasteknotornaldo/volunteer",
       icon: <People fontSize="large" />,
     },
     {

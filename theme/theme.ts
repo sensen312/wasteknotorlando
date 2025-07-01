@@ -78,7 +78,7 @@ let theme = createTheme({
       font-style: normal;
       font-display: swap;
       font-weight: 400;
-      src: url(/wasteknotorlando/fonts/Kaleko105Bold.woff) format('woff');
+      src: url('/wasteknotorlando/fonts/Kaleko105Bold.woff') format('woff');
       }
       @font-face {
       font-family: 'OpenDyslexic';
