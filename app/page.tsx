@@ -125,17 +125,17 @@ const KeyLinks = () => {
   const linkItems = [
     {
       title: "Donate",
-      href: "/wasteknotornaldo/donate",
+      href: "/wasteknotorlando/donate",
       icon: <FavoriteBorder fontSize="large" />,
     },
     {
       title: "Events",
-      href: "/wasteknotornaldo/events",
+      href: "/wasteknotorlando/events",
       icon: <Event fontSize="large" />,
     },
     {
       title: "Work With Us",
-      href: "/wasteknotornaldo/volunteer",
+      href: "/wasteknotorlando/volunteer",
       icon: <People fontSize="large" />,
     },
     {
