@@ -8,6 +8,7 @@ const brandColors = {
   backgroundDefault: "#FEFEFE", // Off white
   textPrimary: "#1F2937",
   textSecondary: "#4B5563",
+  offBlack: "#1D1718",
 };
 
 let theme = createTheme({
