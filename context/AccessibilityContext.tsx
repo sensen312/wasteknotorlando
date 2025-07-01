@@ -106,43 +106,65 @@ export const AccessibilityProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [isHighContrast, setIsHighContrast] = useState<boolean>(() =>
-    getFromLocalStorage("isHighContrast", false)
-  );
-  const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(() =>
-    getFromLocalStorage("isDyslexicFont", false)
-  );
-  const [isReadingGuideEnabled, setIsReadingGuideEnabled] = useState<boolean>(
-    () => getFromLocalStorage("isReadingGuideEnabled", false)
-  );
+  const [isHighContrast, setIsHighContrast] = useState<boolean>(false);
+  const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(false);
+  const [isReadingGuideEnabled, setIsReadingGuideEnabled] =
+    useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("isHighContrast", JSON.stringify(isHighContrast));
-  }, [isHighContrast]);
+    const storedHighContrast = localStorage.getItem("isHighContrast");
+    if (storedHighContrast) {
+      setIsHighContrast(JSON.parse(storedHighContrast));
+    }
+
+    const storedDyslexicFont = localStorage.getItem("isDyslexicFont");
+    if (storedDyslexicFont) {
+      setIsDyslexicFont(JSON.parse(storedDyslexicFont));
+    }
+
+    const storedReadingGuide = localStorage.getItem("isReadingGuideEnabled");
+    if (storedReadingGuide) {
+      setIsReadingGuideEnabled(JSON.parse(storedReadingGuide));
+    }
+
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem("isDyslexicFont", JSON.stringify(isDyslexicFont));
-  }, [isDyslexicFont]);
+    if (isMounted) {
+      localStorage.setItem("isHighContrast", JSON.stringify(isHighContrast));
+    }
+  }, [isHighContrast, isMounted]);
 
   useEffect(() => {
-    localStorage.setItem(
-      "isReadingGuideEnabled",
-      JSON.stringify(isReadingGuideEnabled)
-    );
-  }, [isReadingGuideEnabled]);
+    if (isMounted) {
+      localStorage.setItem("isDyslexicFont", JSON.stringify(isDyslexicFont));
+    }
+  }, [isDyslexicFont, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem(
+        "isReadingGuideEnabled",
+        JSON.stringify(isReadingGuideEnabled)
+      );
+    }
+  }, [isReadingGuideEnabled, isMounted]);
 
   const toggleHighContrast = () => setIsHighContrast((prev) => !prev);
   const toggleDyslexicFont = () => setIsDyslexicFont((prev) => !prev);
   const toggleReadingGuide = () => setIsReadingGuideEnabled((prev) => !prev);
 
   const activeTheme = useMemo(() => {
-    let newTheme = originalBaseTheme;
+    let themeOptions: ThemeOptions = {};
     if (isHighContrast) {
-      newTheme = createTheme(deepmerge(newTheme, highContrastTheme));
+      themeOptions = deepmerge(themeOptions, highContrastTheme);
     }
     if (isDyslexicFont) {
-      newTheme = createTheme(deepmerge(newTheme, dyslexicFontTheme));
+      themeOptions = deepmerge(themeOptions, dyslexicFontTheme);
     }
+    let newTheme = createTheme(deepmerge(originalBaseTheme, themeOptions));
     return responsiveFontSizes(newTheme);
   }, [isHighContrast, isDyslexicFont]);
 
@@ -155,6 +177,10 @@ export const AccessibilityProvider = ({
     isReadingGuideEnabled,
     activeTheme,
   };
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <AccessibilityContext.Provider value={contextValue}>
