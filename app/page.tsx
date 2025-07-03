@@ -56,7 +56,7 @@ const BannerActionArea = styled(CardActionArea)({
 
 const BannerImage = styled(CardMedia)({
   height: "100%",
-  objectFit: "cover",
+  objectFit: "contain",
 });
 
 const BannerOverlay = styled(Box)(({ theme }) => ({
