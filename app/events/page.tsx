@@ -23,6 +23,11 @@ const PageContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(5),
 }));
 
+const PageTitleWrapper = styled(Box)({
+  textAlign: "center",
+  marginBottom: "40px",
+});
+
 const PageTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(5),
@@ -41,11 +46,6 @@ const PageTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const PageTitleWrapper = styled(Box)({
-  textAlign: "center",
-  marginBottom: "40px",
-});
-
 const EventListContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(6),
 }));
@@ -59,6 +59,7 @@ const StyledEventCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+  overflow: "hidden",
   "&:hover": {
     transform: "translateY(-4px)",
     boxShadow: theme.shadows[6],
@@ -74,17 +75,25 @@ const StyledCardActionArea = styled(CardActionArea)(({ theme }) => ({
   width: "100%",
 }));
 
-const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+const ImageWrapper = styled(Box)(({ theme }) => ({
   width: "100%",
+  backgroundColor: alpha(theme.palette.common.black, 0.03),
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   [theme.breakpoints.up("md")]: {
-    width: 350,
+    width: "40%",
+    maxWidth: "350px",
+    flexShrink: 0,
   },
-  height: 220,
-  [theme.breakpoints.up("md")]: {
-    height: "auto",
-  },
-  objectFit: "cover",
 }));
+
+const StyledCardMedia = styled(CardMedia)({
+  width: "100%",
+  height: "auto",
+  maxHeight: "300px",
+  objectFit: "contain",
+});
 
 const EventInfoContainer = styled(Box)({
   display: "flex",
@@ -129,7 +138,7 @@ const sampleEvents = [
     title: "Recycled Horrors Art Workshop",
     date: "2025-08-18",
     time: "7:00 PM - 9:00 PM",
-    address: "310 E New Hampshire St, Orlando, FL, 32804",
+    address: "310 E New Hampshire St #700Orlando, FL 32804, USA",
     description:
       "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.",
     image: "/wasteknotorlando/assets/RecycledHorrorsArtWorkShop.jpg",
@@ -208,11 +217,13 @@ export default function EventsPage() {
                   component={NextLink}
                   href={`/events/${event.slug}`}
                 >
-                  <StyledCardMedia
-                    component="img"
-                    image={event.image}
-                    alt={event.alt}
-                  />
+                  <ImageWrapper>
+                    <StyledCardMedia
+                      component="img"
+                      image={event.image}
+                      alt={event.alt}
+                    />
+                  </ImageWrapper>
                   <EventInfoContainer>
                     <StyledCardContent>
                       <EventTypeChip label={event.type} />
