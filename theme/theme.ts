@@ -1,5 +1,19 @@
 // Theme for site comes from the pantone pdf
-import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import {
+  createTheme,
+  responsiveFontSizes,
+  PaletteColor,
+  PaletteColorOptions,
+} from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface PaletteOptions {
+    offBlack?: PaletteColorOptions;
+  }
+  interface Palette {
+    offBlack: PaletteColor;
+  }
+}
 
 const brandColors = {
   primary: "#005B39", // Hex for PANTONE 6160
@@ -13,6 +27,10 @@ const brandColors = {
 
 let theme = createTheme({
   palette: {
+    offBlack: {
+      main: brandColors.offBlack,
+      contrastText: "#ffffff",
+    },
     primary: {
       main: brandColors.primary,
     },

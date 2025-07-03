@@ -13,7 +13,7 @@ import { Instagram, VolunteerActivism } from "@mui/icons-material";
 
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
-  color: theme.palette.custom.offBlack,
+  color: theme.palette.primary.contrastText,
   padding: theme.spacing(6, 0),
   marginTop: "auto",
 }));
