@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 const PageWrapper = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(5),
