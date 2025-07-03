@@ -79,7 +79,8 @@ const InfoCardHeader = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
   wordBreak: "break-word",
   ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
-    fontSize: "clamp(1.5rem, 5vw, 1.75rem)",
+    fontSize: "clamp(1.2rem, 3.75vw, 1.5rem) !important",
+    letterSpacing: ".2px !important",
   }),
 }));
 
