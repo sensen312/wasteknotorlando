@@ -77,6 +77,10 @@ const InfoCard = styled(Paper)(({ theme }) => ({
 const InfoCardHeader = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   color: theme.palette.primary.main,
+  wordBreak: "break-word",
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    fontSize: "clamp(1.5rem, 5vw, 1.75rem)",
+  }),
 }));
 
 const InfoCardContent = styled(Typography)(({ theme }) => ({
