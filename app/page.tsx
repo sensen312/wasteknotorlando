@@ -14,7 +14,7 @@ import { FavoriteBorder, Event, People, Email } from "@mui/icons-material";
 import NextLink from "next/link";
 
 const PageHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(6, 0, 4, 0),
+  padding: theme.spacing(6, 0, 2, 0),
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
