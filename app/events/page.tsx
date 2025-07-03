@@ -14,7 +14,7 @@ import {
   Stack,
   CardActionArea,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import InteractiveCalendar from "@/components/sections/InteractiveCalendar";
 
@@ -26,10 +26,98 @@ const PageContainer = styled(Container)(({ theme }) => ({
 const PageTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(5),
+  position: "relative",
+  display: "inline-block",
+  paddingBottom: theme.spacing(1.5),
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    display: "block",
+    width: "60%",
+    height: "4px",
+    backgroundColor: theme.palette.secondary.main,
+    bottom: 0,
+    left: "20%",
+  },
 }));
+
+const PageTitleWrapper = styled(Box)({
+  textAlign: "center",
+  marginBottom: "40px",
+});
 
 const EventListContainer = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(6),
+}));
+
+const StyledEventCard = styled(Card)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  [theme.breakpoints.up("md")]: {
+    flexDirection: "row",
+  },
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: theme.shadows[6],
+  },
+}));
+
+const StyledCardActionArea = styled(CardActionArea)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  [theme.breakpoints.up("md")]: {
+    flexDirection: "row",
+  },
+  width: "100%",
+}));
+
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+  width: "100%",
+  [theme.breakpoints.up("md")]: {
+    width: 350,
+  },
+  height: 220,
+  [theme.breakpoints.up("md")]: {
+    height: "auto",
+  },
+  objectFit: "cover",
+}));
+
+const EventInfoContainer = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  flexGrow: 1,
+  width: "100%",
+});
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+}));
+
+const EventTypeChip = styled(Chip)(({ theme }) => ({
+  marginBottom: theme.spacing(1.5),
+  backgroundColor: alpha(theme.palette.secondary.main, 0.2),
+  color: theme.palette.primary.main,
+  fontWeight: "bold",
+  border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`,
+}));
+
+const InfoLine = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  color: theme.palette.text.secondary,
+  marginBottom: theme.spacing(1.5),
+}));
+
+const InfoIcon = styled(Box)(({ theme }) => ({
+  marginRight: theme.spacing(1.5),
+  display: "flex",
+  alignItems: "center",
+  color: theme.palette.primary.main,
 }));
 
 // Placeholder for now mmm es backwards
@@ -41,7 +129,7 @@ const sampleEvents = [
     title: "Recycled Horrors Art Workshop",
     date: "2025-08-18",
     time: "7:00 PM - 9:00 PM",
-    address: "310 E New Hampshire St #700Orlando, FL 32804, USA",
+    address: "310 E New Hampshire St, Orlando, FL, 32804",
     description:
       "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.",
     image: "/wasteknotorlando/assets/RecycledHorrorsArtWorkShop.jpg",
@@ -105,90 +193,59 @@ export default function EventsPage() {
 
   return (
     <PageContainer maxWidth="lg">
-      <PageTitle variant="h1" component="h1">
-        Our Events
-      </PageTitle>
+      <PageTitleWrapper>
+        <PageTitle variant="h1" component="h1">
+          Our Events
+        </PageTitle>
+      </PageTitleWrapper>
 
       <EventListContainer>
-        <Stack spacing={4}>
+        <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map((event) => (
-              <Card
-                key={event.id}
-                sx={{
-                  display: "flex",
-                  flexDirection: { xs: "column", md: "row" },
-                }}
-              >
-                <CardActionArea
+              <StyledEventCard key={event.id}>
+                <StyledCardActionArea
                   component={NextLink}
                   href={`/events/${event.slug}`}
-                  sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    width: "100%",
-                  }}
                 >
-                  <CardMedia
+                  <StyledCardMedia
                     component="img"
                     image={event.image}
                     alt={event.alt}
-                    sx={{
-                      width: { xs: "100%", md: 350 },
-                      height: { xs: 220, md: "auto" },
-                      objectFit: "cover",
-                    }}
                   />
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      flexGrow: 1,
-                      width: "100%",
-                    }}
-                  >
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Chip
-                        label={event.type}
-                        color="secondary"
-                        sx={{
-                          mb: 1.5,
-                          color: "primary.main",
-                          fontWeight: "bold",
-                        }}
-                      />
+                  <EventInfoContainer>
+                    <StyledCardContent>
+                      <EventTypeChip label={event.type} />
                       <Typography gutterBottom variant="h3" component="h2">
                         {event.title}
                       </Typography>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        my={1.5}
-                        color="text.secondary"
-                      >
-                        <CalendarToday sx={{ mr: 1, fontSize: "1.2rem" }} />
+                      <InfoLine>
+                        <InfoIcon>
+                          <CalendarToday sx={{ fontSize: "1.2rem" }} />
+                        </InfoIcon>
                         <Typography variant="body1">
                           {event.dateObj.toLocaleDateString()}
                           {event.time ? ` at ${event.time}` : ""}
                         </Typography>
-                      </Box>
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        mb={1.5}
-                        color="text.secondary"
-                      >
-                        <LocationOn sx={{ mr: 1, fontSize: "1.2rem" }} />
+                      </InfoLine>
+                      <InfoLine>
+                        <InfoIcon>
+                          <LocationOn sx={{ fontSize: "1.2rem" }} />
+                        </InfoIcon>
                         <Typography variant="body1">{event.address}</Typography>
-                      </Box>
-                      <Typography variant="body1" color="text.secondary">
+                      </InfoLine>
+                      <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{ mt: 2 }}
+                      >
                         {event.description}
                       </Typography>
-                    </CardContent>
+                    </StyledCardContent>
                     <CardActions
                       sx={{
-                        p: 2,
-                        pt: { xs: 1, md: 2 },
+                        p: 3,
+                        pt: 1,
                         alignSelf: "flex-start",
                       }}
                     >
@@ -206,9 +263,9 @@ export default function EventsPage() {
                         Check the insta for more details!
                       </Button>
                     </CardActions>
-                  </Box>
-                </CardActionArea>
-              </Card>
+                  </EventInfoContainer>
+                </StyledCardActionArea>
+              </StyledEventCard>
             ))
           ) : (
             <Typography

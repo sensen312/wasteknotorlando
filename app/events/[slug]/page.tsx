@@ -27,9 +27,9 @@ const eventsData: Event[] = [
     date: "8/18/25",
     time: "7:00 PM - 9:00 PM",
     description:
-      "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art.Provided supplies: Canvas, glue, recycled materials (you can also bring some of your own) Suggested donation: $10-$40 (sliding scale) TUA members can attend for free.",
+      "Make your own upcycled piece of art! Bryan (aka Recycled Horrors Art) and Sarah (Waste Knot Orlando) will be leading a workshop about making your own upcycled art. Provided supplies: Canvas, glue, recycled materials (you can also bring some of your own) Suggested donation: $10-$40 (sliding scale) TUA members can attend for free.",
     image: "/wasteknotorlando/assets/RecycledHorrorsArtWorkShop.jpg",
-    address: "310 E New Hampshire St #700, Orlando, FL 32804, USA",
+    address: "310 E New Hampshire St, Orlando, FL, 32804",
     instagramLink: "https://www.instagram.com/WasteKnotOrlando",
     googleMapsLink:
       "https://www.google.com/maps/place/28%C2%B034'03.1%22N+81%C2%B022'25.4%22W/@28.5675188,-81.3762927,17z/data=!3m1!4b1!4m4!3m3!8m2!3d28.5675188!4d-81.3737178?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D",

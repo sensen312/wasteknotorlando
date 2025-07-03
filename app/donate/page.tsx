@@ -24,9 +24,27 @@ const PageContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(5),
 }));
 
+const PageTitleWrapper = styled(Box)({
+  textAlign: "center",
+  marginBottom: "40px",
+});
+
 const PageTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(2),
+  position: "relative",
+  display: "inline-block",
+  paddingBottom: theme.spacing(1.5),
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    display: "block",
+    width: "60%",
+    height: "4px",
+    backgroundColor: theme.palette.secondary.main,
+    bottom: 0,
+    left: "20%",
+  },
 }));
 
 const PageSubtitle = styled(Typography)(({ theme }) => ({
@@ -47,14 +65,19 @@ const MainRowSection = styled(Paper)(({ theme }) => ({
   width: "100%",
   padding: 0,
   overflow: "hidden",
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+  border: `1px solid ${theme.palette.divider}`,
 }));
 
 const ColumnOne = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-between",
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center",
   padding: theme.spacing(5),
-  backgroundColor: alpha(theme.palette.primary.main, 0.04),
+  backgroundColor: alpha(theme.palette.secondary.main, 0.05),
   flexBasis: "33.33%",
   flexGrow: 1,
 }));
@@ -70,29 +93,31 @@ const ColumnTwo = styled(Box)(({ theme }) => ({
 const CardTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
   marginBottom: theme.spacing(2),
+  fontWeight: 700,
 }));
 
 const ListHeader = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   textAlign: "left",
+  fontWeight: "bold",
+  color: theme.palette.text.primary,
 }));
 
 const ListsRowContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  [theme.breakpoints.up("xs")]: {
+  [theme.breakpoints.up("sm")]: {
     flexDirection: "row",
   },
   alignItems: "flex-start",
   justifyContent: "center",
   gap: theme.spacing(4),
   width: "100%",
-  marginTop: theme.spacing(2),
 }));
 
 const ListWrapper = styled(Box)(({ theme }) => ({
   width: "100%",
-  [theme.breakpoints.up("xs")]: {
+  [theme.breakpoints.up("sm")]: {
     flex: 1,
   },
 }));
@@ -104,14 +129,16 @@ export default function DonatePage() {
 
   return (
     <PageContainer maxWidth="lg">
-      <PageTitle variant="h1" component="h1">
-        Donate to us
-      </PageTitle>
+      <PageTitleWrapper>
+        <PageTitle variant="h1" component="h1">
+          Donate to us
+        </PageTitle>
+      </PageTitleWrapper>
       <PageSubtitle variant="h4" component="p">
         pls
       </PageSubtitle>
 
-      <MainRowSection>
+      <MainRowSection elevation={0}>
         <ColumnOne>
           <Box>
             <CardTitle variant="h3" component="h2">
@@ -121,7 +148,7 @@ export default function DonatePage() {
               Make a donation through Zeffy and directly help the cause.
             </Typography>
           </Box>
-          <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Box sx={{ mt: 4 }}>
             <Button
               variant="contained"
               color="primary"
@@ -143,6 +170,13 @@ export default function DonatePage() {
         <Divider sx={{ display: { xs: "block", md: "none" } }} />
 
         <ColumnTwo>
+          <CardTitle
+            variant="h3"
+            component="h2"
+            sx={{ textAlign: "center", mb: 4 }}
+          >
+            Donate Items
+          </CardTitle>
           <ListsRowContainer>
             <ListWrapper>
               <ListHeader variant="h5" component="h3">
@@ -151,8 +185,10 @@ export default function DonatePage() {
               <List dense>
                 {acceptedItems.map((item, index) => (
                   <ListItem key={index} disableGutters>
-                    <ListItemIcon sx={{ minWidth: "40px" }}>
-                      <CheckCircleOutline color="success" />
+                    <ListItemIcon
+                      sx={{ minWidth: "40px", color: "success.main" }}
+                    >
+                      <CheckCircleOutline />
                     </ListItemIcon>
                     <ListItemText primary={item} />
                   </ListItem>
@@ -167,8 +203,10 @@ export default function DonatePage() {
               <List dense>
                 {notAcceptedItems.map((item, index) => (
                   <ListItem key={index} disableGutters>
-                    <ListItemIcon sx={{ minWidth: "40px" }}>
-                      <HighlightOff color="error" />
+                    <ListItemIcon
+                      sx={{ minWidth: "40px", color: "error.main" }}
+                    >
+                      <HighlightOff />
                     </ListItemIcon>
                     <ListItemText primary={item} />
                   </ListItem>

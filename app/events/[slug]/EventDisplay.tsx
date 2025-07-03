@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import {
   Box,
   Container,
@@ -20,6 +20,8 @@ import {
   Apple as AppleIcon,
   ContentCopy,
   CheckCircleOutline,
+  CalendarToday,
+  Place,
 } from "@mui/icons-material";
 
 interface EventType {
@@ -42,10 +44,11 @@ const PageContainer = styled(Container)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(4),
+  marginTop: theme.spacing(4),
   [theme.breakpoints.up("md")]: {
     minHeight: "85vh",
   },
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(5),
 }));
 
 const Row = styled(Box)(({ theme }) => ({
@@ -64,18 +67,20 @@ const Cell = styled(Box)({
   flexDirection: "column",
 });
 
-const ContentPaper = styled(Paper)({
+const ContentPaper = styled(Paper)(({ theme }) => ({
   padding: 0,
   overflow: "hidden",
   width: "100%",
   height: "100%",
   display: "flex",
   flexDirection: "column",
-});
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+}));
 
 // TopLeft
 const DetailsStack = styled(Stack)(({ theme }) => ({
-  padding: theme.spacing(3),
+  padding: theme.spacing(4),
   height: "100%",
   justifyContent: "space-between",
 }));
@@ -83,12 +88,14 @@ const DetailsStack = styled(Stack)(({ theme }) => ({
 const DescriptionBody = styled(Box)({
   flexGrow: 1,
   overflowY: "auto",
-  marginBlock: "1rem",
+  marginBlock: "1.5rem",
 });
 
 const EventTypeChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.secondary.main, 0.2),
   color: theme.palette.primary.main,
-  fontWeight: 600,
+  fontWeight: "bold",
+  border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`,
   alignSelf: "flex-start",
 }));
 
@@ -107,7 +114,7 @@ const LocationStack = styled(Stack)(({ theme }) => ({
   justifyContent: "center",
   flexGrow: 1,
   top: "0",
-  padding: theme.spacing(1),
+  padding: theme.spacing(4),
 }));
 
 const AddressBox = styled(Box)(({ theme }) => ({
@@ -115,8 +122,9 @@ const AddressBox = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "space-between",
   padding: theme.spacing(2),
-  border: "1px solid #ddd",
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.black, 0.02),
 }));
 
 const MapContainer = styled(Box)({
@@ -126,6 +134,20 @@ const MapContainer = styled(Box)({
   borderRadius: "inherit",
   overflow: "hidden",
 });
+
+const InfoLine = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  color: theme.palette.text.secondary,
+  marginTop: theme.spacing(2),
+}));
+
+const InfoIcon = styled(Box)(({ theme }) => ({
+  marginRight: theme.spacing(1.5),
+  display: "flex",
+  alignItems: "center",
+  color: theme.palette.primary.main,
+}));
 
 export default function EventDisplay({
   eventData,
@@ -161,13 +183,32 @@ export default function EventDisplay({
     <PageContainer maxWidth="lg">
       <Row>
         <Cell>
-          <ContentPaper elevation={3}>
+          <ContentPaper elevation={0}>
             <DetailsStack spacing={2}>
               <Box>
-                <EventTypeChip label={eventData.type} color="secondary" />
-                <Typography variant="h2" component="h1" sx={{ mt: 1 }}>
+                <EventTypeChip label={eventData.type} />
+                <Typography variant="h2" component="h1" sx={{ mt: 2 }}>
                   {eventData.title}
                 </Typography>
+              </Box>
+
+              <Box>
+                <InfoLine>
+                  <InfoIcon>
+                    <CalendarToday />
+                  </InfoIcon>
+                  <Typography variant="h6" component="p">
+                    {eventData.date} at {eventData.time}
+                  </Typography>
+                </InfoLine>
+                <InfoLine>
+                  <InfoIcon>
+                    <Place />
+                  </InfoIcon>
+                  <Typography variant="h6" component="p">
+                    {eventData.address}
+                  </Typography>
+                </InfoLine>
               </Box>
 
               <DescriptionBody>
@@ -176,12 +217,6 @@ export default function EventDisplay({
 
               <Box>
                 <Divider sx={{ mb: 2 }} />
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {eventData.date}
-                </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  {eventData.time}
-                </Typography>
                 <ActionButton
                   variant="contained"
                   color="primary"
@@ -189,7 +224,6 @@ export default function EventDisplay({
                   href={eventData.instagramLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  sx={{ mt: 2 }}
                 >
                   Event Instagram
                 </ActionButton>
@@ -199,7 +233,7 @@ export default function EventDisplay({
         </Cell>
 
         <Cell>
-          <ContentPaper elevation={3}>
+          <ContentPaper elevation={0}>
             <EventImage
               component="img"
               image={eventData.image}
@@ -211,11 +245,11 @@ export default function EventDisplay({
 
       <Row>
         <Cell>
-          <ContentPaper elevation={3}>
+          <ContentPaper elevation={0}>
             <LocationStack spacing={3}>
               <Box>
                 <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                  ADDRESS:
+                  Get Directions
                 </Typography>
                 <AddressBox>
                   <Typography variant="body1" component="p">
@@ -259,13 +293,14 @@ export default function EventDisplay({
         </Cell>
 
         <Cell>
-          <ContentPaper elevation={3}>
+          <ContentPaper elevation={0}>
             {eventData.embedMapSrc && (
               <MapContainer>
                 <iframe
                   src={eventData.embedMapSrc}
                   width="100%"
                   height="100%"
+                  style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

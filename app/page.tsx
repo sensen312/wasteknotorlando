@@ -198,7 +198,7 @@ const FeaturedEventBanner = () => (
         />
         <BannerOverlay>
           <BannerTitle variant="h3" component="h3" gutterBottom>
-            Recycled Horror Workshop
+            Recycled Horrors Workshop
           </BannerTitle>
           <BannerSubtitle variant="h5" component="p">
             Make your own upcycled piece of art!

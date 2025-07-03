@@ -10,7 +10,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 interface Event {
@@ -32,13 +32,31 @@ const CalendarSectionContainer = styled(Box)(({ theme }) => ({
 const PageTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(5),
+  position: "relative",
+  display: "inline-block",
+  paddingBottom: theme.spacing(1.5),
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    display: "block",
+    width: "60%",
+    height: "4px",
+    backgroundColor: theme.palette.secondary.main,
+    bottom: 0,
+    left: "20%",
+  },
 }));
+
+const PageTitleWrapper = styled(Box)({
+  textAlign: "center",
+  marginBottom: "40px",
+});
 
 const CalendarPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2, 4),
-  borderRadius: 16,
+  borderRadius: theme.shape.borderRadius * 2,
   overflow: "hidden",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+  boxShadow: theme.shadows[2],
   background: theme.palette.background.default,
 }));
 
@@ -65,7 +83,7 @@ const WeekDayText = styled(Typography)(({ theme }) => ({
 const DaysGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(7, 1fr)",
-  gridAutoRows: theme.breakpoints.down("sm") ? "13vw" : "150px",
+  gridAutoRows: theme.breakpoints.down("sm") ? "11.2vw" : "130px",
   gap: "4px",
 }));
 
@@ -77,6 +95,11 @@ const DayCell = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   overflow: "hidden",
   position: "relative",
+  backgroundColor: theme.palette.background.paper,
+  transition: "background-color 0.3s",
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.secondary.main, 0.05),
+  },
 }));
 
 const DayNumber = styled(Typography)(({ theme }) => ({
@@ -105,7 +128,7 @@ const EventDotsContainer = styled(Box)({
 
 const EventItem = styled(Link)(({ theme }) => ({
   display: "block",
-  backgroundColor: theme.palette.primary.light,
+  backgroundColor: alpha(theme.palette.primary.main, 0.85),
   color: theme.palette.primary.contrastText,
   borderRadius: "4px",
   padding: "4px 6px",
@@ -214,9 +237,11 @@ export default function InteractiveCalendar({
 
   return (
     <CalendarSectionContainer>
-      <PageTitle variant="h2" component="h2">
-        Event Calendar:
-      </PageTitle>
+      <PageTitleWrapper>
+        <PageTitle variant="h2" component="h2">
+          Event Calendar:
+        </PageTitle>
+      </PageTitleWrapper>
       <CalendarPaper elevation={0}>
         <CalendarHeader>
           <IconButton onClick={handlePrevMonth} aria-label="Previous month">

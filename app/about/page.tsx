@@ -9,21 +9,40 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 
 const PageContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(5),
   marginBottom: theme.spacing(5),
 }));
 
+const PageTitleWrapper = styled(Box)({
+  textAlign: "center",
+  marginBottom: "40px",
+});
+
 const PageTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(5),
+  position: "relative",
+  display: "inline-block",
+  paddingBottom: theme.spacing(1.5),
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    display: "block",
+    width: "60%",
+    height: "4px",
+    backgroundColor: theme.palette.secondary.main,
+    bottom: 0,
+    left: "20%",
+  },
 }));
 
 const Section = styled("section")(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(4, 0),
+  marginTop: theme.spacing(4),
 }));
 
 const MissionContainer = styled(Box)(({ theme }) => ({
@@ -31,13 +50,13 @@ const MissionContainer = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.05),
   padding: theme.spacing(4, 3),
   [theme.breakpoints.up("md")]: {
-    padding: theme.spacing(5),
+    padding: theme.spacing(8),
   },
   borderRadius: theme.shape.borderRadius * 2,
-  border: `1px solid ${theme.palette.divider}`,
+  border: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
 }));
 
 const LogoImage = styled("img")({
@@ -55,10 +74,12 @@ const MissionTextContent = styled(Box)(({ theme }) => ({
   textAlign: "center",
 }));
 
-const MissionStatementText = styled(Typography)({
-  fontSize: "1.1rem",
+const MissionStatementText = styled(Typography)(({ theme }) => ({
+  fontSize: "1.2rem",
   lineHeight: 1.7,
-});
+  color: theme.palette.text.secondary,
+  maxWidth: "65ch",
+}));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
@@ -74,13 +95,20 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const TeamMemberCard = styled(Card)({
+const TeamMemberCard = styled(Card)(({ theme }) => ({
   textAlign: "center",
   height: "100%",
   minWidth: "300px",
   display: "flex",
   flexDirection: "column",
-});
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: theme.shadows[6],
+  },
+}));
 
 const TeamMemberImage = styled(CardMedia)({
   aspectRatio: "1 / 1",
@@ -123,9 +151,11 @@ const aboutPageData = {
 export default function AboutUsPage() {
   return (
     <PageContainer maxWidth="lg" component="main">
-      <PageTitle variant="h1" component="h1">
-        {aboutPageData.pageTitle}
-      </PageTitle>
+      <PageTitleWrapper>
+        <PageTitle variant="h1" component="h1">
+          {aboutPageData.pageTitle}
+        </PageTitle>
+      </PageTitleWrapper>
 
       <Section aria-labelledby="mission-heading">
         <MissionContainer>
@@ -151,11 +181,11 @@ export default function AboutUsPage() {
 
       <Section aria-labelledby="team-heading">
         <SectionTitle variant="h2" component="h2" id="team-heading">
-          Meet our Core Members
+          Meet the Board!
         </SectionTitle>
         <Grid container spacing={4} justifyContent="center">
           {aboutPageData.team.map((member) => (
-            <Grid key={member.name}>
+            <Grid item key={member.name} xs={12} sm={6} md={4}>
               <TeamMemberCard>
                 <TeamMemberImage
                   component="img"
@@ -168,7 +198,7 @@ export default function AboutUsPage() {
                   </Typography>
                   <Typography
                     variant="h5"
-                    component="h4"
+                    component="p"
                     color="secondary"
                     sx={{ fontWeight: 700 }}
                   >
