@@ -6,8 +6,6 @@ const branch =
   process.env.HEAD ||
   "main";
 
-const useGraphQLGateway = false;
-
 const createImageField = (name = "image", label = "Image") => ({
   type: "object" as const,
   name,
@@ -19,7 +17,13 @@ const createImageField = (name = "image", label = "Image") => ({
       label: "Image File",
       required: true,
     },
-    { type: "string" as const, name: "alt", label: "Alt Text", required: true },
+    {
+      type: "string" as const,
+      name: "alt",
+      label: "Image Description (Alt Text)",
+      required: true,
+      description: "For screen readers.",
+    },
   ],
 });
 
@@ -32,7 +36,9 @@ const schema = defineSchema({
       format: "mdx",
       ui: {
         router: ({ document }) => {
-          if (document._sys.filename === "home") return `/`;
+          if (document._sys.filename === "home") {
+            return `/`;
+          }
           return `/${document._sys.filename}`;
         },
       },
@@ -49,6 +55,11 @@ const schema = defineSchema({
           label: "Page Sections",
           name: "blocks",
           list: true,
+          ui: {
+            itemProps: (item) => ({
+              label: item.template?.replace(/_/g, " ") || "New Section",
+            }),
+          },
           templates: [
             {
               name: "top_banner",
@@ -67,7 +78,7 @@ const schema = defineSchema({
                 },
                 {
                   type: "reference",
-                  label: "Event",
+                  label: "Select Event to Feature",
                   name: "event",
                   collections: ["event"],
                 },
@@ -79,9 +90,12 @@ const schema = defineSchema({
               fields: [
                 {
                   type: "object",
-                  label: "Links",
+                  label: "Link Items",
                   name: "links",
                   list: true,
+                  ui: {
+                    itemProps: (item) => ({ label: item.title || "New Link" }),
+                  },
                   fields: [
                     {
                       type: "string",
@@ -93,6 +107,8 @@ const schema = defineSchema({
                       type: "string",
                       name: "icon",
                       label: "Icon Name",
+                      description:
+                        "e.g., FavoriteBorder, Event, Email. From MUI icons.",
                       required: true,
                     },
                     {
@@ -105,19 +121,19 @@ const schema = defineSchema({
                 },
                 {
                   type: "object",
-                  label: "Work With Us",
+                  label: "Work With Us Button",
                   name: "workWithUs",
                   fields: [
                     {
                       type: "string",
                       name: "collaborateLink",
-                      label: "Collaborate URL",
+                      label: "Collaborate Form URL",
                       required: true,
                     },
                     {
                       type: "string",
                       name: "volunteerLink",
-                      label: "Volunteer URL",
+                      label: "Volunteer Form URL",
                       required: true,
                     },
                   ],
@@ -158,6 +174,9 @@ const schema = defineSchema({
                   name: "members",
                   label: "Team Members",
                   list: true,
+                  ui: {
+                    itemProps: (item) => ({ label: item.name || "New Member" }),
+                  },
                   fields: [
                     {
                       type: "string",
@@ -190,50 +209,50 @@ const schema = defineSchema({
                 {
                   type: "string",
                   name: "zeffyTitle",
-                  label: "Zeffy Title",
+                  label: "Zeffy Card Title",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "zeffyText",
-                  label: "Zeffy Text",
+                  label: "Zeffy Card Text",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "zeffyLink",
-                  label: "Zeffy URL",
+                  label: "Zeffy Donation URL",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "itemsTitle",
-                  label: "Items Title",
+                  label: "Items Card Title",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "acceptedHeader",
-                  label: "Accepted Header",
+                  label: "Accepted Items Header",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "acceptedItems",
                   list: true,
-                  label: "Accepted Items",
+                  label: "Accepted Items List",
                 },
                 {
                   type: "string",
                   name: "notAcceptedHeader",
-                  label: "Not Accepted Header",
+                  label: "Not Accepted Items Header",
                   required: true,
                 },
                 {
                   type: "string",
                   name: "notAcceptedItems",
                   list: true,
-                  label: "Not Accepted Items",
+                  label: "Not Accepted Items List",
                 },
               ],
             },
@@ -253,6 +272,9 @@ const schema = defineSchema({
                   name: "cards",
                   label: "Info Cards",
                   list: true,
+                  ui: {
+                    itemProps: (item) => ({ label: item.title || "New Card" }),
+                  },
                   fields: [
                     {
                       type: "string",
@@ -297,6 +319,11 @@ const schema = defineSchema({
                   name: "questions",
                   label: "Questions",
                   list: true,
+                  ui: {
+                    itemProps: (item) => ({
+                      label: item.question || "New Question",
+                    }),
+                  },
                   fields: [
                     {
                       type: "string",
@@ -323,7 +350,6 @@ const schema = defineSchema({
                   name: "body",
                   label: "Body",
                   isBody: true,
-                  required: true,
                 },
               ],
             },
@@ -388,7 +414,4 @@ export default defineConfig({
     },
   },
   schema,
-  client: {
-    useGraphQLGateway,
-  },
 });
