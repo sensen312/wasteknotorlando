@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "tinacms dev -c \"next dev\"",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
-},
+    "dev": "dotenv tinacms dev -c \"next dev\"",
+    "build": "dotenv tinacms build && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -15,7 +15,9 @@
     "@mui/material": "^7.1.2",
     "@mui/material-nextjs": "^7.1.1",
     "@tinacms/cli": "^1.9.9",
+    "dotenv-cli": "^8.0.0",
     "next": "15.3.4",
+    "next-tinacms-s3": "^10.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tina-graphql-gateway-cli": "^0.5.0",

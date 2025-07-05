@@ -1,6 +1,6 @@
 "use client";
-
 import React, { useState } from "react";
+import { Event } from "@/tina/__generated__/types";
 import { styled, alpha } from "@mui/material/styles";
 import {
   Box,
@@ -23,50 +23,24 @@ import {
   CalendarToday,
   Place,
 } from "@mui/icons-material";
-
-interface EventType {
-  id: number;
-  slug: string;
-  type: string;
-  title: string;
-  date: string;
-  time: string;
-  description: string;
-  image: string;
-  address: string;
-  instagramLink: string;
-  googleMapsLink: string;
-  appleMapsLink: string;
-  embedMapSrc?: string;
-}
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 const PageContainer = styled(Container)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(4),
   marginTop: theme.spacing(4),
-  [theme.breakpoints.up("md")]: {
-    minHeight: "85vh",
-  },
+  [theme.breakpoints.up("md")]: { minHeight: "85vh" },
   marginBottom: theme.spacing(5),
 }));
-
 const Row = styled(Box)(({ theme }) => ({
   display: "flex",
   flex: 1,
   gap: theme.spacing(4),
   flexDirection: "column",
-  [theme.breakpoints.up("md")]: {
-    flexDirection: "row",
-  },
+  [theme.breakpoints.up("md")]: { flexDirection: "row" },
 }));
-
-const Cell = styled(Box)({
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-});
-
+const Cell = styled(Box)({ flex: 1, display: "flex", flexDirection: "column" });
 const ContentPaper = styled(Paper)(({ theme }) => ({
   padding: 0,
   overflow: "hidden",
@@ -77,20 +51,16 @@ const ContentPaper = styled(Paper)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
 }));
-
-// TopLeft
 const DetailsStack = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(4),
   height: "100%",
   justifyContent: "space-between",
 }));
-
 const DescriptionBody = styled(Box)({
   flexGrow: 1,
   overflowY: "auto",
   marginBlock: "1.5rem",
 });
-
 const EventTypeChip = styled(Chip)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.secondary.main, 0.2),
   color: theme.palette.primary.main,
@@ -98,25 +68,18 @@ const EventTypeChip = styled(Chip)(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`,
   alignSelf: "flex-start",
 }));
-
-const ActionButton = styled(Button)({
-  alignSelf: "flex-start",
-});
-
-// TopRight
+const ActionButton = styled(Button)({ alignSelf: "flex-start" });
 const EventImage = styled(CardMedia)({
   width: "100%",
   height: "100%",
   objectFit: "contain",
 });
-
 const LocationStack = styled(Stack)(({ theme }) => ({
   justifyContent: "center",
   flexGrow: 1,
   top: "0",
   padding: theme.spacing(4),
 }));
-
 const AddressBox = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -126,7 +89,6 @@ const AddressBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.black, 0.02),
 }));
-
 const MapContainer = styled(Box)({
   width: "100%",
   height: "100%",
@@ -134,14 +96,12 @@ const MapContainer = styled(Box)({
   borderRadius: "inherit",
   overflow: "hidden",
 });
-
 const InfoLine = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   color: theme.palette.text.secondary,
   marginTop: theme.spacing(2),
 }));
-
 const InfoIcon = styled(Box)(({ theme }) => ({
   marginRight: theme.spacing(1.5),
   display: "flex",
@@ -152,7 +112,7 @@ const InfoIcon = styled(Box)(({ theme }) => ({
 export default function EventDisplay({
   eventData,
 }: {
-  eventData: EventType | undefined;
+  eventData: Event | undefined;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -160,7 +120,7 @@ export default function EventDisplay({
     return (
       <PageContainer maxWidth="lg">
         <Typography variant="h4" component="h1" align="center">
-          Event not found. How did you get here?
+          Event not found.
         </Typography>
       </PageContainer>
     );
@@ -174,10 +134,20 @@ export default function EventDisplay({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       })
-      .catch((err) => {
-        console.error("Failed to copy address: ", err);
-      });
+      .catch((err) => console.error("Failed to copy address: ", err));
   };
+
+  const eventDate = new Date(eventData.date);
+  const formattedDate = eventDate.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const formattedTime = eventDate.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
   return (
     <PageContainer maxWidth="lg">
@@ -186,19 +156,18 @@ export default function EventDisplay({
           <ContentPaper elevation={0}>
             <DetailsStack spacing={2}>
               <Box>
-                <EventTypeChip label={eventData.type} />
+                {eventData.type && <EventTypeChip label={eventData.type} />}
                 <Typography variant="h2" component="h1" sx={{ mt: 2 }}>
                   {eventData.title}
                 </Typography>
               </Box>
-
               <Box>
                 <InfoLine>
                   <InfoIcon>
                     <CalendarToday />
                   </InfoIcon>
                   <Typography variant="h6" component="p">
-                    {eventData.date} at {eventData.time}
+                    {formattedDate} at {formattedTime}
                   </Typography>
                 </InfoLine>
                 <InfoLine>
@@ -210,39 +179,37 @@ export default function EventDisplay({
                   </Typography>
                 </InfoLine>
               </Box>
-
               <DescriptionBody>
-                <Typography variant="body1">{eventData.description}</Typography>
+                <TinaMarkdown content={eventData.body} />
               </DescriptionBody>
-
-              <Box>
-                <Divider sx={{ mb: 2 }} />
-                <ActionButton
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Instagram />}
-                  href={eventData.instagramLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Event Instagram
-                </ActionButton>
-              </Box>
+              {eventData.instagramLink && (
+                <Box>
+                  <Divider sx={{ mb: 2 }} />
+                  <ActionButton
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Instagram />}
+                    href={eventData.instagramLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Event Instagram
+                  </ActionButton>
+                </Box>
+              )}
             </DetailsStack>
           </ContentPaper>
         </Cell>
-
         <Cell>
           <ContentPaper elevation={0}>
             <EventImage
               component="img"
-              image={eventData.image}
-              alt={`Image for ${eventData.title}`}
+              image={eventData.image?.src}
+              alt={eventData.image?.alt}
             />
           </ContentPaper>
         </Cell>
       </Row>
-
       <Row>
         <Cell>
           <ContentPaper elevation={0}>
@@ -265,33 +232,36 @@ export default function EventDisplay({
                 </AddressBox>
               </Box>
               <Stack spacing={1.5}>
-                <Button
-                  variant="outlined"
-                  startIcon={<MapIcon />}
-                  fullWidth
-                  component="a"
-                  href={eventData.googleMapsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Google Maps
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<AppleIcon />}
-                  fullWidth
-                  component="a"
-                  href={eventData.appleMapsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Apple Maps
-                </Button>
+                {eventData.googleMapsLink && (
+                  <Button
+                    variant="outlined"
+                    startIcon={<MapIcon />}
+                    fullWidth
+                    component="a"
+                    href={eventData.googleMapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Google Maps
+                  </Button>
+                )}
+                {eventData.appleMapsLink && (
+                  <Button
+                    variant="outlined"
+                    startIcon={<AppleIcon />}
+                    fullWidth
+                    component="a"
+                    href={eventData.appleMapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Apple Maps
+                  </Button>
+                )}
               </Stack>
             </LocationStack>
           </ContentPaper>
         </Cell>
-
         <Cell>
           <ContentPaper elevation={0}>
             {eventData.embedMapSrc && (

@@ -1,18 +1,16 @@
 "use client";
-import React from "react";
+import { PageBlocksVolunteer_section } from "@/tina/__generated__/types";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const PageWrapper = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(5),
 }));
-
 const PageHeader = styled("section")(({ theme }) => ({
   padding: theme.spacing(5, 2),
   textAlign: "center",
   backgroundColor: "transparent",
 }));
-
 const PageTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   position: "relative",
@@ -28,32 +26,22 @@ const PageTitle = styled(Typography)(({ theme }) => ({
     bottom: 0,
     left: "20%",
   },
-  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "clamp(1.7rem, 7vw, 2.25rem)",
-      letterSpacing: "0.5px",
-    },
-  }),
 }));
-
 const PageSubtitle = styled(Typography)(({ theme }) => ({
   margin: "0 auto",
   marginTop: theme.spacing(4),
   maxWidth: "75ch",
 }));
-
 const InfoSection = styled("section")(({ theme }) => ({
   marginBottom: theme.spacing(8),
   marginTop: theme.spacing(4),
 }));
-
 const InfoSectionContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   gap: theme.spacing(4),
   flexWrap: "wrap",
   justifyContent: "center",
 }));
-
 const InfoCard = styled(Paper)(({ theme }) => ({
   flex: "1 1 300px",
   maxWidth: "400px",
@@ -68,23 +56,14 @@ const InfoCard = styled(Paper)(({ theme }) => ({
   borderTop: `5px solid ${theme.palette.primary.main}`,
   boxShadow: theme.shadows[2],
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-  "&:hover": {
-    transform: "translateY(-8px)",
-    boxShadow: theme.shadows[8],
-  },
+  "&:hover": { transform: "translateY(-8px)", boxShadow: theme.shadows[8] },
 }));
-
 const InfoCardHeader = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   fontSize: "clamp(1.5rem, 4.1vw, 1.8rem) !important",
   letterSpacing: ".2px !important",
   color: theme.palette.primary.main,
-  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
-    fontSize: "clamp(1.2rem, 3.75vw, 1.5rem) !important",
-    letterSpacing: ".2px !important",
-  }),
 }));
-
 const InfoCardContent = styled(Typography)(({ theme }) => ({
   flexGrow: 1,
   marginBottom: theme.spacing(3),
@@ -93,66 +72,41 @@ const InfoCardContent = styled(Typography)(({ theme }) => ({
   lineHeight: 1.6,
 }));
 
-// For TinaCMS
-const volunteerPageData = {
-  title: "Volunteer or Collaborate with us!",
-  subtitle:
-    "We would love to collab with other orgs or groups; also happily accept volunteers!",
-  infoSections: [
-    {
-      title: "Volunteer",
-      description: "Help us out with your fancy dandy skills.",
-      buttonText: "Volunteer Link",
-      link: "https://docs.google.com/forms/d/e/1FAIpQLSf1y-mvwEEvMLg1hZsB125j-jv30bYCM01X6e2TbzhGLS5F0A/viewform",
-    },
-    {
-      title: "Collaborate",
-      description:
-        "Organization or individuals alike are encouraged to collab with us for events or other opportunities!",
-      buttonText: "Collaboration Link",
-      link: "https://docs.google.com/forms/d/e/1FAIpQLSeej1Glaa2H3-PQ8qPozjt1JzlJIDypXYErEFfCU82Gwpc54w/viewform",
-    },
-    {
-      title: "Newsletter",
-      description: "Stay informed with our newsletter.",
-      buttonText: "Sign Up Now",
-      link: "https://docs.google.com/forms/d/e/1FAIpQLSeTAtF6jXzdXoA0RCb6_RdqDplBUmPTS7wBHKCVYZkmoGfAHw/viewform",
-    },
-  ],
-};
-
-export default function VolunteerPage() {
+export const VolunteerBlock = ({
+  data,
+}: {
+  data: PageBlocksVolunteer_section;
+}) => {
   return (
-    <PageWrapper maxWidth="lg" component="main">
+    <PageWrapper maxWidth="lg">
       <PageHeader>
         <PageTitle variant="h1" component="h1">
-          {volunteerPageData.title}
+          {data.title}
         </PageTitle>
         <PageSubtitle variant="h5" color="text.secondary">
-          {volunteerPageData.subtitle}
+          {data.subtitle}
         </PageSubtitle>
       </PageHeader>
-
       <InfoSection>
         <InfoSectionContainer>
-          {volunteerPageData.infoSections.map((section) => (
-            <InfoCard key={section.title} elevation={0}>
+          {data.cards?.map((card) => (
+            <InfoCard key={card?.title} elevation={0}>
               <InfoCardHeader variant="h2" component="h2">
-                {section.title}
+                {card?.title}
               </InfoCardHeader>
               <InfoCardContent variant="body1">
-                {section.description}
+                {card?.description}
               </InfoCardContent>
               <Box>
                 <Button
                   variant="contained"
                   color="primary"
-                  href={section.link}
+                  href={card?.link || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   size="large"
                 >
-                  {section.buttonText}
+                  {card?.buttonText}
                 </Button>
               </Box>
             </InfoCard>
@@ -161,4 +115,4 @@ export default function VolunteerPage() {
       </InfoSection>
     </PageWrapper>
   );
-}
+};

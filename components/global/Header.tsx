@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   AppBar,
@@ -27,7 +26,6 @@ import NextLink from "next/link";
 import Image from "next/image";
 import { useAccessibility } from "@/context/AccessibilityContext";
 
-// Abstraction for TinaCMS
 const navItems = [
   { title: "Home", path: "/" },
   { title: "Events", path: "/events" },
@@ -39,7 +37,6 @@ const navItems = [
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
 }));
-
 const LogoLink = styled(MuiLink)({
   flexGrow: 1,
   display: "flex",
@@ -47,51 +44,36 @@ const LogoLink = styled(MuiLink)({
   color: "inherit",
   textDecoration: "none",
 });
-
-const LogoImage = styled(Image)({
-  objectFit: "contain",
-});
-
+const LogoImage = styled(Image)({ objectFit: "contain" });
 const DesktopNavContainer = styled(Box)(({ theme }) => ({
   display: "none",
-  [theme.breakpoints.up("md")]: {
-    display: "flex",
-    alignItems: "center",
-  },
+  [theme.breakpoints.up("md")]: { display: "flex", alignItems: "center" },
 }));
-
 const DesktopIconsContainer = styled(Box)(({ theme }) => ({
   marginLeft: theme.spacing(2),
   display: "flex",
   alignItems: "center",
 }));
-
 const MobileNavContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  [theme.breakpoints.up("md")]: {
-    display: "none",
-  },
+  [theme.breakpoints.up("md")]: { display: "none" },
 }));
-
 const MobileMenu = styled(Menu)({
-  "& .MuiPaper-root": {
-    width: "100%",
-    maxWidth: 250,
-    borderRadius: 8,
-  },
+  "& .MuiPaper-root": { width: "100%", maxWidth: 250, borderRadius: 8 },
 });
-
 const NavButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(0, 1),
   whiteSpace: "nowrap",
 }));
 
-const Header = () => {
+export default function Header() {
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
   const [accessibilityMenuAnchorEl, setAccessibilityMenuAnchorEl] =
     useState<null | HTMLElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const {
     toggleHighContrast,
     isHighContrast,
@@ -100,11 +82,19 @@ const Header = () => {
     toggleReadingGuide,
     isReadingGuideEnabled,
   } = useAccessibility();
+  const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const firstMenuItem =
+        mobileMenuRef.current?.querySelector('[role="menuitem"]');
+      (firstMenuItem as HTMLElement)?.focus();
+    }
+  }, [isMobileMenuOpen]);
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) =>
     setMobileMenuAnchorEl(event.currentTarget);
   const handleMobileMenuClose = () => setMobileMenuAnchorEl(null);
-
   const handleAccessibilityMenuOpen = (event: React.MouseEvent<HTMLElement>) =>
     setAccessibilityMenuAnchorEl(event.currentTarget);
   const handleAccessibilityMenuClose = () => setAccessibilityMenuAnchorEl(null);
@@ -183,8 +173,6 @@ const Header = () => {
               priority
             />
           </LogoLink>
-
-          {/* Desktop Nav*/}
           <DesktopNavContainer>
             <Stack component="nav" direction="row" spacing={1}>
               {renderNavLinks()}
@@ -200,7 +188,7 @@ const Header = () => {
               <IconButton
                 href="https://www.zeffy.com/en-US/donation-form/donate-to-make-a-difference-7129"
                 color="primary"
-                aria-label="Zeffy"
+                aria-label="Zeffy Donation"
               >
                 <VolunteerActivism />
               </IconButton>
@@ -213,8 +201,6 @@ const Header = () => {
               </IconButton>
             </DesktopIconsContainer>
           </DesktopNavContainer>
-
-          {/* Mobile Nav*/}
           <MobileNavContainer>
             <IconButton
               color="primary"
@@ -224,20 +210,23 @@ const Header = () => {
               <AccessibilityNew />
             </IconButton>
             <IconButton
+              ref={mobileMenuButtonRef}
               size="large"
               edge="end"
               color="primary"
               aria-label="open menu"
+              aria-controls="mobile-menu"
+              aria-haspopup="true"
               onClick={handleMobileMenuOpen}
             >
               <MenuIcon />
             </IconButton>
           </MobileNavContainer>
-
-          {/*Sandwich for mobile*/}
           <MobileMenu
+            id="mobile-menu"
+            ref={mobileMenuRef}
             anchorEl={mobileMenuAnchorEl}
-            open={Boolean(mobileMenuAnchorEl)}
+            open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             transformOrigin={{ vertical: "top", horizontal: "right" }}
@@ -247,7 +236,7 @@ const Header = () => {
               component="a"
               href="https://www.instagram.com/WasteKnotOrlando"
             >
-              <IconButton color="primary">
+              <IconButton color="primary" aria-label="Instagram">
                 <Instagram />
               </IconButton>
               <Typography>Instagram</Typography>
@@ -256,7 +245,7 @@ const Header = () => {
               component="a"
               href="https://www.zeffy.com/en-US/donation-form/donate-to-make-a-difference-7129"
             >
-              <IconButton color="primary">
+              <IconButton color="primary" aria-label="Zeffy Donation">
                 <VolunteerActivism />
               </IconButton>
               <Typography>Zeffy</Typography>
@@ -267,6 +256,4 @@ const Header = () => {
       </Container>
     </StyledAppBar>
   );
-};
-
-export default Header;
+}
