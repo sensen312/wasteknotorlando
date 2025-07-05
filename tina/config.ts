@@ -6,6 +6,8 @@ const branch =
   process.env.HEAD ||
   "main";
 
+const useGraphQLGateway = false;
+
 const createImageField = (name = "image", label = "Image") => ({
   type: "object" as const,
   name,
@@ -414,4 +416,7 @@ export default defineConfig({
     },
   },
   schema,
+  client: {
+    useGraphQLGateway,
+  },
 });

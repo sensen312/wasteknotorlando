@@ -7,7 +7,11 @@ export default async function SlugPage({
 }: {
   params: { slug: string[] };
 }) {
-  const slug = params.slug?.join("/") || "home";
+  const slug = params.slug?.join("/") || "";
+
+  if (!slug) {
+    return notFound();
+  }
 
   try {
     const res = await client.queries.page({
@@ -31,11 +35,11 @@ export async function generateStaticParams() {
     .map((edge) => {
       const slug = edge.node._sys.filename;
       if (slug === "home") {
-        return { slug: [] };
+        return null;
       }
       return { slug: [slug] };
     })
-    .filter((p) => p);
+    .filter((p): p is { slug: string[] } => p !== null);
 
   return paths;
 }
