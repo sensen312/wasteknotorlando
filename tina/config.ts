@@ -55,11 +55,6 @@ const schema = defineSchema({
           label: "Page Sections",
           name: "blocks",
           list: true,
-          ui: {
-            itemProps: (item) => ({
-              label: item.template?.replace(/_/g, " ") || "New Section",
-            }),
-          },
           templates: [
             {
               name: "top_banner",
@@ -414,4 +409,7 @@ export default defineConfig({
     },
   },
   schema,
+  client: {
+    useGraphQLGateway: false,
+  },
 });
