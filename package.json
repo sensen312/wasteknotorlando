@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env tinacms dev -c \"next dev\"",
+    "dev": "cross-env tinacms build && tinacms dev -c \"next dev\"",
     "build": "cross-env tinacms build && next build",
     "start": "next start",
     "lint": "next lint"
