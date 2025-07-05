@@ -1,6 +1,6 @@
 "use client";
-import { PageBlocksEvent_spotlight } from "@/tina/__generated__/types";
-import { styled, alpha } from "@mui/material/styles";
+import { PageBlocksEvent_spotlight, Event } from "@/tina/__generated__/types";
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Typography,
@@ -78,7 +78,7 @@ export const EventSpotlightBlock = ({
     return null;
   }
 
-  const eventData = event as any;
+  const eventData = event as Event;
 
   return (
     <Container maxWidth="lg">
@@ -94,8 +94,8 @@ export const EventSpotlightBlock = ({
           >
             <BannerImage
               component="img"
-              image={eventData.image?.src}
-              alt={eventData.image?.alt}
+              image={eventData.image?.src ?? undefined}
+              alt={eventData.image?.alt ?? ""}
             />
             <BannerOverlay>
               <BannerTitle variant="h3" component="h3" gutterBottom>

@@ -1,7 +1,6 @@
 "use client";
 import { PageBlocksTeam_board } from "@/tina/__generated__/types";
 import {
-  Box,
   Container,
   Typography,
   Grid,

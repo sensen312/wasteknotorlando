@@ -96,8 +96,17 @@ const SubLink = styled("a")(({ theme }) => ({
   },
 }));
 
+const LinkTitle = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+  fontSize: "1.25rem",
+}));
+
+type MuiIcon = React.ComponentType<{
+  fontSize?: "small" | "inherit" | "large" | "medium";
+}>;
+
 const getIcon = (iconName: string) => {
-  const Icon = (Icons as any)[iconName];
+  const Icon = (Icons as Record<string, MuiIcon>)[iconName];
   return Icon ? <Icon fontSize="large" /> : null;
 };
 
@@ -149,9 +158,7 @@ const WorkWithUsLink = ({
       ) : (
         <>
           <Icons.People fontSize="large" />
-          <Typography variant="h4" sx={{ mt: 1, fontSize: "1.25rem" }}>
-            Work With Us
-          </Typography>
+          <LinkTitle variant="h4">Work With Us</LinkTitle>
         </>
       )}
     </WorkWithUsContainer>
@@ -178,9 +185,7 @@ export const QuickLinksBlock = ({ data }: { data: PageBlocksQuick_links }) => {
                 : { component: NextLink })}
             >
               {item?.icon && getIcon(item.icon)}
-              <Typography variant="h4" sx={{ mt: 1, fontSize: "1.25rem" }}>
-                {item?.title}
-              </Typography>
+              <LinkTitle variant="h4">{item?.title}</LinkTitle>
             </StyledKeyLinkButton>
           ))}
           {data.workWithUs && <WorkWithUsLink data={data.workWithUs} />}
