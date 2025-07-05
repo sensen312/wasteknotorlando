@@ -30,17 +30,28 @@ const PageContainer = styled(Container)(({ theme }) => ({
   flexDirection: "column",
   gap: theme.spacing(4),
   marginTop: theme.spacing(4),
-  [theme.breakpoints.up("md")]: { minHeight: "85vh" },
   marginBottom: theme.spacing(5),
+  [theme.breakpoints.up("md")]: {
+    minHeight: "85vh",
+  },
 }));
+
 const Row = styled(Box)(({ theme }) => ({
   display: "flex",
   flex: 1,
   gap: theme.spacing(4),
   flexDirection: "column",
-  [theme.breakpoints.up("md")]: { flexDirection: "row" },
+  [theme.breakpoints.up("md")]: {
+    flexDirection: "row",
+  },
 }));
-const Cell = styled(Box)({ flex: 1, display: "flex", flexDirection: "column" });
+
+const Cell = styled(Box)({
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+});
+
 const ContentPaper = styled(Paper)(({ theme }) => ({
   padding: 0,
   overflow: "hidden",
@@ -51,16 +62,19 @@ const ContentPaper = styled(Paper)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
 }));
+
 const DetailsStack = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(4),
   height: "100%",
   justifyContent: "space-between",
 }));
+
 const DescriptionBody = styled(Box)({
   flexGrow: 1,
   overflowY: "auto",
   marginBlock: "1.5rem",
 });
+
 const EventTypeChip = styled(Chip)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.secondary.main, 0.2),
   color: theme.palette.primary.main,
@@ -68,18 +82,24 @@ const EventTypeChip = styled(Chip)(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.secondary.main, 0.5)}`,
   alignSelf: "flex-start",
 }));
-const ActionButton = styled(Button)({ alignSelf: "flex-start" });
+
+const ActionButton = styled(Button)({
+  alignSelf: "flex-start",
+});
+
 const EventImage = styled(CardMedia)({
   width: "100%",
   height: "100%",
   objectFit: "contain",
 });
+
 const LocationStack = styled(Stack)(({ theme }) => ({
   justifyContent: "center",
   flexGrow: 1,
   top: "0",
   padding: theme.spacing(4),
 }));
+
 const AddressBox = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -89,6 +109,7 @@ const AddressBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.black, 0.02),
 }));
+
 const MapContainer = styled(Box)({
   width: "100%",
   height: "100%",
@@ -96,17 +117,32 @@ const MapContainer = styled(Box)({
   borderRadius: "inherit",
   overflow: "hidden",
 });
+
 const InfoLine = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   color: theme.palette.text.secondary,
   marginTop: theme.spacing(2),
 }));
+
 const InfoIcon = styled(Box)(({ theme }) => ({
   marginRight: theme.spacing(1.5),
   display: "flex",
   alignItems: "center",
   color: theme.palette.primary.main,
+}));
+
+const EventTitle = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+}));
+
+const DirectionsTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 600,
+  marginBottom: theme.spacing(2),
+}));
+
+const DividerWrapper = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
 }));
 
 export default function EventDisplay({
@@ -157,9 +193,9 @@ export default function EventDisplay({
             <DetailsStack spacing={2}>
               <Box>
                 {eventData.type && <EventTypeChip label={eventData.type} />}
-                <Typography variant="h2" component="h1" sx={{ mt: 2 }}>
+                <EventTitle variant="h2" component="h1">
                   {eventData.title}
-                </Typography>
+                </EventTitle>
               </Box>
               <Box>
                 <InfoLine>
@@ -184,7 +220,9 @@ export default function EventDisplay({
               </DescriptionBody>
               {eventData.instagramLink && (
                 <Box>
-                  <Divider sx={{ mb: 2 }} />
+                  <DividerWrapper>
+                    <Divider />
+                  </DividerWrapper>
                   <ActionButton
                     variant="contained"
                     color="primary"
@@ -204,8 +242,8 @@ export default function EventDisplay({
           <ContentPaper elevation={0}>
             <EventImage
               component="img"
-              image={eventData.image?.src}
-              alt={eventData.image?.alt}
+              image={eventData.image?.src ?? undefined}
+              alt={eventData.image?.alt ?? ""}
             />
           </ContentPaper>
         </Cell>
@@ -215,9 +253,7 @@ export default function EventDisplay({
           <ContentPaper elevation={0}>
             <LocationStack spacing={3}>
               <Box>
-                <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
-                  Get Directions
-                </Typography>
+                <DirectionsTitle variant="h5">Get Directions</DirectionsTitle>
                 <AddressBox>
                   <Typography variant="body1" component="p">
                     {eventData.address}
