@@ -51,6 +51,7 @@ const schema = defineSchema({
           name: "title",
           isTitle: true,
           required: true,
+          description: "The title of the page.",
         },
         {
           type: "object",
