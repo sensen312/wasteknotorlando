@@ -1,5 +1,5 @@
 import { createClient } from "tinacms/dist/client";
-import { queries } from "./__generated__/queries";
+import { queries } from "./__generated__/client";
 
 const client = createClient({
   queries,
