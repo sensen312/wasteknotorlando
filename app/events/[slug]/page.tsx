@@ -16,7 +16,7 @@ export default async function IndividualEventPage({
         <EventDisplay eventData={eventResult.data.event} />
       </main>
     );
-  } catch (e) {
+  } catch {
     notFound();
   }
 }
