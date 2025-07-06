@@ -2,14 +2,15 @@
   "name": "wasteknotorlando",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "predev": "dotenv -- tinacms build",
-    "dev": "dotenv -- tinacms dev -c \"next dev\"",
-    "prebuild": "dotenv -- tinacms build",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+"scripts": {
+  "predev": "dotenv -- tinacms build",
+  "dev": "dotenv -- tinacms dev -c \"next dev\"",
+  "prebuild": "dotenv -- tinacms build",
+  "build": "next build",
+  "build:local": "dotenv -- tinacms build --no-index",
+  "start": "next start",
+  "lint": "next lint"
+},
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
