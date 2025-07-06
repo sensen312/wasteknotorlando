@@ -176,7 +176,7 @@ export const QuickLinksBlock = ({ data }: { data: PageBlocksQuick_links }) => {
     <Container maxWidth="lg">
       <KeyLinksWrapper>
         <KeyLinksFlexContainer>
-          {data.links?.map((item, i) => (
+          {data.links?.map((item) => (
             <StyledKeyLinkButton
               key={item?.title}
               href={item?.href || "#"}

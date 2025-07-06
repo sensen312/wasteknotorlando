@@ -15,7 +15,7 @@ export default async function SlugPage(props: { params: { slug: string[] } }) {
     });
 
     return <PageClient {...res} />;
-  } catch (error) {
+  } catch {
     notFound();
   }
 }
