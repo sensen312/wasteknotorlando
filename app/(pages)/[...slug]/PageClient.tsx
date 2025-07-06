@@ -1,3 +1,5 @@
+"use client";
+
 import { useTina } from "tinacms/dist/react";
 import { PageQuery } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
