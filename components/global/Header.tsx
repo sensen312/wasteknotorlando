@@ -166,7 +166,7 @@ export default function Header() {
         <Toolbar disableGutters>
           <LogoLink component={NextLink} href="/">
             <LogoImage
-              src="/wasteknotorlando/assets/namelogo.png"
+              src="/wasteknotorlando /uploads/namelogo.png"
               alt="WasteKnot Orlando Logo"
               width={180}
               height={40}

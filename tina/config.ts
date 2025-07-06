@@ -22,7 +22,7 @@ const createImageField = (name = "image", label = "Image") => ({
       name: "alt",
       label: "Image Description (Alt Text)",
       required: true,
-      description: "Crucial for accessibility (screen readers).",
+      description: "For screen readers.",
     },
   ],
 });
@@ -401,14 +401,12 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
-    admin: {
-      basepath: "wasteknotorlando",
-    },
+    basePath: "wasteknotorlando",
   },
   media: {
     tina: {
       publicFolder: "public",
-      mediaRoot: "assets",
+      mediaRoot: "uploads",
     },
   },
   schema,
