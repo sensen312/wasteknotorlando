@@ -2,13 +2,13 @@
   "name": "wasteknotorlando",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-  "dev": "dotenv -- tinacms dev -c \"next dev\"",
-  "prebuild": "dotenv -- tinacms build",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint"
-},
+  "scripts": {
+    "dev": "dotenv -- tinacms dev -c \"next dev\"",
+    "prebuild": "dotenv -- tinacms build",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
@@ -17,10 +17,8 @@
     "@mui/material-nextjs": "^7.1.1",
     "@tinacms/cli": "^1.9.9",
     "next": "15.3.4",
-    "next-tinacms-s3": "^10.0.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tina-graphql-gateway-cli": "^0.5.0",
     "tinacms": "^2.7.9"
   },
   "devDependencies": {
