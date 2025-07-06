@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksDonation_section } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import {
   Box,
   Typography,
@@ -114,20 +115,36 @@ export const DonationBlock = ({
   return (
     <PageContainer maxWidth="lg">
       <PageTitleWrapper>
-        <PageTitle variant="h1" component="h1">
+        <PageTitle
+          variant="h1"
+          component="h1"
+          data-tina-field={tinaField(data, "title")}
+        >
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      <PageSubtitle variant="h4" component="p">
+      <PageSubtitle
+        variant="h4"
+        component="p"
+        data-tina-field={tinaField(data, "subtitle")}
+      >
         {data.subtitle}
       </PageSubtitle>
       <MainRowSection elevation={0}>
         <ColumnOne>
           <Box>
-            <CardTitle variant="h3" component="h2">
+            <CardTitle
+              variant="h3"
+              component="h2"
+              data-tina-field={tinaField(data, "zeffyTitle")}
+            >
               {data.zeffyTitle}
             </CardTitle>
-            <Typography variant="body1" paragraph>
+            <Typography
+              variant="body1"
+              paragraph
+              data-tina-field={tinaField(data, "zeffyText")}
+            >
               {data.zeffyText}
             </Typography>
           </Box>
@@ -140,6 +157,7 @@ export const DonationBlock = ({
               rel="noopener noreferrer"
               startIcon={<Favorite />}
               size="large"
+              data-tina-field={tinaField(data, "zeffyLink")}
             >
               DONATE
             </Button>
@@ -156,15 +174,20 @@ export const DonationBlock = ({
             variant="h3"
             component="h2"
             sx={{ textAlign: "center", mb: 4 }}
+            data-tina-field={tinaField(data, "itemsTitle")}
           >
             {data.itemsTitle}
           </CardTitle>
           <ListsRowContainer>
             <ListWrapper>
-              <ListHeader variant="h5" component="h3">
+              <ListHeader
+                variant="h5"
+                component="h3"
+                data-tina-field={tinaField(data, "acceptedHeader")}
+              >
                 {data.acceptedHeader}
               </ListHeader>
-              <List dense>
+              <List dense data-tina-field={tinaField(data, "acceptedItems")}>
                 {data.acceptedItems?.map((item, index) => (
                   <ListItem key={index} disableGutters>
                     <ListItemIcon
@@ -178,10 +201,14 @@ export const DonationBlock = ({
               </List>
             </ListWrapper>
             <ListWrapper>
-              <ListHeader variant="h5" component="h3">
+              <ListHeader
+                variant="h5"
+                component="h3"
+                data-tina-field={tinaField(data, "notAcceptedHeader")}
+              >
                 {data.notAcceptedHeader}
               </ListHeader>
-              <List dense>
+              <List dense data-tina-field={tinaField(data, "notAcceptedItems")}>
                 {data.notAcceptedItems?.map((item, index) => (
                   <ListItem key={index} disableGutters>
                     <ListItemIcon

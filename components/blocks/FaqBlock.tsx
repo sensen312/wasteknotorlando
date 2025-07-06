@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksFaq } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import {
   Accordion,
   AccordionSummary,
@@ -25,12 +26,21 @@ export const FaqBlock = ({ data }: { data: PageBlocksFaq }) => {
   return (
     <Container maxWidth="md">
       <Section aria-labelledby="faq-heading">
-        <SectionTitle variant="h2" component="h2" id="faq-heading">
+        <SectionTitle
+          variant="h2"
+          component="h2"
+          id="faq-heading"
+          data-tina-field={tinaField(data, "title")}
+        >
           {data.title}
         </SectionTitle>
         <Box>
           {data.questions?.map((faq, index) => (
-            <Accordion key={index} defaultExpanded={index === 0}>
+            <Accordion
+              key={index}
+              defaultExpanded={index === 0}
+              data-tina-field={tinaField(faq!, "question")}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls={`faq-content-${index}`}
@@ -38,7 +48,7 @@ export const FaqBlock = ({ data }: { data: PageBlocksFaq }) => {
               >
                 <Typography variant="h6">{faq?.question}</Typography>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails data-tina-field={tinaField(faq!, "answer")}>
                 <TinaMarkdown content={faq?.answer} />
               </AccordionDetails>
             </Accordion>

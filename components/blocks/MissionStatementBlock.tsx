@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksMission_statement } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
@@ -44,7 +45,11 @@ export const MissionStatementBlock = ({
       <Section aria-labelledby="mission-heading">
         <MissionContainer>
           {data.image?.src && (
-            <LogoImage src={data.image.src} alt={data.image.alt || ""} />
+            <LogoImage
+              src={data.image.src}
+              alt={data.image.alt || ""}
+              data-tina-field={tinaField(data, "image")}
+            />
           )}
           <MissionTextContent>
             <Typography
@@ -52,10 +57,14 @@ export const MissionStatementBlock = ({
               component="h2"
               gutterBottom
               id="mission-heading"
+              data-tina-field={tinaField(data, "title")}
             >
               {data.title}
             </Typography>
-            <Box sx={{ fontSize: "1.2rem", lineHeight: 1.7, maxWidth: "65ch" }}>
+            <Box
+              sx={{ fontSize: "1.2rem", lineHeight: 1.7, maxWidth: "65ch" }}
+              data-tina-field={tinaField(data, "statement")}
+            >
               <TinaMarkdown content={data.statement} />
             </Box>
           </MissionTextContent>

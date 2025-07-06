@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksVolunteer_section } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -80,21 +81,40 @@ export const VolunteerBlock = ({
   return (
     <PageWrapper maxWidth="lg">
       <PageHeader>
-        <PageTitle variant="h1" component="h1">
+        <PageTitle
+          variant="h1"
+          component="h1"
+          data-tina-field={tinaField(data, "title")}
+        >
           {data.title}
         </PageTitle>
-        <PageSubtitle variant="h5" color="text.secondary">
+        <PageSubtitle
+          variant="h5"
+          color="text.secondary"
+          data-tina-field={tinaField(data, "subtitle")}
+        >
           {data.subtitle}
         </PageSubtitle>
       </PageHeader>
       <InfoSection>
         <InfoSectionContainer>
           {data.cards?.map((card) => (
-            <InfoCard key={card?.title} elevation={0}>
-              <InfoCardHeader variant="h2" component="h2">
+            <InfoCard
+              key={card?.title}
+              elevation={0}
+              data-tina-field={tinaField(card!)}
+            >
+              <InfoCardHeader
+                variant="h2"
+                component="h2"
+                data-tina-field={tinaField(card!, "title")}
+              >
                 {card?.title}
               </InfoCardHeader>
-              <InfoCardContent variant="body1">
+              <InfoCardContent
+                variant="body1"
+                data-tina-field={tinaField(card!, "description")}
+              >
                 {card?.description}
               </InfoCardContent>
               <Box>
@@ -105,6 +125,7 @@ export const VolunteerBlock = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   size="large"
+                  data-tina-field={tinaField(card!, "buttonText")}
                 >
                   {card?.buttonText}
                 </Button>

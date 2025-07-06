@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksTeam_board } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import {
   Container,
   Typography,
@@ -51,20 +52,38 @@ export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_board }) => {
   return (
     <Container maxWidth="lg">
       <Section aria-labelledby="team-heading">
-        <SectionTitle variant="h2" component="h2" id="team-heading">
+        <SectionTitle
+          variant="h2"
+          component="h2"
+          id="team-heading"
+          data-tina-field={tinaField(data, "title")}
+        >
           {data.title}
         </SectionTitle>
         <Grid container spacing={4} justifyContent="center">
           {data.members?.map((member) => (
-            <Grid item key={member?.name} xs={12} sm={6} md={4}>
+            <Grid
+              item
+              key={member?.name}
+              xs={12}
+              sm={6}
+              md={4}
+              data-tina-field={tinaField(member!)}
+            >
               <TeamMemberCard>
                 <TeamMemberImage
                   component="img"
                   image={member?.photo?.src}
                   alt={member?.photo?.alt}
+                  data-tina-field={tinaField(member!, "photo")}
                 />
                 <TeamMemberContent>
-                  <Typography variant="h3" component="h3" gutterBottom>
+                  <Typography
+                    variant="h3"
+                    component="h3"
+                    gutterBottom
+                    data-tina-field={tinaField(member!, "name")}
+                  >
                     {member?.name}
                   </Typography>
                   <Typography
@@ -72,6 +91,7 @@ export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_board }) => {
                     component="p"
                     color="secondary"
                     sx={{ fontWeight: 700 }}
+                    data-tina-field={tinaField(member!, "role")}
                   >
                     {member?.role}
                   </Typography>

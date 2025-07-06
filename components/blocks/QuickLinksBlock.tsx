@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { PageBlocksQuick_links } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, Typography, Button, Container } from "@mui/material";
 import * as Icons from "@mui/icons-material";
@@ -139,15 +140,20 @@ const WorkWithUsLink = ({
       onBlur={handleBlur}
       tabIndex={0}
       role="group"
+      data-tina-field={tinaField(data!)}
     >
       {isFocusedOrHovered ? (
         <HoverContentWrapper>
-          {subLinks.map((item) => (
+          {subLinks.map((item, index) => (
             <SubLink
               key={item.title}
               href={item.href || "#"}
               target="_blank"
               rel="noopener noreferrer"
+              data-tina-field={tinaField(
+                data!,
+                index === 0 ? "collaborateLink" : "volunteerLink"
+              )}
             >
               <Typography variant="h6" component="span">
                 {item.title}
@@ -170,12 +176,13 @@ export const QuickLinksBlock = ({ data }: { data: PageBlocksQuick_links }) => {
     <Container maxWidth="lg">
       <KeyLinksWrapper>
         <KeyLinksFlexContainer>
-          {data.links?.map((item) => (
+          {data.links?.map((item, i) => (
             <StyledKeyLinkButton
               key={item?.title}
               href={item?.href || "#"}
               variant="outlined"
               color="primary"
+              data-tina-field={tinaField(item!, "title")}
               {...(item?.href?.startsWith("http")
                 ? {
                     target: "_blank",

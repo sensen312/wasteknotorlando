@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksTop_banner } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import { styled } from "@mui/material/styles";
 import { Box, Container } from "@mui/material";
 
@@ -22,7 +23,11 @@ export const TopBannerBlock = ({ data }: { data: PageBlocksTop_banner }) => {
     <Container maxWidth="lg">
       <PageHeader>
         {data.logo?.src && (
-          <LogoImage src={data.logo.src} alt={data.logo.alt || ""} />
+          <LogoImage
+            src={data.logo.src}
+            alt={data.logo.alt || ""}
+            data-tina-field={tinaField(data, "logo")}
+          />
         )}
       </PageHeader>
     </Container>

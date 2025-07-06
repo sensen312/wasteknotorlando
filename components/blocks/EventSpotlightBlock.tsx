@@ -1,5 +1,6 @@
 "use client";
 import { PageBlocksEvent_spotlight, Event } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -83,10 +84,14 @@ export const EventSpotlightBlock = ({
   return (
     <Container maxWidth="lg">
       <Box my={5}>
-        <SectionHeader variant="h2" component="h2">
+        <SectionHeader
+          variant="h2"
+          component="h2"
+          data-tina-field={tinaField(data, "title")}
+        >
           {data.title}
         </SectionHeader>
-        <BannerCard>
+        <BannerCard data-tina-field={tinaField(data, "event")}>
           <BannerActionArea
             component={NextLink}
             href={`/events/${eventData._sys.filename}`}

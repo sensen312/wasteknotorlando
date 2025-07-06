@@ -1,6 +1,6 @@
 import client from "@/tina/client";
-import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { notFound } from "next/navigation";
+import { PageClient } from "./PageClient";
 
 export default async function SlugPage(props: { params: { slug: string[] } }) {
   const slug = props.params.slug?.join("/") || "";
@@ -14,13 +14,8 @@ export default async function SlugPage(props: { params: { slug: string[] } }) {
       relativePath: `${slug}.mdx`,
     });
 
-    return (
-      <main id="main-content">
-        <BlockRenderer blocks={res.data.page.blocks} />
-      </main>
-    );
+    return <PageClient {...res} />;
   } catch (error) {
-    console.error("Failed to fetch page:", slug, error);
     notFound();
   }
 }
