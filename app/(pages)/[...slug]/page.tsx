@@ -2,12 +2,8 @@ import client from "@/tina/client";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { notFound } from "next/navigation";
 
-export default async function SlugPage({
-  params,
-}: {
-  params: { slug: string[] };
-}) {
-  const slug = params.slug?.join("/") || "";
+export default async function SlugPage(props: { params: { slug: string[] } }) {
+  const slug = props.params.slug?.join("/") || "";
 
   if (!slug) {
     return notFound();
@@ -37,7 +33,7 @@ export async function generateStaticParams() {
       if (slug === "home") {
         return null;
       }
-      return { slug: [slug] };
+      return { slug: slug.split("/") };
     })
     .filter((p): p is { slug: string[] } => p !== null);
 
