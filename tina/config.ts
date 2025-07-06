@@ -22,7 +22,7 @@ const createImageField = (name = "image", label = "Image") => ({
       name: "alt",
       label: "Image Description (Alt Text)",
       required: true,
-      description: "For screen readers.",
+      description: "Crucial for accessibility (screen readers).",
     },
   ],
 });
@@ -52,7 +52,7 @@ const schema = defineSchema({
         },
         {
           type: "object",
-          label: "Page Sections",
+          label: "Page Sections (Blocks)",
           name: "blocks",
           list: true,
           templates: [
@@ -405,7 +405,7 @@ export default defineConfig({
   media: {
     tina: {
       publicFolder: "public",
-      mediaRoot: "uploads",
+      mediaRoot: "assets",
     },
   },
   schema,
