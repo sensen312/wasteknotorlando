@@ -12,17 +12,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-
-  // please fix admin
-  async redirects() {
-    return [
-      {
-        source: "/admin",
-        destination: "/admin/index.html",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default nextConfig;
