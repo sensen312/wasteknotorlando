@@ -401,6 +401,9 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
+    admin: {
+      basepath: "wasteknotorlando",
+    },
   },
   media: {
     tina: {
