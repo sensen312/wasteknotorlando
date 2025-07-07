@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import NextLink from "next/link";
-import { Event, PageBlocksEvents_Listing } from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -115,7 +115,7 @@ export default function EventsListing({
   data,
   allEvents,
 }: {
-  data: PageBlocksEvents_Listing;
+  data: PageBlocksEvents_listing;
   allEvents: Event[];
 }) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
@@ -125,6 +125,7 @@ export default function EventsListing({
   };
 
   const upcomingEvents = useMemo(() => {
+    if (!allEvents) return [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return allEvents
@@ -134,7 +135,7 @@ export default function EventsListing({
   }, [allEvents]);
 
   return (
-    <PageContainer maxWidth="lg">
+    <PageContainer maxWidth="lg" data-tina-field={tinaField(data)}>
       <PageTitleWrapper>
         <PageTitle
           variant="h1"
@@ -147,80 +148,92 @@ export default function EventsListing({
       <EventListContainer>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
-            upcomingEvents.map((event) => (
-              <StyledEventCard
-                key={event.id}
-                data-tina-field={tinaField(event)}
-              >
-                <StyledCardActionArea
-                  component={NextLink}
-                  href={`/events/${event._sys.filename}`}
-                  aria-label={`View details for ${event.title}`}
-                >
-                  <ImageWrapper>
-                    <StyledCardMedia
-                      component="img"
-                      image={event.image?.src}
-                      alt={event.image?.alt}
-                      data-tina-field={tinaField(event, "image")}
-                    />
-                  </ImageWrapper>
-                  <EventInfoContainer>
-                    <StyledCardContent>
-                      {event.type && (
-                        <EventTypeChip
-                          label={event.type}
-                          data-tina-field={tinaField(event, "type")}
+            upcomingEvents.map(
+              (event) =>
+                event?._sys?.filename && (
+                  <StyledEventCard
+                    key={event.id}
+                    data-tina-field={tinaField(event)}
+                  >
+                    <StyledCardActionArea
+                      component={NextLink}
+                      href={`/events/${event._sys.filename}`}
+                      aria-label={`View details for ${event.title}`}
+                    >
+                      <ImageWrapper>
+                        <StyledCardMedia
+                          component="img"
+                          image={event.image?.src || undefined}
+                          alt={event.image?.alt || ""}
+                          data-tina-field={tinaField(event, "image")}
                         />
-                      )}
-                      <Typography
-                        gutterBottom
-                        variant="h3"
-                        component="h2"
-                        data-tina-field={tinaField(event, "title")}
-                      >
-                        {event.title}
-                      </Typography>
-                      <InfoLine data-tina-field={tinaField(event, "date")}>
-                        <InfoIcon>
-                          <CalendarToday sx={{ fontSize: "1.2rem" }} />
-                        </InfoIcon>
-                        <Typography variant="body1">
-                          {event.dateObj.toLocaleDateString()} at{" "}
-                          {event.dateObj.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </Typography>
-                      </InfoLine>
-                      <InfoLine data-tina-field={tinaField(event, "address")}>
-                        <InfoIcon>
-                          <LocationOn sx={{ fontSize: "1.2rem" }} />
-                        </InfoIcon>
-                        <Typography variant="body1">{event.address}</Typography>
-                      </InfoLine>
-                    </StyledCardContent>
-                    <CardActions sx={{ p: 3, pt: 1, alignSelf: "flex-start" }}>
-                      {event.instagramLink && (
-                        <Button
-                          onClick={(e) =>
-                            handleInstaClick(e, event.instagramLink!)
-                          }
-                          size="small"
-                          variant="contained"
-                          color="primary"
-                          startIcon={<Instagram />}
-                          aria-label={`View Instagram post for ${event.title}`}
-                          data-tina-field={tinaField(event, "instagramLink")}
+                      </ImageWrapper>
+                      <EventInfoContainer>
+                        <StyledCardContent>
+                          {event.type && (
+                            <EventTypeChip
+                              label={event.type}
+                              data-tina-field={tinaField(event, "type")}
+                            />
+                          )}
+                          <Typography
+                            gutterBottom
+                            variant="h3"
+                            component="h2"
+                            data-tina-field={tinaField(event, "title")}
+                          >
+                            {event.title}
+                          </Typography>
+                          <InfoLine data-tina-field={tinaField(event, "date")}>
+                            <InfoIcon>
+                              <CalendarToday sx={{ fontSize: "1.2rem" }} />
+                            </InfoIcon>
+                            <Typography variant="body1">
+                              {event.dateObj.toLocaleDateString()} at{" "}
+                              {event.dateObj.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </Typography>
+                          </InfoLine>
+                          <InfoLine
+                            data-tina-field={tinaField(event, "address")}
+                          >
+                            <InfoIcon>
+                              <LocationOn sx={{ fontSize: "1.2rem" }} />
+                            </InfoIcon>
+                            <Typography variant="body1">
+                              {event.address}
+                            </Typography>
+                          </InfoLine>
+                        </StyledCardContent>
+                        <CardActions
+                          sx={{ p: 3, pt: 1, alignSelf: "flex-start" }}
                         >
-                          Check the insta
-                        </Button>
-                      )}
-                    </CardActions>
-                  </EventInfoContainer>
-                </StyledCardActionArea>
-              </StyledEventCard>
-            ))
+                          {event.instagramLink && (
+                            <Button
+                              onClick={(e) =>
+                                handleInstaClick(e, event.instagramLink!)
+                              }
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              startIcon={<Instagram />}
+                              aria-label={`View Instagram post for ${event.title}`}
+                              data-tina-field={tinaField(
+                                event,
+                                "instagramLink"
+                              )}
+                            >
+                              Check the insta
+                            </Button>
+                          )}
+                        </CardActions>
+                      </EventInfoContainer>
+                    </StyledCardActionArea>
+                  </StyledEventCard>
+                )
+            )
           ) : (
             <Typography
               variant="h5"

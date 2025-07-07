@@ -113,7 +113,7 @@ export const DonationBlock = ({
   data: PageBlocksDonation_section;
 }) => {
   return (
-    <PageContainer maxWidth="lg">
+    <PageContainer maxWidth="lg" data-tina-field={tinaField(data)}>
       <PageTitleWrapper>
         <PageTitle
           variant="h1"

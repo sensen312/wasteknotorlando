@@ -14,13 +14,21 @@ import { styled, alpha } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import {
   Event,
-  PageBlocksInteractive_Calendar,
+  PageBlocksInteractive_calendar,
 } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 
+type CalendarEvent = Event & { _sys?: { filename: string } };
+type MappedEvent = CalendarEvent & { dateObj: Date };
+type CalendarDay = {
+  key: string;
+  day: number | null;
+  events: MappedEvent[];
+};
+
 interface InteractiveCalendarProps {
-  data: PageBlocksInteractive_Calendar;
-  events: (Event & { _sys?: any })[];
+  data: PageBlocksInteractive_calendar;
+  events: CalendarEvent[];
 }
 
 const CalendarSectionContainer = styled(Box)(({ theme }) => ({
@@ -178,9 +186,9 @@ export default function InteractiveCalendar({
   const month = currentDate.getMonth();
 
   const eventsForMonth = useMemo(() => {
-    type MappedEvent = Event & { dateObj: Date; _sys?: any };
     const eventsMap = new Map<number, MappedEvent[]>();
     events.forEach((event) => {
+      if (!event?.date) return;
       const eventDate = new Date(event.date);
       eventDate.setMinutes(
         eventDate.getMinutes() + eventDate.getTimezoneOffset()
@@ -200,13 +208,13 @@ export default function InteractiveCalendar({
     });
     return eventsMap;
   }, [year, month, events]);
+  // To make it consistent Jan is 1
 
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-
   // To make it consistent Jan is 1
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const calendarDays = [];
+  const calendarDays: CalendarDay[] = [];
 
   for (let i = 0; i < firstDayOfMonth; i++) {
     calendarDays.push({ key: `blank-start-${i}`, day: null, events: [] });
@@ -232,7 +240,7 @@ export default function InteractiveCalendar({
   const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
   return (
-    <CalendarSectionContainer>
+    <CalendarSectionContainer data-tina-field={tinaField(data)}>
       <PageTitleWrapper>
         <PageTitle
           variant="h2"
@@ -267,39 +275,45 @@ export default function InteractiveCalendar({
         </WeekDaysGrid>
         <DaysGrid>
           {calendarDays.map((dayObj) =>
-            dayObj.day ? (
+            dayObj.day && dayObj.events ? (
               <DayCell key={dayObj.key}>
                 <DayNumber>{dayObj.day}</DayNumber>
                 {isMobile ? (
                   <EventDotsContainer>
-                    {dayObj.events.map((event) => (
-                      <EventDot
-                        key={event.id}
-                        component={NextLink}
-                        href={`/events/${event._sys.filename}`}
-                        passHref
-                        aria-label={`Event: ${event.title}`}
-                      />
-                    ))}
+                    {dayObj.events.map(
+                      (event) =>
+                        event?._sys?.filename && (
+                          <EventDot
+                            key={event.id}
+                            component={NextLink}
+                            href={`/events/${event._sys.filename}`}
+                            passHref
+                            aria-label={`Event: ${event.title}`}
+                          />
+                        )
+                    )}
                   </EventDotsContainer>
                 ) : (
                   <EventsContainer>
-                    {dayObj.events.map((event) => (
-                      <EventItem
-                        key={event.id}
-                        component={NextLink}
-                        href={`/events/${event._sys.filename}`}
-                        passHref
-                      >
-                        <EventTitleText>{event.title}</EventTitleText>
-                        <EventTimeText>
-                          {event.dateObj.toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </EventTimeText>
-                      </EventItem>
-                    ))}
+                    {dayObj.events.map(
+                      (event) =>
+                        event?._sys?.filename && (
+                          <EventItem
+                            key={event.id}
+                            component={NextLink}
+                            href={`/events/${event._sys.filename}`}
+                            passHref
+                          >
+                            <EventTitleText>{event.title}</EventTitleText>
+                            <EventTimeText>
+                              {event.dateObj.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </EventTimeText>
+                          </EventItem>
+                        )
+                    )}
                   </EventsContainer>
                 )}
               </DayCell>
