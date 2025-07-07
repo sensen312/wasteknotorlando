@@ -106,7 +106,7 @@ const quickLinksBlock = {
           type: "string",
           name: "icon",
           label: "Icon Name",
-          description: "Icons from Material UI library",
+          description: "Icons from coding library",
           required: true,
         },
         {
