@@ -27,6 +27,12 @@ const PageTitle = styled(Typography)(({ theme }) => ({
     bottom: 0,
     left: "20%",
   },
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "clamp(1.7rem, 7vw, 2.25rem)",
+      letterSpacing: "0.5px",
+    },
+  }),
 }));
 const PageSubtitle = styled(Typography)(({ theme }) => ({
   margin: "0 auto",
@@ -64,6 +70,10 @@ const InfoCardHeader = styled(Typography)(({ theme }) => ({
   fontSize: "clamp(1.5rem, 4.1vw, 1.8rem) !important",
   letterSpacing: ".2px !important",
   color: theme.palette.primary.main,
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    fontSize: "clamp(1.2rem, 3.75vw, 1.5rem) !important",
+    letterSpacing: ".2px !important",
+  }),
 }));
 const InfoCardContent = styled(Typography)(({ theme }) => ({
   flexGrow: 1,
