@@ -50,9 +50,13 @@ export const BlockRenderer = ({
               <InteractiveCalendar key={i} data={block} events={allEvents} />
             );
           default:
+            const unknownBlockType =
+              block && typeof block === "object" && "__typename" in block
+                ? (block as { __typename: string }).__typename
+                : "Unknown Block";
             console.warn(
-              "HOW DID U CHOOSE THIS BLOCK IT DOESNT",
-              (block as any).__typename
+              "HOW DID U CHOOSE THIS BLOCK IT DOESNT EVEN EXIST",
+              unknownBlockType
             );
             return null;
         }
