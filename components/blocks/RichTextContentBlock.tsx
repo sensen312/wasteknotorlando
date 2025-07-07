@@ -7,7 +7,8 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 export const RichTextContentBlock = ({
   data,
 }: {
-  data: PageBlocksRich_Text_Content; 
+  data: PageBlocksRich_Text_Content;
+}) => {
   return (
     <Container maxWidth="md">
       <Box
