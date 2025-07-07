@@ -43,7 +43,7 @@ const BannerActionArea = styled(CardActionArea)({
 
 const BannerImage = styled(CardMedia)({
   height: "100%",
-  objectFit: "cover",
+  objectFit: "contain",
 });
 
 const BannerOverlay = styled(Box)(({ theme }) => ({
@@ -71,12 +71,28 @@ const BannerTitle = styled(Typography)({
 
 export const EventSpotlightBlock = ({
   data,
+  mostUpcomingEvent,
 }: {
   data: PageBlocksEvent_Spotlight;
+  mostUpcomingEvent?: Event | null;
 }) => {
-  const event = data.event;
+  const event = mostUpcomingEvent || data.event;
+
   if (!event) {
-    return null;
+    return (
+      <Container maxWidth="lg">
+        <Box my={5}>
+          <SectionHeader
+            variant="h2"
+            component="h2"
+            data-tina-field={tinaField(data, "title")}
+          >
+            {data.title}
+          </SectionHeader>
+          <Typography align="center">No upcoming events ;-; </Typography>
+        </Box>
+      </Container>
+    );
   }
 
   const eventData = event as Event;
@@ -91,7 +107,7 @@ export const EventSpotlightBlock = ({
         >
           {data.title}
         </SectionHeader>
-        <BannerCard data-tina-field={tinaField(data, "event")}>
+        <BannerCard data-tina-field={tinaField(eventData)}>
           <BannerActionArea
             component={NextLink}
             href={`/events/${eventData._sys.filename}`}

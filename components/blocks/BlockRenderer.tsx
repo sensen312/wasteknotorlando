@@ -16,9 +16,11 @@ import InteractiveCalendar from "../sections/InteractiveCalendar";
 export const BlockRenderer = ({
   blocks,
   allEvents = [],
+  mostUpcomingEvent,
 }: {
   blocks: Page["blocks"];
   allEvents?: Event[];
+  mostUpcomingEvent?: Event | null;
 }) => {
   return (
     <>
@@ -28,7 +30,13 @@ export const BlockRenderer = ({
           case "PageBlocksTop_banner":
             return <TopBannerBlock key={i} data={block} />;
           case "PageBlocksEvent_spotlight":
-            return <EventSpotlightBlock key={i} data={block} />;
+            return (
+              <EventSpotlightBlock
+                key={i}
+                data={block}
+                mostUpcomingEvent={mostUpcomingEvent}
+              />
+            );
           case "PageBlocksQuick_links":
             return <QuickLinksBlock key={i} data={block} />;
           case "PageBlocksMission_statement":

@@ -13,6 +13,7 @@ export default async function IndividualEventPage({
     const eventResult = await client.queries.event({
       relativePath: `${params.slug}.mdx`,
     });
+
     return (
       <main id="main-content">
         <EventDisplay {...eventResult} />
