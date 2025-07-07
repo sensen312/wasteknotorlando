@@ -12,17 +12,15 @@ import {
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-
-interface Event {
-  id: number;
-  slug: string;
-  title: string;
-  date: string;
-  time?: string;
-}
+import {
+  Event,
+  PageBlocksInteractive_calendar,
+} from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 
 interface InteractiveCalendarProps {
-  events: Event[];
+  data: PageBlocksInteractive_calendar;
+  events: (Event & { _sys?: any })[];
 }
 
 const CalendarSectionContainer = styled(Box)(({ theme }) => ({
@@ -169,6 +167,7 @@ const EventTimeText = styled(Typography)({
 const DayCellBlank = styled(Box)({});
 
 export default function InteractiveCalendar({
+  data,
   events,
 }: InteractiveCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -179,7 +178,8 @@ export default function InteractiveCalendar({
   const month = currentDate.getMonth();
 
   const eventsForMonth = useMemo(() => {
-    const eventsMap = new Map<number, (Event & { dateObj: Date })[]>();
+    type MappedEvent = Event & { dateObj: Date; _sys?: any };
+    const eventsMap = new Map<number, MappedEvent[]>();
     events.forEach((event) => {
       const eventDate = new Date(event.date);
       eventDate.setMinutes(
@@ -196,11 +196,7 @@ export default function InteractiveCalendar({
     });
 
     eventsMap.forEach((dayEvents) => {
-      dayEvents.sort((a, b) => {
-        const timeA = a.time ? new Date(`1970/01/01 ${a.time}`) : 0;
-        const timeB = b.time ? new Date(`1970/01/01 ${b.time}`) : 0;
-        return timeA.valueOf() - timeB.valueOf();
-      });
+      dayEvents.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
     });
     return eventsMap;
   }, [year, month, events]);
@@ -238,8 +234,12 @@ export default function InteractiveCalendar({
   return (
     <CalendarSectionContainer>
       <PageTitleWrapper>
-        <PageTitle variant="h2" component="h2">
-          Event Calendar:
+        <PageTitle
+          variant="h2"
+          component="h2"
+          data-tina-field={tinaField(data, "title")}
+        >
+          {data.title}
         </PageTitle>
       </PageTitleWrapper>
       <CalendarPaper elevation={0}>
@@ -276,7 +276,7 @@ export default function InteractiveCalendar({
                       <EventDot
                         key={event.id}
                         component={NextLink}
-                        href={`/events/${event.slug}`}
+                        href={`/events/${event._sys.filename}`}
                         passHref
                         aria-label={`Event: ${event.title}`}
                       />
@@ -288,13 +288,16 @@ export default function InteractiveCalendar({
                       <EventItem
                         key={event.id}
                         component={NextLink}
-                        href={`/events/${event.slug}`}
+                        href={`/events/${event._sys.filename}`}
                         passHref
                       >
                         <EventTitleText>{event.title}</EventTitleText>
-                        {event.time && (
-                          <EventTimeText>{event.time}</EventTimeText>
-                        )}
+                        <EventTimeText>
+                          {event.dateObj.toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </EventTimeText>
                       </EventItem>
                     ))}
                   </EventsContainer>

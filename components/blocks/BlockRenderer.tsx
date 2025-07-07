@@ -1,6 +1,6 @@
 "use client";
 
-import { PageBlocks } from "@/tina/__generated__/types";
+import { PageBlocks, Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { TopBannerBlock } from "./TopBannerBlock";
 import { EventSpotlightBlock } from "./EventSpotlightBlock";
@@ -13,15 +13,45 @@ import { FaqBlock } from "./FaqBlock";
 import { RichTextContentBlock } from "./RichTextContentBlock";
 import { Box } from "@mui/material";
 
+import EventsListing from "../sections/EventsListing";
+import InteractiveCalendar from "../sections/InteractiveCalendar";
+import client from "@/tina/client";
+import { useEffect, useState } from "react";
+
 export const BlockRenderer = ({
   blocks,
 }: {
   blocks: PageBlocks[] | null | undefined;
 }) => {
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const eventsResult = await client.queries.eventConnection();
+      const events = eventsResult.data.eventConnection.edges.map(
+        (edge) => edge.node as Event
+      );
+      setAllEvents(events);
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <>
       {blocks?.map((block, i) => {
         switch (block?.__typename) {
+          case "PageBlocksEvents_listing":
+            return (
+              <div key={i} data-tina-field={tinaField(block)}>
+                <EventsListing data={block} allEvents={allEvents} />
+              </div>
+            );
+          case "PageBlocksInteractive_calendar":
+            return (
+              <div key={i} data-tina-field={tinaField(block)}>
+                <InteractiveCalendar data={block} events={allEvents} />
+              </div>
+            );
           case "PageBlocksTop_banner":
             return (
               <div key={i} data-tina-field={tinaField(block)}>

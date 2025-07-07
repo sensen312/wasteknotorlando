@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import NextLink from "next/link";
-import { Event } from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
-import InteractiveCalendar from "./InteractiveCalendar";
+import { tinaField } from "tinacms/dist/react";
 
 const PageContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(5),
@@ -111,7 +111,13 @@ const InfoIcon = styled(Box)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
-export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
+export default function EventsListing({
+  data,
+  allEvents,
+}: {
+  data: PageBlocksEvents_listing;
+  allEvents: Event[];
+}) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -130,15 +136,22 @@ export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
   return (
     <PageContainer maxWidth="lg">
       <PageTitleWrapper>
-        <PageTitle variant="h1" component="h1">
-          Our Events
+        <PageTitle
+          variant="h1"
+          component="h1"
+          data-tina-field={tinaField(data, "title")}
+        >
+          {data.title}
         </PageTitle>
       </PageTitleWrapper>
       <EventListContainer>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map((event) => (
-              <StyledEventCard key={event.id}>
+              <StyledEventCard
+                key={event.id}
+                data-tina-field={tinaField(event)}
+              >
                 <StyledCardActionArea
                   component={NextLink}
                   href={`/events/${event._sys.filename}`}
@@ -149,15 +162,26 @@ export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
                       component="img"
                       image={event.image?.src}
                       alt={event.image?.alt}
+                      data-tina-field={tinaField(event, "image")}
                     />
                   </ImageWrapper>
                   <EventInfoContainer>
                     <StyledCardContent>
-                      {event.type && <EventTypeChip label={event.type} />}
-                      <Typography gutterBottom variant="h3" component="h2">
+                      {event.type && (
+                        <EventTypeChip
+                          label={event.type}
+                          data-tina-field={tinaField(event, "type")}
+                        />
+                      )}
+                      <Typography
+                        gutterBottom
+                        variant="h3"
+                        component="h2"
+                        data-tina-field={tinaField(event, "title")}
+                      >
                         {event.title}
                       </Typography>
-                      <InfoLine>
+                      <InfoLine data-tina-field={tinaField(event, "date")}>
                         <InfoIcon>
                           <CalendarToday sx={{ fontSize: "1.2rem" }} />
                         </InfoIcon>
@@ -169,7 +193,7 @@ export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
                           })}
                         </Typography>
                       </InfoLine>
-                      <InfoLine>
+                      <InfoLine data-tina-field={tinaField(event, "address")}>
                         <InfoIcon>
                           <LocationOn sx={{ fontSize: "1.2rem" }} />
                         </InfoIcon>
@@ -187,6 +211,7 @@ export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
                           color="primary"
                           startIcon={<Instagram />}
                           aria-label={`View Instagram post for ${event.title}`}
+                          data-tina-field={tinaField(event, "instagramLink")}
                         >
                           Check the insta
                         </Button>
@@ -201,13 +226,13 @@ export default function EventsListing({ allEvents }: { allEvents: Event[] }) {
               variant="h5"
               color="text.secondary"
               sx={{ textAlign: "center", py: 5 }}
+              data-tina-field={tinaField(data, "noEventsText")}
             >
-              No upcoming events :( Check back soon!
+              {data.noEventsText}
             </Typography>
           )}
         </Stack>
       </EventListContainer>
-      <InteractiveCalendar events={allEvents} />
     </PageContainer>
   );
 }
