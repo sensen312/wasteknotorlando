@@ -15,13 +15,11 @@ const createImageField = (name = "image", label = "Image") => ({
       type: "image" as const,
       name: "src",
       label: "Image File",
-      required: true,
     },
     {
       type: "string" as const,
       name: "alt",
       label: "Image Description",
-      required: true,
       description: "For screen readers.",
     },
   ],
@@ -36,13 +34,11 @@ const createButtonField = (name = "button", label = "Button") => ({
       type: "string",
       name: "text",
       label: "Button Text",
-      required: true,
     },
     {
       type: "string",
       name: "link",
       label: "Button Link/URL",
-      required: true,
     },
   ],
 });
@@ -386,10 +382,7 @@ const schema = defineSchema({
       path: "content/global",
       format: "mdx",
       ui: {
-        allowedActions: {
-          create: false,
-          delete: false,
-        },
+        allowedActions: { create: false, delete: false },
         router: () => "/",
       },
       fields: [
@@ -430,16 +423,8 @@ const schema = defineSchema({
           label: "Footer Settings",
           fields: [
             createImageField("logo", "Footer Logo"),
-            {
-              type: "string",
-              name: "contactEmail",
-              label: "Contact Email",
-            },
-            {
-              type: "string",
-              name: "copyright",
-              label: "Copyright Text",
-            },
+            { type: "string", name: "contactEmail", label: "Contact Email" },
+            { type: "string", name: "copyright", label: "Copyright Text" },
           ],
         },
         {
@@ -447,11 +432,7 @@ const schema = defineSchema({
           name: "socials",
           label: "Social Links",
           fields: [
-            {
-              type: "string",
-              name: "instagramUrl",
-              label: "Instagram URL",
-            },
+            { type: "string", name: "instagramUrl", label: "Instagram URL" },
             {
               type: "string",
               name: "donationUrl",
@@ -468,12 +449,8 @@ const schema = defineSchema({
       format: "mdx",
       ui: {
         router: ({ document }) => {
-          if (document._sys.filename === "home") {
-            return `/`;
-          }
-          if (document._sys.filename === "events") {
-            return `/events`;
-          }
+          if (document._sys.filename === "home") return `/`;
+          if (document._sys.filename === "events") return `/events`;
           return `/${document._sys.filename}`;
         },
       },
