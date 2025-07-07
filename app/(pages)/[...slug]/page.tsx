@@ -1,6 +1,9 @@
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import { PageClient } from "./PageClient";
+import { Event } from "@/tina/__generated__/types";
+import fs from "fs";
+import path from "path";
 
 export default async function SlugPage(props: { params: { slug: string[] } }) {
   const slug = props.params.slug?.join("/") || "";
@@ -14,18 +17,24 @@ export default async function SlugPage(props: { params: { slug: string[] } }) {
       relativePath: `${slug}.mdx`,
     });
 
-    return <PageClient {...res} />;
+    const eventsResult = await client.queries.eventConnection();
+    const allEvents =
+      eventsResult.data.eventConnection.edges?.map((edge) => edge.node) || [];
+
+    return <PageClient {...res} allEvents={allEvents as Event[]} />;
   } catch {
     notFound();
   }
 }
 
 export async function generateStaticParams() {
-  const pagesListData = await client.queries.pageConnection();
-  const paths = pagesListData.data.pageConnection.edges
-    .map((edge) => {
-      const slug = edge.node._sys.filename;
-      if (slug === "home") {
+  const pagesDir = path.join(process.cwd(), "content/pages");
+  const filenames = fs.readdirSync(pagesDir);
+
+  const paths = filenames
+    .map((filename) => {
+      const slug = filename.replace(/\.mdx$/, "");
+      if (slug === "home" || slug === "events") {
         return null;
       }
       return { slug: slug.split("/") };

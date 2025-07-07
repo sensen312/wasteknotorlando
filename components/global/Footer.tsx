@@ -121,16 +121,7 @@ const Footer = ({
             </Box>
           </FooterSection>
         </FooterLayoutContainer>
-        {footer.copyright && (
-          <Typography
-            variant="body2"
-            align="center"
-            sx={{ mt: 5 }}
-            data-tina-field={tinaField(footer, "copyright")}
-          >
-            {footer.copyright}
-          </Typography>
-        )}
+        {/* Do we need a copyright desc here? */}
       </Container>
     </FooterContainer>
   );

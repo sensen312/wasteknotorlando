@@ -1,6 +1,8 @@
 import client from "@/tina/client";
 import EventDisplay from "./EventDisplay";
 import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
 
 export default async function IndividualEventPage({
   params,
@@ -22,8 +24,10 @@ export default async function IndividualEventPage({
 }
 
 export async function generateStaticParams() {
-  const eventsListData = await client.queries.eventConnection();
-  return eventsListData.data.eventConnection.edges.map((event) => ({
-    slug: event.node._sys.filename,
+  const eventsDir = path.join(process.cwd(), "content/events");
+  const filenames = fs.readdirSync(eventsDir);
+
+  return filenames.map((filename) => ({
+    slug: filename.replace(/\.mdx$/, ""),
   }));
 }

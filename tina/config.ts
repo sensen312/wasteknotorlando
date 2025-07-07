@@ -15,12 +15,13 @@ const createImageField = (name = "image", label = "Image") => ({
       type: "image" as const,
       name: "src",
       label: "Image File",
+      required: true,
     },
     {
       type: "string" as const,
       name: "alt",
-      label: "Image Description",
-      description: "For screen readers.",
+      label: "For screen readers",
+      required: true,
     },
   ],
 });
@@ -34,11 +35,13 @@ const createButtonField = (name = "button", label = "Button") => ({
       type: "string",
       name: "text",
       label: "Button Text",
+      required: true,
     },
     {
       type: "string",
       name: "link",
       label: "Button Link/URL",
+      required: true,
     },
   ],
 });
@@ -46,12 +49,20 @@ const createButtonField = (name = "button", label = "Button") => ({
 const topBannerBlock = {
   name: "top_banner",
   label: "Top Banner",
+  ui: {
+    itemProps: () => ({ label: "Top Banner" }),
+  },
   fields: [createImageField("logo", "Logo Image")],
 };
 
 const eventSpotlightBlock = {
   name: "event_spotlight",
   label: "Event Spotlight",
+  ui: {
+    itemProps: (item) => ({
+      label: `Event Spotlight: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -64,6 +75,7 @@ const eventSpotlightBlock = {
       label: "Select Event to Feature",
       name: "event",
       collections: ["event"],
+      required: true,
     },
   ],
 };
@@ -71,6 +83,9 @@ const eventSpotlightBlock = {
 const quickLinksBlock = {
   name: "quick_links",
   label: "Quick Links",
+  ui: {
+    itemProps: () => ({ label: "Quick Links" }),
+  },
   fields: [
     {
       type: "object",
@@ -91,7 +106,7 @@ const quickLinksBlock = {
           type: "string",
           name: "icon",
           label: "Icon Name",
-          description: "e.g., FavoriteBorder, Event, Email. From MUI icons.",
+          description: "Icons from Material UI library",
           required: true,
         },
         {
@@ -127,6 +142,11 @@ const quickLinksBlock = {
 const missionStatementBlock = {
   name: "mission_statement",
   label: "Mission Statement",
+  ui: {
+    itemProps: (item) => ({
+      label: `Mission Statement: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     createImageField(),
     {
@@ -147,6 +167,11 @@ const missionStatementBlock = {
 const teamBoardBlock = {
   name: "team_board",
   label: "Team/Board Section",
+  ui: {
+    itemProps: (item) => ({
+      label: `Team/Board: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -184,6 +209,11 @@ const teamBoardBlock = {
 const donationBlock = {
   name: "donation_section",
   label: "Donation Section",
+  ui: {
+    itemProps: (item) => ({
+      label: `Donation Section: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -246,6 +276,11 @@ const donationBlock = {
 const volunteerBlock = {
   name: "volunteer_section",
   label: "Volunteer/Collaborate Section",
+  ui: {
+    itemProps: (item) => ({
+      label: `Volunteer Section: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -284,6 +319,9 @@ const volunteerBlock = {
 const faqBlock = {
   name: "faq",
   label: "FAQ Section",
+  ui: {
+    itemProps: (item) => ({ label: `FAQ: ${item.title || "No Title"}` }),
+  },
   fields: [
     {
       type: "string",
@@ -322,6 +360,9 @@ const faqBlock = {
 const richTextContentBlock = {
   name: "rich_text_content",
   label: "Rich Text Content",
+  ui: {
+    itemProps: () => ({ label: "Rich Text Content" }),
+  },
   fields: [
     {
       type: "string",
@@ -344,6 +385,11 @@ const richTextContentBlock = {
 const eventsListingBlock = {
   name: "events_listing",
   label: "Events Listing",
+  ui: {
+    itemProps: (item) => ({
+      label: `Events Listing: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -354,9 +400,9 @@ const eventsListingBlock = {
     {
       type: "string",
       name: "noEventsText",
-      label: "Text for when no upcoming events",
+      label: "Text when no events.",
       required: true,
-      description: "e.g., 'No upcoming events :( Check back soon!'",
+      description: "'sorry broskis no events'",
     },
   ],
 };
@@ -364,6 +410,11 @@ const eventsListingBlock = {
 const interactiveCalendarBlock = {
   name: "interactive_calendar",
   label: "Interactive Calendar",
+  ui: {
+    itemProps: (item) => ({
+      label: `Calendar: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
     {
       type: "string",
@@ -382,8 +433,11 @@ const schema = defineSchema({
       path: "content/global",
       format: "mdx",
       ui: {
-        allowedActions: { create: false, delete: false },
-        router: () => "/",
+        global: true,
+        allowedActions: {
+          create: false,
+          delete: false,
+        },
       },
       fields: [
         {
@@ -407,12 +461,7 @@ const schema = defineSchema({
                   label: "Title",
                   required: true,
                 },
-                {
-                  type: "string",
-                  name: "path",
-                  label: "URL Path",
-                  required: true,
-                },
+                { type: "string", name: "path", label: "Path", required: true },
               ],
             },
           ],
@@ -424,7 +473,6 @@ const schema = defineSchema({
           fields: [
             createImageField("logo", "Footer Logo"),
             { type: "string", name: "contactEmail", label: "Contact Email" },
-            { type: "string", name: "copyright", label: "Copyright Text" },
           ],
         },
         {
@@ -436,7 +484,7 @@ const schema = defineSchema({
             {
               type: "string",
               name: "donationUrl",
-              label: "Donation URL (Zeffy)",
+              label: "Donation URL (Zeffy URL)",
             },
           ],
         },
@@ -450,7 +498,6 @@ const schema = defineSchema({
       ui: {
         router: ({ document }) => {
           if (document._sys.filename === "home") return `/`;
-          if (document._sys.filename === "events") return `/events`;
           return `/${document._sys.filename}`;
         },
       },
@@ -541,7 +588,5 @@ export default defineConfig({
     },
   },
   schema,
-  client: {
-    useGraphQLGateway: false,
-  },
+  client: {},
 });
