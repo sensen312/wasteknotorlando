@@ -12,7 +12,11 @@ export const RichTextContentBlock = ({
   return (
     <Container maxWidth="md">
       <Box
-        sx={{ my: 4, ".prose": { a: { color: "primary.main" } } }}
+        sx={{
+          my: 4,
+          ".prose": { a: { color: "primary.main" } },
+          textAlign: data.align || "left",
+        }}
         className="prose"
         data-tina-field={tinaField(data, "body")}
       >

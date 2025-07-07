@@ -7,9 +7,16 @@ import { useAccessibility } from "@/context/AccessibilityContext";
 import Header from "@/components/global/Header";
 import Footer from "@/components/global/Footer";
 import { Box } from "@mui/material";
+import { Global } from "@/tina/__generated__/types";
 
 // calls the accessibility hook
-export const AppWrapper = ({ children }: { children: React.ReactNode }) => {
+export const AppWrapper = ({
+  children,
+  globalData,
+}: {
+  children: React.ReactNode;
+  globalData: Global;
+}) => {
   const { activeTheme } = useAccessibility();
 
   return (
@@ -18,11 +25,11 @@ export const AppWrapper = ({ children }: { children: React.ReactNode }) => {
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Header />
+        <Header header={globalData.header} socials={globalData.socials} />
         <Box component="main" id="main-content" sx={{ flexGrow: 1 }}>
           {children}
         </Box>
-        <Footer />
+        <Footer footer={globalData.footer} socials={globalData.socials} />
       </Box>
     </ThemeProvider>
   );

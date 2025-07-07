@@ -121,13 +121,13 @@ export const VolunteerBlock = ({
                 <Button
                   variant="contained"
                   color="primary"
-                  href={card?.link || "#"}
+                  href={card?.button?.link || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
                   size="large"
-                  data-tina-field={tinaField(card!, "buttonText")}
+                  data-tina-field={tinaField(card!, "button")}
                 >
-                  {card?.buttonText}
+                  {card?.button?.text}
                 </Button>
               </Box>
             </InfoCard>

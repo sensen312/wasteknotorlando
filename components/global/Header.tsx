@@ -25,14 +25,8 @@ import {
 import NextLink from "next/link";
 import Image from "next/image";
 import { useAccessibility } from "@/context/AccessibilityContext";
-
-const navItems = [
-  { title: "Home", path: "/" },
-  { title: "Events", path: "/events" },
-  { title: "About", path: "/about" },
-  { title: "Donate", path: "/donate" },
-  { title: "Join Us", path: "/volunteer" },
-];
+import { GlobalHeader, GlobalSocials } from "@/tina/__generated__/types";
+import { tinaField } from "tinacms/dist/react";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
@@ -67,7 +61,13 @@ const NavButton = styled(Button)(({ theme }) => ({
   whiteSpace: "nowrap",
 }));
 
-export default function Header() {
+export default function Header({
+  header,
+  socials,
+}: {
+  header: GlobalHeader;
+  socials: GlobalSocials;
+}) {
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
   const [accessibilityMenuAnchorEl, setAccessibilityMenuAnchorEl] =
@@ -83,6 +83,8 @@ export default function Header() {
     isReadingGuideEnabled,
   } = useAccessibility();
   const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
+
+  const navItems = header.navLinks || [];
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -103,21 +105,23 @@ export default function Header() {
     navItems.map((item) =>
       isMobile ? (
         <MenuItem
-          key={item.title}
+          key={item?.title}
           onClick={handleMobileMenuClose}
           component={NextLink}
-          href={item.path}
+          href={item?.path || "#"}
+          data-tina-field={tinaField(item!)}
         >
-          <Typography textAlign="center">{item.title}</Typography>
+          <Typography textAlign="center">{item?.title}</Typography>
         </MenuItem>
       ) : (
         <NavButton
-          key={item.title}
+          key={item?.title}
           color="primary"
           component={NextLink}
-          href={item.path}
+          href={item?.path || "#"}
+          data-tina-field={tinaField(item!)}
         >
-          {item.title}
+          {item?.title}
         </NavButton>
       )
     );
@@ -161,37 +165,56 @@ export default function Header() {
   );
 
   return (
-    <StyledAppBar position="sticky" color="transparent" elevation={0}>
+    <StyledAppBar
+      position="sticky"
+      color="transparent"
+      elevation={0}
+      data-tina-field={tinaField(header)}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           <LogoLink component={NextLink} href="/">
-            <LogoImage
-              src="/wasteknotorlando /uploads/namelogo.png"
-              alt="WasteKnot Orlando Logo"
-              width={180}
-              height={40}
-              priority
-            />
+            {header.logo && (
+              <LogoImage
+                src={header.logo.src}
+                alt={header.logo.alt}
+                width={180}
+                height={40}
+                priority
+                data-tina-field={tinaField(header, "logo")}
+              />
+            )}
           </LogoLink>
           <DesktopNavContainer>
-            <Stack component="nav" direction="row" spacing={1}>
+            <Stack
+              component="nav"
+              direction="row"
+              spacing={1}
+              data-tina-field={tinaField(header, "navLinks")}
+            >
               {renderNavLinks()}
             </Stack>
-            <DesktopIconsContainer>
-              <IconButton
-                href="https://www.instagram.com/WasteKnotOrlando"
-                color="primary"
-                aria-label="Instagram"
-              >
-                <Instagram />
-              </IconButton>
-              <IconButton
-                href="https://www.zeffy.com/en-US/donation-form/donate-to-make-a-difference-7129"
-                color="primary"
-                aria-label="Zeffy Donation"
-              >
-                <VolunteerActivism />
-              </IconButton>
+            <DesktopIconsContainer data-tina-field={tinaField(socials)}>
+              {socials.instagramUrl && (
+                <IconButton
+                  href={socials.instagramUrl}
+                  color="primary"
+                  aria-label="Instagram"
+                  data-tina-field={tinaField(socials, "instagramUrl")}
+                >
+                  <Instagram />
+                </IconButton>
+              )}
+              {socials.donationUrl && (
+                <IconButton
+                  href={socials.donationUrl}
+                  color="primary"
+                  aria-label="Zeffy Donation"
+                  data-tina-field={tinaField(socials, "donationUrl")}
+                >
+                  <VolunteerActivism />
+                </IconButton>
+              )}
               <IconButton
                 color="primary"
                 aria-label="Accessibility Settings"
@@ -232,24 +255,22 @@ export default function Header() {
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             {renderNavLinks(true)}
-            <MenuItem
-              component="a"
-              href="https://www.instagram.com/WasteKnotOrlando"
-            >
-              <IconButton color="primary" aria-label="Instagram">
-                <Instagram />
-              </IconButton>
-              <Typography>Instagram</Typography>
-            </MenuItem>
-            <MenuItem
-              component="a"
-              href="https://www.zeffy.com/en-US/donation-form/donate-to-make-a-difference-7129"
-            >
-              <IconButton color="primary" aria-label="Zeffy Donation">
-                <VolunteerActivism />
-              </IconButton>
-              <Typography>Zeffy</Typography>
-            </MenuItem>
+            {socials.instagramUrl && (
+              <MenuItem component="a" href={socials.instagramUrl}>
+                <IconButton color="primary" aria-label="Instagram">
+                  <Instagram />
+                </IconButton>
+                <Typography>Instagram</Typography>
+              </MenuItem>
+            )}
+            {socials.donationUrl && (
+              <MenuItem component="a" href={socials.donationUrl}>
+                <IconButton color="primary" aria-label="Zeffy Donation">
+                  <VolunteerActivism />
+                </IconButton>
+                <Typography>Zeffy</Typography>
+              </MenuItem>
+            )}
           </MobileMenu>
           {accessibilityMenu}
         </Toolbar>
