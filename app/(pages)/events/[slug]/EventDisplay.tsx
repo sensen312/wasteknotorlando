@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Event } from "@/tina/__generated__/types";
+import { useTina, tinaField } from "tinacms/dist/react";
+import { EventQuery } from "@/tina/__generated__/types";
 import { styled, alpha } from "@mui/material/styles";
 import {
   Box,
@@ -145,27 +146,29 @@ const DividerWrapper = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export default function EventDisplay({
-  eventData,
-}: {
-  eventData: Event | undefined;
+export default function EventDisplay(props: {
+  data: EventQuery;
+  variables: { relativePath: string };
+  query: string;
 }) {
+  const { data } = useTina(props);
+  const event = data.event;
   const [copied, setCopied] = useState(false);
 
-  if (!eventData) {
+  if (!event) {
     return (
       <PageContainer maxWidth="lg">
         <Typography variant="h4" component="h1" align="center">
-          Event not found.
+          Event not found sorry bro.
         </Typography>
       </PageContainer>
     );
   }
 
   const handleCopy = () => {
-    if (!eventData?.address) return;
+    if (!event?.address) return;
     navigator.clipboard
-      .writeText(eventData.address)
+      .writeText(event.address)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -173,7 +176,7 @@ export default function EventDisplay({
       .catch((err) => console.error("Failed to copy address: ", err));
   };
 
-  const eventDate = new Date(eventData.date);
+  const eventDate = new Date(event.date);
   const formattedDate = eventDate.toLocaleDateString(undefined, {
     weekday: "long",
     year: "numeric",
@@ -186,19 +189,28 @@ export default function EventDisplay({
   });
 
   return (
-    <PageContainer maxWidth="lg">
+    <PageContainer maxWidth="lg" data-tina-field={tinaField(event)}>
       <Row>
         <Cell>
           <ContentPaper elevation={0}>
             <DetailsStack spacing={2}>
               <Box>
-                {eventData.type && <EventTypeChip label={eventData.type} />}
-                <EventTitle variant="h2" component="h1">
-                  {eventData.title}
+                {event.type && (
+                  <EventTypeChip
+                    label={event.type}
+                    data-tina-field={tinaField(event, "type")}
+                  />
+                )}
+                <EventTitle
+                  variant="h2"
+                  component="h1"
+                  data-tina-field={tinaField(event, "title")}
+                >
+                  {event.title}
                 </EventTitle>
               </Box>
               <Box>
-                <InfoLine>
+                <InfoLine data-tina-field={tinaField(event, "date")}>
                   <InfoIcon>
                     <CalendarToday />
                   </InfoIcon>
@@ -206,19 +218,19 @@ export default function EventDisplay({
                     {formattedDate} at {formattedTime}
                   </Typography>
                 </InfoLine>
-                <InfoLine>
+                <InfoLine data-tina-field={tinaField(event, "address")}>
                   <InfoIcon>
                     <Place />
                   </InfoIcon>
                   <Typography variant="h6" component="p">
-                    {eventData.address}
+                    {event.address}
                   </Typography>
                 </InfoLine>
               </Box>
-              <DescriptionBody>
-                <TinaMarkdown content={eventData.body} />
+              <DescriptionBody data-tina-field={tinaField(event, "body")}>
+                <TinaMarkdown content={event.body} />
               </DescriptionBody>
-              {eventData.instagramLink && (
+              {event.instagramLink && (
                 <Box>
                   <DividerWrapper>
                     <Divider />
@@ -227,9 +239,10 @@ export default function EventDisplay({
                     variant="contained"
                     color="primary"
                     startIcon={<Instagram />}
-                    href={eventData.instagramLink}
+                    href={event.instagramLink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-tina-field={tinaField(event, "instagramLink")}
                   >
                     Event Instagram
                   </ActionButton>
@@ -239,11 +252,14 @@ export default function EventDisplay({
           </ContentPaper>
         </Cell>
         <Cell>
-          <ContentPaper elevation={0}>
+          <ContentPaper
+            elevation={0}
+            data-tina-field={tinaField(event, "image")}
+          >
             <EventImage
               component="img"
-              image={eventData.image?.src ?? undefined}
-              alt={eventData.image?.alt ?? ""}
+              image={event.image?.src ?? undefined}
+              alt={event.image?.alt ?? ""}
             />
           </ContentPaper>
         </Cell>
@@ -254,9 +270,9 @@ export default function EventDisplay({
             <LocationStack spacing={3}>
               <Box>
                 <DirectionsTitle variant="h5">Get Directions</DirectionsTitle>
-                <AddressBox>
+                <AddressBox data-tina-field={tinaField(event, "address")}>
                   <Typography variant="body1" component="p">
-                    {eventData.address}
+                    {event.address}
                   </Typography>
                   <IconButton onClick={handleCopy} aria-label="Copy address">
                     {copied ? (
@@ -268,28 +284,30 @@ export default function EventDisplay({
                 </AddressBox>
               </Box>
               <Stack spacing={1.5}>
-                {eventData.googleMapsLink && (
+                {event.googleMapsLink && (
                   <Button
                     variant="outlined"
                     startIcon={<MapIcon />}
                     fullWidth
                     component="a"
-                    href={eventData.googleMapsLink}
+                    href={event.googleMapsLink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-tina-field={tinaField(event, "googleMapsLink")}
                   >
                     Google Maps
                   </Button>
                 )}
-                {eventData.appleMapsLink && (
+                {event.appleMapsLink && (
                   <Button
                     variant="outlined"
                     startIcon={<AppleIcon />}
                     fullWidth
                     component="a"
-                    href={eventData.appleMapsLink}
+                    href={event.appleMapsLink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-tina-field={tinaField(event, "appleMapsLink")}
                   >
                     Apple Maps
                   </Button>
@@ -299,18 +317,21 @@ export default function EventDisplay({
           </ContentPaper>
         </Cell>
         <Cell>
-          <ContentPaper elevation={0}>
-            {eventData.embedMapSrc && (
+          <ContentPaper
+            elevation={0}
+            data-tina-field={tinaField(event, "embedMapSrc")}
+          >
+            {event.embedMapSrc && (
               <MapContainer>
                 <iframe
-                  src={eventData.embedMapSrc}
+                  src={event.embedMapSrc}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title={`Google Map for ${eventData.title}`}
+                  title={`Google Map for ${event.title}`}
                 />
               </MapContainer>
             )}

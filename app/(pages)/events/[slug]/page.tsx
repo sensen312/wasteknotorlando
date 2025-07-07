@@ -15,7 +15,7 @@ export default async function IndividualEventPage({
     });
     return (
       <main id="main-content">
-        <EventDisplay eventData={eventResult.data.event} />
+        <EventDisplay {...eventResult} />
       </main>
     );
   } catch {
