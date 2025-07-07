@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksTop_banner } from "@/tina/__generated__/types";
+import { PageBlocksTop_Banner } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { styled } from "@mui/material/styles";
 import { Box, Container } from "@mui/material";
@@ -18,7 +18,7 @@ const LogoImage = styled("img")({
   height: "auto",
 });
 
-export const TopBannerBlock = ({ data }: { data: PageBlocksTop_banner }) => {
+export const TopBannerBlock = ({ data }: { data: PageBlocksTop_Banner }) => {
   return (
     <Container maxWidth="lg">
       <PageHeader>

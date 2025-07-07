@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksMission_statement } from "@/tina/__generated__/types";
+import { PageBlocksMission_Statement } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
@@ -38,7 +38,7 @@ const MissionTextContent = styled(Box)(({ theme }) => ({
 export const MissionStatementBlock = ({
   data,
 }: {
-  data: PageBlocksMission_statement;
+  data: PageBlocksMission_Statement;
 }) => {
   return (
     <Container maxWidth="lg">

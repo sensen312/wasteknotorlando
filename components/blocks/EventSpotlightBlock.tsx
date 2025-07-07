@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksEvent_spotlight, Event } from "@/tina/__generated__/types";
+import { PageBlocksEvent_Spotlight, Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { styled } from "@mui/material/styles";
 import {
@@ -72,7 +72,7 @@ const BannerTitle = styled(Typography)({
 export const EventSpotlightBlock = ({
   data,
 }: {
-  data: PageBlocksEvent_spotlight;
+  data: PageBlocksEvent_Spotlight;
 }) => {
   const event = data.event;
   if (!event) {

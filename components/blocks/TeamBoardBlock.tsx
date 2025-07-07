@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksTeam_board } from "@/tina/__generated__/types";
+import { PageBlocksTeam_Board } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import {
   Container,
@@ -48,7 +48,7 @@ const TeamMemberContent = styled(CardContent)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
 
-export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_board }) => {
+export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_Board }) => {
   return (
     <Container maxWidth="lg">
       <Section aria-labelledby="team-heading">

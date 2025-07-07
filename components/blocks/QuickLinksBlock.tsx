@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from "react";
-import { PageBlocksQuick_links } from "@/tina/__generated__/types";
+import { PageBlocksQuick_Links } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, Typography, Button, Container } from "@mui/material";
@@ -114,7 +114,7 @@ const getIcon = (iconName: string) => {
 const WorkWithUsLink = ({
   data,
 }: {
-  data: PageBlocksQuick_links["workWithUs"];
+  data: PageBlocksQuick_Links["workWithUs"];
 }) => {
   const [isFocusedOrHovered, setIsFocusedOrHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -171,7 +171,8 @@ const WorkWithUsLink = ({
   );
 };
 
-export const QuickLinksBlock = ({ data }: { data: PageBlocksQuick_links }) => {
+export const QuickLinksBlock = ({ data }: { data: PageBlocksQuick_Links }) => {
+  // Corrected type
   return (
     <Container maxWidth="lg">
       <KeyLinksWrapper>

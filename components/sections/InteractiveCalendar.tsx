@@ -14,12 +14,12 @@ import { styled, alpha } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import {
   Event,
-  PageBlocksInteractive_calendar,
+  PageBlocksInteractive_Calendar,
 } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 
 interface InteractiveCalendarProps {
-  data: PageBlocksInteractive_calendar;
+  data: PageBlocksInteractive_Calendar;
   events: (Event & { _sys?: any })[];
 }
 

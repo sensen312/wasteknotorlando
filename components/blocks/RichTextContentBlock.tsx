@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksRich_text_content } from "@/tina/__generated__/types";
+import { PageBlocksRich_Text_Content } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Container, Box } from "@mui/material";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
@@ -7,8 +7,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 export const RichTextContentBlock = ({
   data,
 }: {
-  data: PageBlocksRich_text_content;
-}) => {
+  data: PageBlocksRich_Text_Content; 
   return (
     <Container maxWidth="md">
       <Box

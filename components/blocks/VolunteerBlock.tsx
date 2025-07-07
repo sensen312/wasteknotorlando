@@ -1,5 +1,5 @@
 "use client";
-import { PageBlocksVolunteer_section } from "@/tina/__generated__/types";
+import { PageBlocksVolunteer_Section } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -76,7 +76,7 @@ const InfoCardContent = styled(Typography)(({ theme }) => ({
 export const VolunteerBlock = ({
   data,
 }: {
-  data: PageBlocksVolunteer_section;
+  data: PageBlocksVolunteer_Section;
 }) => {
   return (
     <PageWrapper maxWidth="lg">

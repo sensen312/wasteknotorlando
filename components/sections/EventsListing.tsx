@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import NextLink from "next/link";
-import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_Listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -115,7 +115,7 @@ export default function EventsListing({
   data,
   allEvents,
 }: {
-  data: PageBlocksEvents_listing;
+  data: PageBlocksEvents_Listing;
   allEvents: Event[];
 }) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
