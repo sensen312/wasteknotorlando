@@ -410,7 +410,7 @@ const eventsListingBlock = {
       name: "noEventsText",
       label: "Text when no events.",
       required: true,
-      description: "Text to show if the event list below is empty.",
+      description: "Text to show if the event list is empty.",
     },
     {
       type: "reference",
@@ -418,7 +418,7 @@ const eventsListingBlock = {
       label: "Events",
       list: true,
       collections: ["event"],
-      description: "Select, reorder, or create new events for this list.",
+      description: "Select, reorder, or create new events for list.",
     },
   ],
 };
