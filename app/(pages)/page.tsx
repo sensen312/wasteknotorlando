@@ -18,18 +18,55 @@ export default async function HomePage() {
         !!event && typeof event.date === "string"
     );
 
+    console.log(`\n--- Found ${validEvents.length} events yipppieee ---`);
+    validEvents.forEach((event) => {
+      console.log(`- Title: ${event.title}, Date: ${event.date}`);
+    });
+    console.log("--------------------------------------------------\n");
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const mostUpcomingEvent = validEvents
-      .map((event) => ({ ...event, dateObj: new Date(event.date) }))
-      .filter((event) => event.dateObj >= today)
-      .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())[0];
+    const eventsWithDates = validEvents.map((event) => ({
+      ...event,
+      dateObj: new Date(event.date),
+    }));
+
+    const futureEvents = eventsWithDates.filter(
+      (event) => event.dateObj >= today
+    );
+
+    console.log(`\n--- Found ${futureEvents.length} events comparison ;-;---`);
+    futureEvents.forEach((event) => {
+      console.log(
+        `- Title: ${
+          event.title
+        }, Date Object to String: ${event.dateObj.toISOString()}`
+      );
+    });
+
+    const sortedFutureEvents = [...futureEvents].sort(
+      (a, b) => a.dateObj.getTime() - b.dateObj.getTime()
+    );
+
+    console.log(`\n--- Sorted List closest first ---`);
+    sortedFutureEvents.forEach((event) => {
+      console.log(
+        `- Title: ${
+          event.title
+        }, Date Object to String: ${event.dateObj.toISOString()}`
+      );
+    });
+    console.log("--------------------------------------------------\n");
+
+    const mostUpcomingEvent = sortedFutureEvents[0];
 
     if (mostUpcomingEvent) {
-      console.log(`FOUND MOST RECENT EVENT: ${mostUpcomingEvent.title}`);
+      console.log(
+        `FINAL RESULT - MOST RECENT EVENT: ${mostUpcomingEvent.title}`
+      );
     } else {
-      console.log(`DID NOT FIND MOST RECENT EVENT`);
+      console.log("FINAL RESULT - No upcoming event found, using fallback.");
     }
 
     return (
@@ -42,7 +79,7 @@ export default async function HomePage() {
       />
     );
   } catch (error) {
-    console.error("Failed to fetch homepage during build ;-; ", error);
+    console.error("Failed to fetch homepage during build:", error);
     notFound();
   }
 }
