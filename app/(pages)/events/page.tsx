@@ -1,11 +1,7 @@
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import EventsPageClient from "./EventsPageClient";
-import {
-  Event,
-  Page,
-  PageBlocksEvents_listing,
-} from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 
 export default async function EventsPage() {
   try {
