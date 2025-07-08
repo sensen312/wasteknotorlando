@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { useCMS, type FieldProps } from "@tinacms/toolkit";
+import { useCMS, type FieldProps } from "tinacms";
 import {
   Button,
   Typography,
