@@ -6,6 +6,8 @@ const branch =
   process.env.HEAD ||
   "main";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const createImageField = (name = "image", label = "Image") => ({
   type: "object" as const,
   name,
@@ -497,9 +499,11 @@ const schema = defineSchema({
       format: "mdx",
       ui: {
         router: ({ document }) => {
-          if (document._sys.filename === "home") return `/`;
-          if (document._sys.filename === "events") return `/events`;
-          return `/${document._sys.filename}`;
+          const prefix = isProd ? "/wasteknotorlando" : "";
+          if (document._sys.filename === "home") {
+            return isProd ? prefix : "/";
+          }
+          return `${prefix}/${document._sys.filename}`;
         },
       },
       fields: [
@@ -537,7 +541,10 @@ const schema = defineSchema({
       path: "content/events",
       format: "mdx",
       ui: {
-        router: ({ document }) => `/events/${document._sys.filename}`,
+        router: ({ document }) => {
+          const prefix = isProd ? "/wasteknotorlando" : "";
+          return `${prefix}/events/${document._sys.filename}`;
+        },
       },
       fields: [
         {
