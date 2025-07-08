@@ -1,85 +1,67 @@
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import { PageClient } from "./[...slug]/PageClient";
-import { Event } from "@/tina/__generated__/types";
+import {
+  Event,
+  Page,
+  PageBlocksEvents_listing,
+} from "@/tina/__generated__/types";
 
 export default async function HomePage() {
   try {
-    const res = await client.queries.page({
+    const homePageResult = await client.queries.page({
       relativePath: "home.mdx",
     });
 
-    const eventsResult = await client.queries.eventConnection();
-    const allNodes =
-      eventsResult.data.eventConnection.edges?.map((edge) => edge?.node) || [];
+    const eventsPageResult = await client.queries.page({
+      relativePath: "events.mdx",
+    });
 
-    const validEvents = allNodes.filter(
-      (event): event is Event & { date: string } =>
-        !!event && typeof event.date === "string"
+    const eventsListingBlock = eventsPageResult.data.page.blocks?.find(
+      (block: Page["blocks"][number]): block is PageBlocksEvents_listing =>
+        block?.__typename === "PageBlocksEvents_listing"
     );
 
-    console.log(`\n--- Found ${validEvents.length} events yipppieee ---`);
-    validEvents.forEach((event) => {
-      console.log(`- Title: ${event.title}, Date: ${event.date}`);
-    });
-    console.log("--------------------------------------------------\n");
+    const curatedEvents =
+      eventsListingBlock?.events
+        ?.map(
+          (item: NonNullable<PageBlocksEvents_listing["events"]>[number]) =>
+            item?.event
+        )
+        .filter((event): event is Event => !!event) || [];
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const eventsWithDates = validEvents.map((event) => ({
-      ...event,
-      dateObj: new Date(event.date),
-    }));
-
-    const futureEvents = eventsWithDates.filter(
-      (event) => event.dateObj >= today
-    );
-
-    console.log(`\n--- Found ${futureEvents.length} events comparison ;-;---`);
-    futureEvents.forEach((event) => {
-      console.log(
-        `- Title: ${
-          event.title
-        }, Date Object to String: ${event.dateObj.toISOString()}`
-      );
-    });
-
-    const sortedFutureEvents = [...futureEvents].sort(
-      (a, b) => a.dateObj.getTime() - b.dateObj.getTime()
-    );
-
-    console.log(`\n--- Sorted List closest first ---`);
-    sortedFutureEvents.forEach((event) => {
-      console.log(
-        `- Title: ${
-          event.title
-        }, Date Object to String: ${event.dateObj.toISOString()}`
-      );
-    });
-    console.log("--------------------------------------------------\n");
-
-    const mostUpcomingEvent = sortedFutureEvents[0];
+    const mostUpcomingEvent = curatedEvents
+      .filter((event: Event): event is Event & { date: string } => !!event.date)
+      .map((event: Event & { date: string }) => ({
+        ...event,
+        dateObj: new Date(event.date),
+      }))
+      .filter((event: Event & { dateObj: Date }) => event.dateObj >= today)
+      .sort(
+        (a: { dateObj: Date }, b: { dateObj: Date }) =>
+          a.dateObj.getTime() - b.dateObj.getTime()
+      )[0];
 
     if (mostUpcomingEvent) {
       console.log(
-        `FINAL RESULT - MOST RECENT EVENT: ${mostUpcomingEvent.title}`
+        `FOUND MOST RECENT EVENT FROM CURATED LIST: ${mostUpcomingEvent.title}`
       );
-    } else {
-      console.log("FINAL RESULT - No upcoming event found, using fallback.");
     }
 
     return (
       <PageClient
-        data={res.data}
-        variables={res.variables}
-        query={res.query}
-        allEvents={validEvents as Event[]}
+        data={homePageResult.data}
+        variables={homePageResult.variables}
+        query={homePageResult.query}
+        allEvents={curatedEvents}
         mostUpcomingEvent={mostUpcomingEvent || null}
       />
     );
   } catch (error) {
-    console.error("Failed to fetch homepage during build:", error);
+    console.error("Failed to fetch homepage data during build:", error);
     notFound();
   }
 }
