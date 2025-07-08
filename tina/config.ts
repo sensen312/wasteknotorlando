@@ -6,9 +6,6 @@ const branch =
   process.env.HEAD ||
   "main";
 
-const isProd = process.env.NODE_ENV === "production";
-const basePath = isProd ? "/wasteknotorlando" : "";
-
 const createImageField = (name = "image", label = "Image") => ({
   type: "object" as const,
   name,
@@ -499,12 +496,6 @@ const schema = defineSchema({
       path: "content/pages",
       format: "mdx",
       ui: {
-        router: ({ document }) => {
-          if (document._sys.filename === "home") {
-            return isProd ? `${basePath}/` : "/";
-          }
-          return `${basePath}/${document._sys.filename}`;
-        },
       },
       fields: [
         {
@@ -541,9 +532,6 @@ const schema = defineSchema({
       path: "content/events",
       format: "mdx",
       ui: {
-        router: ({ document }) => {
-          return `${basePath}/events/${document._sys.filename}`;
-        },
       },
       fields: [
         {
@@ -585,7 +573,7 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
-    basePath: "wasteknotorlando",
+=    basePath: "wasteknotorlando",
   },
   media: {
     tina: {
