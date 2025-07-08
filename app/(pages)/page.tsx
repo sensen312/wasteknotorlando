@@ -47,7 +47,7 @@ export default async function HomePage() {
 
     if (mostUpcomingEvent) {
       console.log(
-        `FOUND MOST RECENT EVENT FROM CURATED LIST: ${mostUpcomingEvent.title}`
+        `FOUND MOST RECENT EVENT FROM LIST: ${mostUpcomingEvent.title}`
       );
     }
 
@@ -61,7 +61,7 @@ export default async function HomePage() {
       />
     );
   } catch (error) {
-    console.error("Failed to fetch homepage data during build:", error);
+    console.error("Failed to fetch homepage at build ;-;", error);
     notFound();
   }
 }
