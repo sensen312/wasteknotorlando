@@ -8,9 +8,18 @@ export default async function HomePage() {
     const res = await client.queries.page({
       relativePath: "home.mdx",
     });
+
     const eventsResult = await client.queries.eventConnection();
     const allEvents =
       eventsResult.data.eventConnection.edges?.map((edge) => edge.node) || [];
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const mostUpcomingEvent = allEvents
+      .map((event) => ({ ...event, dateObj: new Date(event.date) }))
+      .filter((event) => event.dateObj >= today)
+      .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())[0];
 
     return (
       <PageClient
@@ -18,6 +27,7 @@ export default async function HomePage() {
         variables={res.variables}
         query={res.query}
         allEvents={allEvents as Event[]}
+        mostUpcomingEvent={mostUpcomingEvent || null}
       />
     );
   } catch (error) {
