@@ -59,7 +59,7 @@ const eventSpotlightBlock = {
   name: "event_spotlight",
   label: "Event Spotlight",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Event Spotlight: ${item.title || "No Title"}`,
     }),
   },
@@ -93,7 +93,9 @@ const quickLinksBlock = {
       name: "links",
       list: true,
       ui: {
-        itemProps: (item) => ({ label: item.title || "New Link" }),
+        itemProps: (item: { title?: string }) => ({
+          label: item.title || "New Link",
+        }),
       },
       fields: [
         {
@@ -143,7 +145,7 @@ const missionStatementBlock = {
   name: "mission_statement",
   label: "Mission Statement",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Mission Statement: ${item.title || "No Title"}`,
     }),
   },
@@ -168,7 +170,7 @@ const teamBoardBlock = {
   name: "team_board",
   label: "Team/Board Section",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Team/Board: ${item.title || "No Title"}`,
     }),
   },
@@ -185,7 +187,9 @@ const teamBoardBlock = {
       label: "Team Members",
       list: true,
       ui: {
-        itemProps: (item) => ({ label: item.name || "New Member" }),
+        itemProps: (item: { name?: string }) => ({
+          label: item.name || "New Member",
+        }),
       },
       fields: [
         {
@@ -210,7 +214,7 @@ const donationBlock = {
   name: "donation_section",
   label: "Donation Section",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Donation Section: ${item.title || "No Title"}`,
     }),
   },
@@ -277,7 +281,7 @@ const volunteerBlock = {
   name: "volunteer_section",
   label: "Volunteer/Collaborate Section",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Volunteer Section: ${item.title || "No Title"}`,
     }),
   },
@@ -295,7 +299,9 @@ const volunteerBlock = {
       label: "Info Cards",
       list: true,
       ui: {
-        itemProps: (item) => ({ label: item.title || "New Card" }),
+        itemProps: (item: { title?: string }) => ({
+          label: item.title || "New Card",
+        }),
       },
       fields: [
         {
@@ -320,7 +326,9 @@ const faqBlock = {
   name: "faq",
   label: "FAQ Section",
   ui: {
-    itemProps: (item) => ({ label: `FAQ: ${item.title || "No Title"}` }),
+    itemProps: (item: { title?: string }) => ({
+      label: `FAQ: ${item.title || "No Title"}`,
+    }),
   },
   fields: [
     {
@@ -335,7 +343,7 @@ const faqBlock = {
       label: "Questions",
       list: true,
       ui: {
-        itemProps: (item) => ({
+        itemProps: (item: { question?: string }) => ({
           label: item.question || "New Question",
         }),
       },
@@ -386,7 +394,7 @@ const eventsListingBlock = {
   name: "events_listing",
   label: "Events Listing",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Events Listing: ${item.title || "No Title"}`,
     }),
   },
@@ -411,7 +419,7 @@ const interactiveCalendarBlock = {
   name: "interactive_calendar",
   label: "Interactive Calendar",
   ui: {
-    itemProps: (item) => ({
+    itemProps: (item: { title?: string }) => ({
       label: `Calendar: ${item.title || "No Title"}`,
     }),
   },
@@ -452,7 +460,9 @@ const schema = defineSchema({
               label: "Navigation Links",
               list: true,
               ui: {
-                itemProps: (item) => ({ label: item.title || "New Link" }),
+                itemProps: (item: { title?: string }) => ({
+                  label: item.title || "New Link",
+                }),
               },
               fields: [
                 {
@@ -495,7 +505,14 @@ const schema = defineSchema({
       name: "page",
       path: "content/pages",
       format: "mdx",
-      ui: {},
+      ui: {
+        router: ({ document }) => {
+          if (document._sys.filename === "home") {
+            return "/";
+          }
+          return `/${document._sys.filename}`;
+        },
+      },
       fields: [
         {
           type: "string",
@@ -530,7 +547,11 @@ const schema = defineSchema({
       name: "event",
       path: "content/events",
       format: "mdx",
-      ui: {},
+      ui: {
+        router: ({ document }) => {
+          return `/events/${document._sys.filename}`;
+        },
+      },
       fields: [
         {
           type: "string",
@@ -572,18 +593,6 @@ export default defineConfig({
     outputFolder: "admin",
     publicFolder: "public",
     basePath: "wasteknotorlando",
-  },
-  admin: {
-    auth: {
-      onLogin: async ({ token }) => {
-        const slug = window.location.pathname;
-        location.href = `/api/preview/enter?token=${token.id_token}&slug=${slug}`;
-      },
-      onLogout: async () => {
-        const slug = window.location.pathname;
-        location.href = `/api/preview/exit?slug=${slug}`;
-      },
-    },
   },
   media: {
     tina: {
