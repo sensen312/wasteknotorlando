@@ -413,12 +413,25 @@ const eventsListingBlock = {
       description: "Text to show if the event list is empty.",
     },
     {
-      type: "reference",
+      type: "object",
       name: "events",
       label: "Events",
       list: true,
-      collections: ["event"],
-      description: "Select, reorder, or create new events for this list.",
+      ui: {
+        itemProps: (item: any) => ({
+          label: item?.event
+            ? item.event.split("/").pop().replace(".mdx", "")
+            : "New Event",
+        }),
+      },
+      fields: [
+        {
+          type: "reference",
+          name: "event",
+          label: "Event",
+          collections: ["event"],
+        },
+      ],
     },
   ],
 };

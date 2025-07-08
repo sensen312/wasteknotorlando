@@ -159,9 +159,9 @@ export default function EventsListing({
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  const eventList = (data.events || []).filter(
-    (event): event is Event => !!event
-  );
+  const eventList = (data.events || [])
+    .map((item) => item?.event)
+    .filter((event): event is Event => !!event);
 
   const upcomingEvents = useMemo(() => {
     if (!eventList) return [];
