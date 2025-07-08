@@ -15,7 +15,7 @@ export default function EventsPageClient(props: {
   };
   eventsData: {
     data: EventConnectionQuery;
-    variables: {};
+    variables: Record<string, never>;
     query: string;
   };
 }) {

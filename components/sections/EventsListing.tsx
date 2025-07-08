@@ -19,9 +19,18 @@ import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 
-const getRichTextContent = (content: any): string => {
+type RichTextNode = {
+  type: string;
+  text?: string;
+  children?: RichTextNode[];
+};
+
+const getRichTextContent = (
+  content: RichTextNode | null | undefined
+): string => {
+  if (!content) return "";
   let text = "";
-  if (content && content.children) {
+  if (content.children) {
     for (const child of content.children) {
       if (child.type === "text" && child.text) {
         text += child.text;
@@ -124,7 +133,6 @@ const InfoIcon = styled(Box)(({ theme }) => ({
   alignItems: "center",
   color: theme.palette.primary.main,
 }));
-
 const DescriptionPreview = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(2),
   display: "-webkit-box",
@@ -180,7 +188,7 @@ export default function EventsListing({
                   >
                     <StyledCardActionArea
                       component={NextLink}
-                      href={`/events/${event._sys.filename}`}
+                      href={`events/${event._sys.filename}`}
                       aria-label={`View details for ${event.title}`}
                     >
                       <ImageWrapper>
