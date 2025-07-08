@@ -72,10 +72,10 @@ const eventSpotlightBlock = {
     },
     {
       type: "reference",
-      label: "Select Event to Feature",
+      label: "Fallback Event (if no upcoming events)",
       name: "event",
       collections: ["event"],
-      required: true,
+      required: false,
     },
   ],
 };
@@ -498,6 +498,7 @@ const schema = defineSchema({
       ui: {
         router: ({ document }) => {
           if (document._sys.filename === "home") return `/`;
+          if (document._sys.filename === "events") return `/events`;
           return `/${document._sys.filename}`;
         },
       },

@@ -8,12 +8,17 @@ export function PageClient(props: {
   variables: { relativePath: string };
   query: string;
   allEvents?: Event[];
+  mostUpcomingEvent?: Event | null;
 }) {
   const { data } = useTina(props);
 
   return (
     <main id="main-content">
-      <BlockRenderer blocks={data.page.blocks} allEvents={props.allEvents} />
+      <BlockRenderer
+        blocks={data.page.blocks}
+        allEvents={props.allEvents}
+        mostUpcomingEvent={props.mostUpcomingEvent}
+      />
     </main>
   );
 }
