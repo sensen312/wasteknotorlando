@@ -23,6 +23,7 @@ type MappedEvent = CalendarEvent & { dateObj: Date };
 type CalendarDay = {
   key: string;
   day: number | null;
+  isToday: boolean;
   events: MappedEvent[];
 };
 
@@ -93,15 +94,21 @@ const DaysGrid = styled(Box)(({ theme }) => ({
   gap: "4px",
 }));
 
-const DayCell = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+const DayCell = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isToday",
+})<{ isToday?: boolean }>(({ theme, isToday }) => ({
+  border: `1px solid ${
+    isToday ? theme.palette.secondary.main : theme.palette.divider
+  }`,
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(0.5),
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
   position: "relative",
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: isToday
+    ? alpha(theme.palette.secondary.main, 0.1)
+    : theme.palette.background.paper,
   transition: "background-color 0.3s",
   "&:hover": {
     backgroundColor: alpha(theme.palette.secondary.main, 0.05),
@@ -206,6 +213,11 @@ export default function InteractiveCalendar({
     return eventsMap;
   }, [year, month, events]);
 
+  const today = new Date();
+  const todayDate = today.getDate();
+  const todayMonth = today.getMonth();
+  const todayYear = today.getFullYear();
+
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   // To make it consistent Jan is 1
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -213,13 +225,21 @@ export default function InteractiveCalendar({
   const calendarDays: CalendarDay[] = [];
 
   for (let i = 0; i < firstDayOfMonth; i++) {
-    calendarDays.push({ key: `blank-start-${i}`, day: null, events: [] });
+    calendarDays.push({
+      key: `blank-start-${i}`,
+      day: null,
+      isToday: false,
+      events: [],
+    });
   }
 
   for (let i = 1; i <= daysInMonth; i++) {
+    const isToday =
+      i === todayDate && month === todayMonth && year === todayYear;
     calendarDays.push({
       key: `day-${i}`,
       day: i,
+      isToday: isToday,
       events: eventsForMonth.get(i) || [],
     });
   }
@@ -228,7 +248,12 @@ export default function InteractiveCalendar({
   const remainingCells = 7 - (totalCells % 7);
   if (remainingCells < 7) {
     for (let i = 0; i < remainingCells; i++) {
-      calendarDays.push({ key: `blank-end-${i}`, day: null, events: [] });
+      calendarDays.push({
+        key: `blank-end-${i}`,
+        day: null,
+        isToday: false,
+        events: [],
+      });
     }
   }
 
@@ -271,8 +296,8 @@ export default function InteractiveCalendar({
         </WeekDaysGrid>
         <DaysGrid>
           {calendarDays.map((dayObj) =>
-            dayObj.day && dayObj.events ? (
-              <DayCell key={dayObj.key}>
+            dayObj.day ? (
+              <DayCell key={dayObj.key} isToday={dayObj.isToday}>
                 <DayNumber>{dayObj.day}</DayNumber>
                 {isMobile ? (
                   <EventDotsContainer>

@@ -23,11 +23,19 @@ export default async function HomePage() {
     );
 
     const curatedEvents =
-      eventsListingBlock?.events?.filter((event): event is Event => !!event) ||
-      [];
+      eventsListingBlock?.events
+        ?.map((item) => item?.event)
+        .filter((event): event is Event => !!event) || [];
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const tz = "America/New_York";
+    const now = new Date();
+    const todayStr = new Intl.DateTimeFormat("en-CA", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
+    const today = new Date(`${todayStr}T00:00:00.000-04:00`);
 
     const mostUpcomingEvent = curatedEvents
       .filter((event: Event): event is Event & { date: string } => !!event.date)
@@ -35,11 +43,8 @@ export default async function HomePage() {
         ...event,
         dateObj: new Date(event.date),
       }))
-      .filter((event: Event & { dateObj: Date }) => event.dateObj >= today)
-      .sort(
-        (a: { dateObj: Date }, b: { dateObj: Date }) =>
-          a.dateObj.getTime() - b.dateObj.getTime()
-      )[0];
+      .filter((event) => event.dateObj >= today)
+      .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())[0];
 
     if (mostUpcomingEvent) {
       console.log(

@@ -175,8 +175,17 @@ export default function EventsListing({
 
   const upcomingEvents = useMemo(() => {
     if (!eventList) return [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+
+    const tz = "America/New_York";
+    const now = new Date();
+    const todayStr = new Intl.DateTimeFormat("en-CA", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
+    const today = new Date(`${todayStr}T00:00:00.000-04:00`);
+
     return eventList
       .map(
         (event: Event): UpcomingEvent => ({
