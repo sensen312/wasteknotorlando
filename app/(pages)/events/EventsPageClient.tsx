@@ -1,10 +1,6 @@
 "use client";
 import { useTina } from "tinacms/dist/react";
-import {
-  PageQuery,
-  EventConnectionQuery,
-  Event,
-} from "@/tina/__generated__/types";
+import { PageQuery, Event } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 
 export default function EventsPageClient(props: {
@@ -13,24 +9,13 @@ export default function EventsPageClient(props: {
     variables: { relativePath: string };
     query: string;
   };
-  eventsData: {
-    data: EventConnectionQuery;
-    variables: Record<string, never>;
-    query: string;
-  };
+  allEvents: Event[];
 }) {
   const { data: page } = useTina(props.pageData);
-  const { data: eventsConnection } = useTina(props.eventsData);
-
-  const allEvents =
-    eventsConnection.eventConnection.edges?.map((edge) => edge.node) || [];
 
   return (
     <main id="main-content">
-      <BlockRenderer
-        blocks={page.page.blocks}
-        allEvents={allEvents as Event[]}
-      />
+      <BlockRenderer blocks={page.page.blocks} allEvents={props.allEvents} />
     </main>
   );
 }
