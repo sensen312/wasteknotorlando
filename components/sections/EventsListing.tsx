@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import NextLink from "next/link";
-import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
+import { PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -19,6 +19,8 @@ import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 
+type InlineEvent = NonNullable<PageBlocksEvents_listing["events"]>[number];
+
 type RichTextNode = {
   type: string;
   text?: string;
@@ -26,9 +28,10 @@ type RichTextNode = {
 };
 
 const getRichTextContent = (
-  content: RichTextNode | null | undefined
+  content: RichTextNode | null | undefined | any
 ): string => {
   if (!content) return "";
+  if (typeof content === "string") return content;
   let text = "";
   if (content.children) {
     for (const child of content.children) {
@@ -146,7 +149,6 @@ export default function EventsListing({
   data,
 }: {
   data: PageBlocksEvents_listing;
-  allEvents?: Event[];
 }) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
@@ -154,14 +156,14 @@ export default function EventsListing({
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  const eventList = (data.events || []).filter(Boolean) as Event[];
+  const eventList = (data.events || []).filter(Boolean) as InlineEvent[];
 
   const upcomingEvents = useMemo(() => {
     if (!eventList) return [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return eventList
-      .map((event) => ({ ...event, dateObj: new Date(event.date) }))
+      .map((event) => ({ ...event, dateObj: new Date(event.date!) }))
       .filter((event) => event.dateObj >= today)
       .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
   }, [eventList]);
@@ -182,14 +184,14 @@ export default function EventsListing({
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map(
               (event) =>
-                event?._sys?.filename && (
+                event?.slug && (
                   <StyledEventCard
-                    key={event.id}
+                    key={`${event.slug}-${event.date}`}
                     data-tina-field={tinaField(event)}
                   >
                     <StyledCardActionArea
                       component={NextLink}
-                      href={`events/${event._sys.filename}`}
+                      href={`/events/${event.slug}`}
                       aria-label={`View details for ${event.title}`}
                     >
                       <ImageWrapper>
