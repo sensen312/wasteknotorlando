@@ -410,7 +410,15 @@ const eventsListingBlock = {
       name: "noEventsText",
       label: "Text when no events.",
       required: true,
-      description: "'sorry broskis no events'",
+      description: "Text to show if the event list below is empty.",
+    },
+    {
+      type: "reference",
+      name: "events",
+      label: "Events",
+      list: true,
+      collections: ["event"],
+      description: "Select, reorder, or create new events for this list.",
     },
   ],
 };

@@ -144,10 +144,9 @@ const DescriptionPreview = styled(Typography)(({ theme }) => ({
 
 export default function EventsListing({
   data,
-  allEvents,
 }: {
   data: PageBlocksEvents_listing;
-  allEvents: Event[];
+  allEvents?: Event[];
 }) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
@@ -155,15 +154,17 @@ export default function EventsListing({
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
+  const eventList = (data.events || []).filter(Boolean) as Event[];
+
   const upcomingEvents = useMemo(() => {
-    if (!allEvents) return [];
+    if (!eventList) return [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return allEvents
+    return eventList
       .map((event) => ({ ...event, dateObj: new Date(event.date) }))
       .filter((event) => event.dateObj >= today)
       .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
-  }, [allEvents]);
+  }, [eventList]);
 
   return (
     <PageContainer maxWidth="lg" data-tina-field={tinaField(data)}>
@@ -176,7 +177,7 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      <EventListContainer>
+      <EventListContainer data-tina-field={tinaField(data, "events")}>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map(

@@ -1,6 +1,7 @@
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import EventsPageClient from "./EventsPageClient";
+
 export default async function EventsPage() {
   try {
     const pageResult = await client.queries.page({
