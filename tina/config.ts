@@ -584,6 +584,17 @@ const schema = defineSchema({
           },
         },
       },
+      defaultItem: () => ({
+        title: "New Event",
+        type: "Event Type",
+        date: new Date().toISOString(),
+        address: "Event Location",
+        googleMapsLink: "#",
+        appleMapsLink: "#",
+        embedMapSrc: "#",
+        instagramLink: "https://www.instagram.com/WasteKnotOrlando",
+        body: "Event description goes here.",
+      }),
       fields: [
         {
           type: "string",
