@@ -23,12 +23,8 @@ export default async function HomePage() {
     );
 
     const curatedEvents =
-      eventsListingBlock?.events
-        ?.map(
-          (item: NonNullable<PageBlocksEvents_listing["events"]>[number]) =>
-            item?.event
-        )
-        .filter((event): event is Event => !!event) || [];
+      eventsListingBlock?.events?.filter((event): event is Event => !!event) ||
+      [];
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);

@@ -13,9 +13,8 @@ export default async function EventsPage() {
     ) as PageBlocksEvents_listing | undefined;
 
     const curatedEvents =
-      eventsListingBlock?.events
-        ?.map((item) => item?.event)
-        .filter((event): event is Event => !!event) || [];
+      eventsListingBlock?.events?.filter((event): event is Event => !!event) ||
+      [];
 
     return <EventsPageClient pageData={pageResult} allEvents={curatedEvents} />;
   } catch (error) {
