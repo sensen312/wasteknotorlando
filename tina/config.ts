@@ -495,8 +495,7 @@ const schema = defineSchema({
       name: "page",
       path: "content/pages",
       format: "mdx",
-      ui: {
-      },
+      ui: {},
       fields: [
         {
           type: "string",
@@ -531,8 +530,7 @@ const schema = defineSchema({
       name: "event",
       path: "content/events",
       format: "mdx",
-      ui: {
-      },
+      ui: {},
       fields: [
         {
           type: "string",
@@ -573,7 +571,7 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
-=    basePath: "wasteknotorlando",
+    basePath: "wasteknotorlando",
   },
   media: {
     tina: {
