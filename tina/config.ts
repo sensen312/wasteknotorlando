@@ -52,7 +52,7 @@ const topBannerBlock = {
   ui: {
     itemProps: () => ({ label: "Top Banner" }),
   },
-  fields: [createImageField("logo", "Logo Image")],
+  fields: [createImageField("logo", "WasteKnotOrlando Logo Image")],
 };
 
 const eventSpotlightBlock = {
