@@ -1,6 +1,5 @@
 import { defineConfig, defineSchema } from "tinacms";
 import { format, parseISO } from "date-fns";
-import { EventListManager } from "../components/tina/EventListManager";
 
 const branch =
   process.env.GITHUB_BRANCH ||
@@ -420,10 +419,9 @@ const eventsListingBlock = {
       label: "Events",
       list: true,
       ui: {
-        component: EventListManager,
-        itemProps: (item: { event?: string }) => ({
+        itemProps: (item: any) => ({
           label: item?.event
-            ? item.event.split("/").pop()?.replace(".mdx", "")
+            ? item.event.split("/").pop().replace(".mdx", "")
             : "New Event",
         }),
       },
@@ -576,7 +574,7 @@ const schema = defineSchema({
           return `/wasteknotorlando/events/${document._sys.filename}`;
         },
         filename: {
-          slugify: (values: { title?: string; date?: string }) => {
+          slugify: (values) => {
             const date = values.date ? parseISO(values.date) : new Date();
             const datePart = format(date, "yyyy-MM-dd");
             const titlePart = values.title
