@@ -508,9 +508,9 @@ const schema = defineSchema({
       ui: {
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return "/";
+            return `/wasteknotorlando/`;
           }
-          return `/${document._sys.filename}`;
+          return `/wasteknotorlando/${document._sys.filename}`;
         },
       },
       fields: [
@@ -549,7 +549,7 @@ const schema = defineSchema({
       format: "mdx",
       ui: {
         router: ({ document }) => {
-          return `/events/${document._sys.filename}`;
+          return `/wasteknotorlando/events/${document._sys.filename}`;
         },
       },
       fields: [
