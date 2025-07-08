@@ -191,6 +191,8 @@ export default function EventDisplay(props: {
     timeZoneName: "short",
   });
 
+  const hasValidMapSrc = event.embedMapSrc && event.embedMapSrc !== "#";
+
   return (
     <PageContainer maxWidth="lg" data-tina-field={tinaField(event)}>
       <Row>
@@ -324,7 +326,7 @@ export default function EventDisplay(props: {
             elevation={0}
             data-tina-field={tinaField(event, "embedMapSrc")}
           >
-            {event.embedMapSrc && (
+            {hasValidMapSrc && (
               <MapContainer>
                 <iframe
                   src={event.embedMapSrc}

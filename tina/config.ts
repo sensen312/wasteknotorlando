@@ -1,4 +1,5 @@
 import { defineConfig, defineSchema } from "tinacms";
+import { format, parseISO } from "date-fns";
 
 const branch =
   process.env.GITHUB_BRANCH ||
@@ -571,6 +572,16 @@ const schema = defineSchema({
       ui: {
         router: ({ document }) => {
           return `/wasteknotorlando/events/${document._sys.filename}`;
+        },
+        filename: {
+          slugify: (values) => {
+            const date = values.date ? parseISO(values.date) : new Date();
+            const datePart = format(date, "yyyy-MM-dd");
+            const titlePart = values.title
+              ? values.title.toLowerCase().replace(/[^a-z0-9]/gi, "-")
+              : "new-event";
+            return `${datePart}-${titlePart}`;
+          },
         },
       },
       fields: [
