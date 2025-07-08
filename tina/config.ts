@@ -413,47 +413,12 @@ const eventsListingBlock = {
       description: "Text to show if the event list is empty.",
     },
     {
-      type: "object",
+      type: "reference",
       name: "events",
       label: "Events",
       list: true,
-      ui: {
-        itemProps: (item: { title?: string }) => ({
-          label: item.title || "New Event",
-        }),
-      },
-      fields: [
-        {
-          type: "string",
-          name: "title",
-          label: "Event Title",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "slug",
-          label: "Event Slug",
-          required: true,
-          description:
-            "Unique identifier for the URL. YOU MUST KEEP IT IN LOWERCASE AND DASHES (e.g., random-event-one).",
-        },
-        { type: "string", name: "type", label: "Event Type" },
-        {
-          type: "datetime",
-          name: "date",
-          label: "Date & Time",
-          required: true,
-          ui: { timeFormat: "HH:mm" },
-        },
-        createImageField(),
-        { type: "string", name: "address", label: "Address", required: true },
-        { type: "string", name: "instagramLink", label: "Instagram Link" },
-        {
-          type: "rich-text",
-          name: "body",
-          label: "Description",
-        },
-      ],
+      collections: ["event"],
+      description: "Select, reorder, or create new events for this list.",
     },
   ],
 };

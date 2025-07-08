@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import NextLink from "next/link";
-import { PageBlocksEvents_listing } from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -19,7 +19,9 @@ import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 
-type InlineEvent = NonNullable<PageBlocksEvents_listing["events"]>[number];
+type UpcomingEvent = Event & {
+  dateObj: Date;
+};
 
 type RichTextNode = {
   type: string;
@@ -149,6 +151,7 @@ export default function EventsListing({
   data,
 }: {
   data: PageBlocksEvents_listing;
+  allEvents?: Event[];
 }) {
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
@@ -156,16 +159,26 @@ export default function EventsListing({
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  const eventList = (data.events || []).filter(Boolean) as InlineEvent[];
+  const eventList = (data.events || []).filter(
+    (event): event is Event => !!event
+  );
 
   const upcomingEvents = useMemo(() => {
     if (!eventList) return [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return eventList
-      .map((event) => ({ ...event, dateObj: new Date(event.date!) }))
-      .filter((event) => event.dateObj >= today)
-      .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+      .map(
+        (event: Event): UpcomingEvent => ({
+          ...event,
+          dateObj: new Date(event.date),
+        })
+      )
+      .filter((event: UpcomingEvent) => event.dateObj >= today)
+      .sort(
+        (a: UpcomingEvent, b: UpcomingEvent) =>
+          a.dateObj.getTime() - b.dateObj.getTime()
+      );
   }, [eventList]);
 
   return (
@@ -183,15 +196,15 @@ export default function EventsListing({
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map(
-              (event) =>
-                event?.slug && (
+              (event: UpcomingEvent) =>
+                event?._sys?.filename && (
                   <StyledEventCard
-                    key={`${event.slug}-${event.date}`}
+                    key={event.id}
                     data-tina-field={tinaField(event)}
                   >
                     <StyledCardActionArea
                       component={NextLink}
-                      href={`/events/${event.slug}`}
+                      href={`/events/${event._sys.filename}`}
                       aria-label={`View details for ${event.title}`}
                     >
                       <ImageWrapper>
