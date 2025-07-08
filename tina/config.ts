@@ -573,6 +573,18 @@ export default defineConfig({
     publicFolder: "public",
     basePath: "wasteknotorlando",
   },
+  admin: {
+    auth: {
+      onLogin: async ({ token }) => {
+        const slug = window.location.pathname;
+        location.href = `/api/preview/enter?token=${token.id_token}&slug=${slug}`;
+      },
+      onLogout: async () => {
+        const slug = window.location.pathname;
+        location.href = `/api/preview/exit?slug=${slug}`;
+      },
+    },
+  },
   media: {
     tina: {
       publicFolder: "public",
