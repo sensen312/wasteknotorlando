@@ -566,7 +566,6 @@ const schema = defineSchema({
           name: "body",
           label: "Description",
           isBody: true,
-          required: true,
         },
       ],
     },

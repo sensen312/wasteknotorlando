@@ -19,6 +19,20 @@ import { styled, alpha } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 
+const getRichTextContent = (content: any): string => {
+  let text = "";
+  if (content && content.children) {
+    for (const child of content.children) {
+      if (child.type === "text" && child.text) {
+        text += child.text;
+      } else {
+        text += getRichTextContent(child);
+      }
+    }
+  }
+  return text;
+};
+
 const PageContainer = styled(Container)(({ theme }) => ({
   marginTop: theme.spacing(5),
   marginBottom: theme.spacing(5),
@@ -109,6 +123,15 @@ const InfoIcon = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   color: theme.palette.primary.main,
+}));
+
+const DescriptionPreview = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(2),
+  display: "-webkit-box",
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
 }));
 
 export default function EventsListing({
@@ -206,6 +229,13 @@ export default function EventsListing({
                               {event.address}
                             </Typography>
                           </InfoLine>
+                          <DescriptionPreview
+                            variant="body2"
+                            color="text.secondary"
+                            data-tina-field={tinaField(event, "body")}
+                          >
+                            {getRichTextContent(event.body)}
+                          </DescriptionPreview>
                         </StyledCardContent>
                         <CardActions
                           sx={{ p: 3, pt: 1, alignSelf: "flex-start" }}
