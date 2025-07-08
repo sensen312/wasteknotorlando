@@ -182,10 +182,13 @@ export default function EventDisplay(props: {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "America/New_York",
   });
   const formattedTime = eventDate.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "America/New_York",
+    timeZoneName: "short",
   });
 
   return (

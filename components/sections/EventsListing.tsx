@@ -220,10 +220,15 @@ export default function EventsListing({
                               <CalendarToday sx={{ fontSize: "1.2rem" }} />
                             </InfoIcon>
                             <Typography variant="body1">
-                              {event.dateObj.toLocaleDateString()} at{" "}
+                              {event.dateObj.toLocaleDateString(undefined, {
+                                timeZone: "America/New_York",
+                              })}{" "}
+                              at{" "}
                               {event.dateObj.toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
+                                timeZone: "America/New_York",
+                                timeZoneName: "short",
                               })}
                             </Typography>
                           </InfoLine>

@@ -190,9 +190,6 @@ export default function InteractiveCalendar({
     events.forEach((event) => {
       if (!event?.date) return;
       const eventDate = new Date(event.date);
-      eventDate.setMinutes(
-        eventDate.getMinutes() + eventDate.getTimezoneOffset()
-      );
 
       if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
         const day = eventDate.getDate();
@@ -208,7 +205,6 @@ export default function InteractiveCalendar({
     });
     return eventsMap;
   }, [year, month, events]);
-  // To make it consistent Jan is 1
 
   const firstDayOfMonth = new Date(year, month, 1).getDay();
   // To make it consistent Jan is 1
@@ -309,6 +305,7 @@ export default function InteractiveCalendar({
                               {event.dateObj.toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
+                                timeZone: "America/New_York",
                               })}
                             </EventTimeText>
                           </EventItem>
