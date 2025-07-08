@@ -411,7 +411,7 @@ const eventsListingBlock = {
       name: "noEventsText",
       label: "Text when no events.",
       required: true,
-      description: "Text to show if the event list is empty.",
+      description: "Text to show if event list is empty.",
     },
     {
       type: "object",
