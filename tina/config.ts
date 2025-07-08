@@ -594,6 +594,9 @@ export default defineConfig({
     publicFolder: "public",
     basePath: "wasteknotorlando",
   },
+  admin: {
+    basePath: "/wasteknotorlando",
+  },
   media: {
     tina: {
       publicFolder: "public",
