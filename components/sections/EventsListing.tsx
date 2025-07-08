@@ -29,21 +29,31 @@ type RichTextNode = {
   children?: RichTextNode[];
 };
 
-const getRichTextContent = (
-  content: RichTextNode | null | undefined | any
-): string => {
-  if (!content) return "";
-  if (typeof content === "string") return content;
+// recursive function for extracting the text in the editor
+const getRichTextContent = (content: Event["body"]): string => {
+  if (
+    !content ||
+    typeof content !== "object" ||
+    !("children" in content) ||
+    !Array.isArray(content.children)
+  ) {
+    return "";
+  }
+
   let text = "";
-  if (content.children) {
-    for (const child of content.children) {
-      if (child.type === "text" && child.text) {
-        text += child.text;
-      } else {
-        text += getRichTextContent(child);
+
+  const extractText = (nodes: RichTextNode[]) => {
+    for (const node of nodes) {
+      if (node.type === "text" && node.text) {
+        text += node.text;
+      }
+      if (node.children) {
+        extractText(node.children);
       }
     }
-  }
+  };
+
+  extractText(content.children as RichTextNode[]);
   return text;
 };
 
