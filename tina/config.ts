@@ -530,9 +530,9 @@ const schema = defineSchema({
       ui: {
         router: ({ document }) => {
           if (document._sys.filename === "home") {
-            return `/wasteknotorlando/`;
+            return `/`;
           }
-          return `/wasteknotorlando/${document._sys.filename}`;
+          return `/${document._sys.filename}`;
         },
       },
       fields: [
@@ -571,7 +571,7 @@ const schema = defineSchema({
       format: "mdx",
       ui: {
         router: ({ document }) => {
-          return `/wasteknotorlando/events/${document._sys.filename}`;
+          return `/events/${document._sys.filename}`;
         },
         filename: {
           slugify: (values) => {
@@ -635,10 +635,10 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
-    basePath: "wasteknotorlando",
+    basePath: "",
   },
   admin: {
-    basePath: "/wasteknotorlando",
+    basePath: "",
   },
   media: {
     tina: {
