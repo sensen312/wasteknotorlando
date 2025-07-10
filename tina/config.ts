@@ -214,8 +214,7 @@ const eventSpotlightBlock: Template = {
       type: "reference",
       label: "Event to Feature",
       name: "event",
-      description:
-        "Select an event to spotlight. If empty, the next upcoming event will be used.",
+      description: "Select the event you want to spotlight.",
       collections: ["event"],
       required: false,
     },
@@ -286,11 +285,7 @@ const zeffyDonationBlock: Template = {
   },
   fields: [
     createRequiredStringField("Title", "title"),
-    createRequiredStringField(
-      "Text",
-      "text",
-      "Description for Zeffy donations."
-    ),
+    createRequiredStringField("Text", "text", "Desc for Zeffy donations."),
     createRequiredStringField("Button Text", "buttonText"),
     {
       ...createRequiredStringField("Zeffy Donation URL", "zeffyLink"),
@@ -466,7 +461,7 @@ const eventDetailsBlock: Template = {
     {
       type: "string",
       name: "placeholder",
-      label: "This block pulls Title, Date, and Address from the fields above.",
+      label: "This block gets Title, Date, and Address from the fields above.",
       ui: { component: "hidden" },
     },
   ],
@@ -480,7 +475,7 @@ const eventImageBlock: Template = {
       type: "string",
       name: "placeholder",
       ui: { component: "hidden" },
-      label: "This block pulls the main event image from the field above.",
+      label: "This block gets the main event image from the field above.",
     },
   ],
 };
@@ -493,7 +488,7 @@ const eventDirectionsBlock: Template = {
       type: "string",
       name: "placeholder",
       ui: { component: "hidden" },
-      label: "This block shows the map links and copyable address.",
+      label: "This block shows the map links and the address.",
     },
   ],
 };
@@ -530,9 +525,25 @@ const allPageBlockTemplates: Template[] = [
   eventsListingBlock,
 ];
 
+const eventContentBlock: Template = {
+  name: "event_content",
+  label: "Event Content",
+  ui: { itemProps: () => ({ label: "Event Rich Content" }) },
+  fields: [
+    {
+      type: "object",
+      label: "Content Sections",
+      name: "contentBlocks",
+      list: true,
+      templates: allPageBlockTemplates,
+    },
+  ],
+};
+
 const allEventLayoutTemplates: Template[] = [
   eventDetailsBlock,
   eventImageBlock,
+  eventContentBlock,
   eventDirectionsBlock,
   eventMapEmbedBlock,
   ...allPageBlockTemplates,
