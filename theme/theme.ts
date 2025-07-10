@@ -25,7 +25,7 @@ const brandColors = {
   offBlack: "#1D1718",
 };
 
-let theme = createTheme({
+const theme = createTheme({
   palette: {
     offBlack: {
       main: brandColors.offBlack,

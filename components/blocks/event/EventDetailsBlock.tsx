@@ -1,15 +1,7 @@
 "use client";
 import { Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
-import {
-  Box,
-  Container,
-  Typography,
-  Chip,
-  Stack,
-  Divider,
-  Button,
-} from "@mui/material";
+import { Box, Container, Typography, Chip, Stack, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { CalendarToday, Place, Instagram } from "@mui/icons-material";
 
