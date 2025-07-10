@@ -88,6 +88,17 @@ const richTextTemplates: Template[] = [
   },
 ];
 
+const topBannerBlock: Template = {
+  name: "top_banner",
+  label: "Top Banner",
+  ui: {
+    itemProps: () => ({
+      label: "Top Banner",
+    }),
+  },
+  fields: [createImageField("logo", "WasteKnotOrlando Logo Image")],
+};
+
 const sectionHeaderBlock: Template = {
   name: "section_header",
   label: "Section Header",
@@ -160,11 +171,7 @@ const imageGalleryBlock: Template = {
     }),
   },
   fields: [
-    {
-      type: "string",
-      name: "title",
-      label: "Gallery Title",
-    },
+    createRequiredStringField("Gallery Title", "title"),
     {
       type: "object",
       name: "images",
@@ -216,9 +223,10 @@ const eventSpotlightBlock: Template = {
       type: "reference",
       label: "Event to Feature",
       name: "event",
-      description: "Please select an event to spotlight.",
+      description:
+        "Select an event to spotlight. If empty, the next upcoming event will be used.",
       collections: ["event"],
-      required: true,
+      required: false,
     },
   ],
 };
@@ -244,6 +252,15 @@ const quickLinksBlock: Template = {
           "Find icon names from materialUI library."
         ),
         createRequiredStringField("URL", "href"),
+      ],
+    },
+    {
+      type: "object",
+      label: "Work With Us Button",
+      name: "workWithUs",
+      fields: [
+        createRequiredStringField("Collaborate Form URL", "collaborateLink"),
+        createRequiredStringField("Volunteer Form URL", "volunteerLink"),
       ],
     },
   ],
@@ -533,35 +550,25 @@ const eventContentBlock: Template = {
   ],
 };
 
-const categorizedBlocks: { label: string; templates: Template[] }[] = [
-  {
-    label: "Text & Content",
-    templates: [
-      sectionHeaderBlock,
-      richTextContentBlock,
-      twoColumnBlock,
-      faqBlock,
-    ],
-  },
-  {
-    label: "Media & Interactive",
-    templates: [imageGalleryBlock, buttonGroupBlock, interactiveCalendarBlock],
-  },
-  {
-    label: "Page Sections",
-    templates: [
-      missionStatementBlock,
-      quickLinksBlock,
-      eventSpotlightBlock,
-      teamBoardBlock,
-      volunteerBlock,
-    ],
-  },
-  {
-    label: "Donations & Events",
-    templates: [zeffyDonationBlock, itemDonationListBlock, eventsListingBlock],
-  },
+const allPageBlockTemplates: Template[] = [
+  topBannerBlock,
+  sectionHeaderBlock,
+  richTextContentBlock,
+  twoColumnBlock,
+  faqBlock,
+  imageGalleryBlock,
+  buttonGroupBlock,
+  interactiveCalendarBlock,
+  missionStatementBlock,
+  quickLinksBlock,
+  eventSpotlightBlock,
+  teamBoardBlock,
+  volunteerBlock,
+  zeffyDonationBlock,
+  itemDonationListBlock,
+  eventsListingBlock,
 ];
+
 const allEventLayoutBlocks: Template[] = [
   eventDetailsBlock,
   eventImageBlock,
@@ -574,8 +581,8 @@ const schema = defineSchema({
   collections: [
     {
       label: "Site Settings",
-      name: "settings",
-      path: "content/settings",
+      name: "global",
+      path: "content/global",
       format: "mdx",
       ui: {
         global: true,
@@ -659,7 +666,7 @@ const schema = defineSchema({
           label: "Page Sections (Blocks)",
           name: "blocks",
           list: true,
-          templates: categorizedBlocks,
+          templates: allPageBlockTemplates,
         },
       ],
     },
@@ -703,7 +710,7 @@ const schema = defineSchema({
           type: "string",
           name: "directionsHeader",
           label: "Directions Header Text",
-          description: "Get Directions",
+          description: "Default: Get Directions",
         },
         { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
         { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
@@ -713,7 +720,7 @@ const schema = defineSchema({
           type: "string",
           name: "instagramButtonText",
           label: "Instagram Button Text",
-          description: "View on Insta",
+          description: "Default: View on Insta",
         },
         {
           type: "boolean",
