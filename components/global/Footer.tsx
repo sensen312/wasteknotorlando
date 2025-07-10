@@ -82,8 +82,12 @@ const Footer = ({
           </FooterSection>
 
           <FooterSection>
-            <SectionHeader variant="h5" component="h3">
-              Contacts:
+            <SectionHeader
+              variant="h5"
+              component="h3"
+              data-tina-field={tinaField(footer, "contactHeader")}
+            >
+              {footer.contactHeader || "Contacts:"}
             </SectionHeader>
             <FooterLink
               href={`mailto:${footer.contactEmail}`}
@@ -94,8 +98,12 @@ const Footer = ({
           </FooterSection>
 
           <FooterSection>
-            <SectionHeader variant="h5" component="h3">
-              Our socials
+            <SectionHeader
+              variant="h5"
+              component="h3"
+              data-tina-field={tinaField(footer, "socialsHeader")}
+            >
+              {footer.socialsHeader || "Our socials"}
             </SectionHeader>
             <Box data-tina-field={tinaField(socials)}>
               {socials.instagramUrl && (
@@ -121,7 +129,6 @@ const Footer = ({
             </Box>
           </FooterSection>
         </FooterLayoutContainer>
-        {/* Do we need a copyright desc here? */}
       </Container>
     </FooterContainer>
   );

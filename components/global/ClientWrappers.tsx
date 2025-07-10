@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -7,30 +6,40 @@ import { useAccessibility } from "@/context/AccessibilityContext";
 import Header from "@/components/global/Header";
 import Footer from "@/components/global/Footer";
 import { Box } from "@mui/material";
-import { Global } from "@/tina/__generated__/types";
+import { styled } from "@mui/material/styles";
+import { Settings } from "@/tina/__generated__/types";
+import { AnnouncementBanner } from "./AnnouncementBanner";
 
-// calls the accessibility hook
+const RootBox = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  minHeight: "100vh",
+});
+
+const MainContent = styled(Box)({
+  flexGrow: 1,
+});
+
 export const AppWrapper = ({
   children,
-  globalData,
+  settingsData,
 }: {
   children: React.ReactNode;
-  globalData: Global;
+  settingsData: Settings;
 }) => {
   const { activeTheme } = useAccessibility();
 
   return (
     <ThemeProvider theme={activeTheme}>
       <CssBaseline />
-      <Box
-        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
-        <Header header={globalData.header} socials={globalData.socials} />
-        <Box component="main" id="main-content" sx={{ flexGrow: 1 }}>
+      <RootBox>
+        <Header header={settingsData.header} socials={settingsData.socials} />
+        <AnnouncementBanner data={settingsData.announcement} />
+        <MainContent component="main" id="main-content">
           {children}
-        </Box>
-        <Footer footer={globalData.footer} socials={globalData.socials} />
-      </Box>
+        </MainContent>
+        <Footer footer={settingsData.footer} socials={settingsData.socials} />
+      </RootBox>
     </ThemeProvider>
   );
 };

@@ -1,4 +1,4 @@
-import { defineConfig, defineSchema } from "tinacms";
+import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
 
 const branch =
@@ -6,6 +6,20 @@ const branch =
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
   "main";
+
+type ItemProps = Record<string, unknown>;
+
+const createRequiredStringField = (
+  label: string,
+  name: string,
+  description?: string
+) => ({
+  type: "string" as const,
+  label,
+  name,
+  required: true,
+  description: `(Required) ${description || ""}`,
+});
 
 const createImageField = (name = "image", label = "Image") => ({
   type: "object" as const,
@@ -19,10 +33,11 @@ const createImageField = (name = "image", label = "Image") => ({
       required: true,
     },
     {
-      type: "string" as const,
-      name: "alt",
-      label: "For screen readers",
-      required: true,
+      ...createRequiredStringField(
+        "Alternative Text",
+        "alt",
+        "For screen readers."
+      ),
     },
   ],
 });
@@ -32,61 +47,186 @@ const createButtonField = (name = "button", label = "Button") => ({
   name,
   label,
   fields: [
-    {
-      type: "string",
-      name: "text",
-      label: "Button Text",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "link",
-      label: "Button Link/URL",
-      required: true,
-    },
+    createRequiredStringField("Button Text", "text"),
+    createRequiredStringField("Button Link/URL", "link"),
   ],
 });
 
-const topBannerBlock = {
-  name: "top_banner",
-  label: "Top Banner",
-  ui: {
-    itemProps: () => ({ label: "Top Banner" }),
+const richTextTemplates: Template[] = [
+  {
+    name: "Callout",
+    label: "Callout Box",
+    fields: [
+      { name: "header", label: "Header", type: "string" },
+      { name: "text", label: "Text", type: "string" },
+      {
+        name: "color",
+        label: "Color",
+        type: "string",
+        options: ["primary", "secondary", "gray"],
+      },
+    ],
   },
-  fields: [createImageField("logo", "WasteKnotOrlando Logo Image")],
+  {
+    name: "Button",
+    label: "Button",
+    fields: [
+      createRequiredStringField("Text", "text"),
+      createRequiredStringField("URL", "url"),
+      {
+        name: "style",
+        label: "Style",
+        type: "string",
+        options: ["primary", "secondary"],
+      },
+    ],
+  },
+  {
+    name: "VideoPlayer",
+    label: "Video Player",
+    fields: [createRequiredStringField("Video URL like Youtube URL", "url")],
+  },
+];
+
+const sectionHeaderBlock: Template = {
+  name: "section_header",
+  label: "Section Header",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Header: ${item.title || "New Header"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Title", "title"),
+    { type: "string", name: "subtitle", label: "Subtitle" },
+    {
+      type: "string",
+      name: "align",
+      label: "Alignment",
+      options: ["left", "center", "right"],
+      ui: { component: "select" },
+    },
+  ],
 };
 
-const eventSpotlightBlock = {
-  name: "event_spotlight",
-  label: "Event Spotlight",
+const richTextContentBlock: Template = {
+  name: "rich_text_content",
+  label: "Rich Text Content",
+  ui: { itemProps: () => ({ label: "Rich Text Content" }) },
+  fields: [
+    {
+      type: "rich-text",
+      name: "body",
+      label: "Body",
+      isBody: true,
+      templates: richTextTemplates,
+    },
+    {
+      type: "string",
+      name: "align",
+      label: "Text Alignment",
+      options: ["left", "center", "right"],
+      ui: { component: "select" },
+    },
+  ],
+};
+
+const twoColumnBlock: Template = {
+  name: "two_column",
+  label: "Two-Column Layout",
+  ui: { itemProps: () => ({ label: "Two-Column Layout" }) },
+  fields: [
+    {
+      name: "left",
+      label: "Left Column",
+      type: "rich-text",
+      templates: richTextTemplates,
+    },
+    {
+      name: "right",
+      label: "Right Column",
+      type: "rich-text",
+      templates: richTextTemplates,
+    },
+  ],
+};
+
+const imageGalleryBlock: Template = {
+  name: "image_gallery",
+  label: "Image Gallery",
   ui: {
-    itemProps: (item: { title?: string }) => ({
-      label: `Event Spotlight: ${item.title || "No Title"}`,
+    itemProps: (item: ItemProps) => ({
+      label: `Gallery: ${item.title || "New Image Gallery"}`,
     }),
   },
   fields: [
     {
       type: "string",
       name: "title",
-      label: "Section Title",
-      required: true,
+      label: "Gallery Title",
     },
     {
-      type: "reference",
-      label: "Fallback Event (if no upcoming events)",
-      name: "event",
-      collections: ["event"],
-      required: false,
+      type: "object",
+      name: "images",
+      label: "Images",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({ label: item.alt || "New Image" }),
+      },
+      fields: [
+        { type: "image", name: "src", label: "Image File", required: true },
+        createRequiredStringField("Alternative Text", "alt"),
+      ],
     },
   ],
 };
 
-const quickLinksBlock = {
+const buttonGroupBlock: Template = {
+  name: "button_group",
+  label: "Button Group",
+  ui: { itemProps: () => ({ label: "Button Group" }) },
+  fields: [
+    {
+      type: "object",
+      name: "buttons",
+      label: "Buttons",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({ label: item.text || "New Button" }),
+      },
+      fields: [
+        createRequiredStringField("Button Text", "text"),
+        createRequiredStringField("Button Link", "link"),
+      ],
+    },
+  ],
+};
+
+const eventSpotlightBlock: Template = {
+  name: "event_spotlight",
+  label: "Event Spotlight",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Event Spotlight: ${item.title || "No Title"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Section Title", "title"),
+    {
+      type: "reference",
+      label: "Event to Feature",
+      name: "event",
+      description: "Please select an event to spotlight.",
+      collections: ["event"],
+      required: true,
+    },
+  ],
+};
+
+const quickLinksBlock: Template = {
   name: "quick_links",
   label: "Quick Links",
-  ui: {
-    itemProps: () => ({ label: "Quick Links" }),
-  },
+  ui: { itemProps: () => ({ label: "Quick Links" }) },
   fields: [
     {
       type: "object",
@@ -94,181 +234,84 @@ const quickLinksBlock = {
       name: "links",
       list: true,
       ui: {
-        itemProps: (item: { title?: string }) => ({
-          label: item.title || "New Link",
-        }),
+        itemProps: (item: ItemProps) => ({ label: item.title || "New Link" }),
       },
       fields: [
-        {
-          type: "string",
-          name: "title",
-          label: "Title",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "icon",
-          label: "Icon Name",
-          description: "Icons from materialUI library",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "href",
-          label: "URL",
-          required: true,
-        },
-      ],
-    },
-    {
-      type: "object",
-      label: "Work With Us Button",
-      name: "workWithUs",
-      fields: [
-        {
-          type: "string",
-          name: "collaborateLink",
-          label: "Collaborate Form URL",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "volunteerLink",
-          label: "Volunteer Form URL",
-          required: true,
-        },
+        createRequiredStringField("Title", "title"),
+        createRequiredStringField(
+          "Icon Name",
+          "icon",
+          "Find icon names from materialUI library."
+        ),
+        createRequiredStringField("URL", "href"),
       ],
     },
   ],
 };
 
-const missionStatementBlock = {
+const missionStatementBlock: Template = {
   name: "mission_statement",
   label: "Mission Statement",
   ui: {
-    itemProps: (item: { title?: string }) => ({
+    itemProps: (item: ItemProps) => ({
       label: `Mission Statement: ${item.title || "No Title"}`,
     }),
   },
   fields: [
     createImageField(),
-    {
-      type: "string",
-      name: "title",
-      label: "Title",
-      required: true,
-    },
+    createRequiredStringField("Title", "title"),
     {
       type: "rich-text",
       name: "statement",
       label: "Statement",
       required: true,
+      description: "(Required)",
+      templates: richTextTemplates,
     },
   ],
 };
 
-const teamBoardBlock = {
-  name: "team_board",
-  label: "Team/Board Section",
+const zeffyDonationBlock: Template = {
+  name: "zeffy_donation",
+  label: "Zeffy Donation Block",
   ui: {
-    itemProps: (item: { title?: string }) => ({
-      label: `Team/Board: ${item.title || "No Title"}`,
+    itemProps: (item: ItemProps) => ({
+      label: `Zeffy: ${item.title || "New Zeffy Block"}`,
     }),
   },
   fields: [
+    createRequiredStringField("Title", "title"),
+    createRequiredStringField(
+      "Text",
+      "text",
+      "Description for Zeffy donations."
+    ),
+    createRequiredStringField("Button Text", "buttonText"),
     {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
-    },
-    {
-      type: "object",
-      name: "members",
-      label: "Team Members",
-      list: true,
-      ui: {
-        itemProps: (item: { name?: string }) => ({
-          label: item.name || "New Member",
-        }),
-      },
-      fields: [
-        {
-          type: "string",
-          name: "name",
-          label: "Name",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "role",
-          label: "Role",
-          required: true,
-        },
-        createImageField("photo", "Member Photo"),
-      ],
+      ...createRequiredStringField("Zeffy Donation URL", "zeffyLink"),
+      ui: { component: "textarea" },
     },
   ],
 };
 
-const donationBlock = {
-  name: "donation_section",
-  label: "Donation Section",
+const itemDonationListBlock: Template = {
+  name: "item_donation_list",
+  label: "Item Donation List",
   ui: {
-    itemProps: (item: { title?: string }) => ({
-      label: `Donation Section: ${item.title || "No Title"}`,
+    itemProps: (item: ItemProps) => ({
+      label: `Donation Lists: ${item.title || ""}`,
     }),
   },
   fields: [
-    {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
-    },
-    { type: "string", name: "subtitle", label: "Subtitle" },
-    {
-      type: "string",
-      name: "zeffyTitle",
-      label: "Zeffy Card Title",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "zeffyText",
-      label: "Zeffy Card Text",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "zeffyLink",
-      label: "Zeffy Donation URL",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "itemsTitle",
-      label: "Items Card Title",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "acceptedHeader",
-      label: "Accepted Items Header",
-      required: true,
-    },
+    createRequiredStringField("Section Title", "title"),
+    createRequiredStringField("Accepted Header", "acceptedHeader"),
     {
       type: "string",
       name: "acceptedItems",
       list: true,
       label: "Accepted Items List",
     },
-    {
-      type: "string",
-      name: "notAcceptedHeader",
-      label: "Not Accepted Items Header",
-      required: true,
-    },
+    createRequiredStringField("Not Accepted Header", "notAcceptedHeader"),
     {
       type: "string",
       name: "notAcceptedItems",
@@ -278,151 +321,29 @@ const donationBlock = {
   ],
 };
 
-const volunteerBlock = {
-  name: "volunteer_section",
-  label: "Volunteer/Collaborate Section",
-  ui: {
-    itemProps: (item: { title?: string }) => ({
-      label: `Volunteer Section: ${item.title || "No Title"}`,
-    }),
-  },
-  fields: [
-    {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
-    },
-    { type: "string", name: "subtitle", label: "Subtitle" },
-    {
-      type: "object",
-      name: "cards",
-      label: "Info Cards",
-      list: true,
-      ui: {
-        itemProps: (item: { title?: string }) => ({
-          label: item.title || "New Card",
-        }),
-      },
-      fields: [
-        {
-          type: "string",
-          name: "title",
-          label: "Card Title",
-          required: true,
-        },
-        {
-          type: "string",
-          name: "description",
-          label: "Card Description",
-          required: true,
-        },
-        createButtonField("button", "Card Button"),
-      ],
-    },
-  ],
-};
-
-const faqBlock = {
-  name: "faq",
-  label: "FAQ Section",
-  ui: {
-    itemProps: (item: { title?: string }) => ({
-      label: `FAQ: ${item.title || "No Title"}`,
-    }),
-  },
-  fields: [
-    {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
-    },
-    {
-      type: "object",
-      name: "questions",
-      label: "Questions",
-      list: true,
-      ui: {
-        itemProps: (item: { question?: string }) => ({
-          label: item.question || "New Question",
-        }),
-      },
-      fields: [
-        {
-          type: "string",
-          name: "question",
-          label: "Question",
-          required: true,
-        },
-        {
-          type: "rich-text",
-          name: "answer",
-          label: "Answer",
-          required: true,
-        },
-      ],
-    },
-  ],
-};
-
-const richTextContentBlock = {
-  name: "rich_text_content",
-  label: "Rich Text Content",
-  ui: {
-    itemProps: () => ({ label: "Rich Text Content" }),
-  },
-  fields: [
-    {
-      type: "string",
-      name: "align",
-      label: "Text Alignment",
-      options: ["left", "center", "right"],
-      ui: {
-        component: "select",
-      },
-    },
-    {
-      type: "rich-text",
-      name: "body",
-      label: "Body",
-      isBody: true,
-    },
-  ],
-};
-
-const eventsListingBlock = {
+const eventsListingBlock: Template = {
   name: "events_listing",
   label: "Events Listing",
   ui: {
-    itemProps: (item: { title?: string }) => ({
+    itemProps: (item: ItemProps) => ({
       label: `Events Listing: ${item.title || "No Title"}`,
     }),
   },
   fields: [
-    {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
-    },
-    {
-      type: "string",
-      name: "noEventsText",
-      label: "Text when no events.",
-      required: true,
-      description: "Text to show if event list is empty.",
-    },
+    createRequiredStringField("Section Title", "title"),
+    createRequiredStringField("Text when no events.", "noEventsText"),
+    createRequiredStringField("Instagram Button Text", "instaButtonText"),
     {
       type: "object",
       name: "events",
       label: "Events",
       list: true,
       ui: {
-        itemProps: (item: any) => ({
-          label: item?.event
-            ? item.event.split("/").pop().replace(".mdx", "")
-            : "New Event",
+        itemProps: (item: ItemProps) => ({
+          label:
+            item && typeof item.event === "string"
+              ? item.event.split("/").pop().replace(".mdx", "")
+              : "New Event",
         }),
       },
       fields: [
@@ -437,39 +358,240 @@ const eventsListingBlock = {
   ],
 };
 
-const interactiveCalendarBlock = {
+const interactiveCalendarBlock: Template = {
   name: "interactive_calendar",
   label: "Interactive Calendar",
   ui: {
-    itemProps: (item: { title?: string }) => ({
+    itemProps: (item: ItemProps) => ({
       label: `Calendar: ${item.title || "No Title"}`,
     }),
   },
+  fields: [createRequiredStringField("Section Title", "title")],
+};
+
+const teamBoardBlock: Template = {
+  name: "team_board",
+  label: "Team/Board Section",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Team/Board: ${item.title || "No Title"}`,
+    }),
+  },
   fields: [
+    createRequiredStringField("Section Title", "title"),
     {
-      type: "string",
-      name: "title",
-      label: "Section Title",
-      required: true,
+      type: "object",
+      name: "members",
+      label: "Team Members",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({ label: item.name || "New Member" }),
+      },
+      fields: [
+        createRequiredStringField("Name", "name"),
+        createRequiredStringField("Role", "role"),
+        createImageField("photo", "Member Photo"),
+      ],
     },
   ],
 };
 
+const volunteerBlock: Template = {
+  name: "volunteer_section",
+  label: "Volunteer/Collaborate Section",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Volunteer Section: ${item.title || "No Title"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Section Title", "title"),
+    { type: "string", name: "subtitle", label: "Subtitle" },
+    {
+      type: "object",
+      name: "cards",
+      label: "Info Cards",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({ label: item.title || "New Card" }),
+      },
+      fields: [
+        createRequiredStringField("Card Title", "title"),
+        createRequiredStringField("Card Description", "description"),
+        createButtonField("button", "Card Button"),
+      ],
+    },
+  ],
+};
+
+const faqBlock: Template = {
+  name: "faq",
+  label: "FAQ Section",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `FAQ: ${item.title || "New Question"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Section Title", "title"),
+    {
+      type: "object",
+      name: "questions",
+      label: "Questions",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({
+          label: item.question || "New Question",
+        }),
+      },
+      fields: [
+        createRequiredStringField("Question", "question"),
+        {
+          type: "rich-text",
+          name: "answer",
+          label: "Answer",
+          required: true,
+          description: "(Required)",
+          templates: richTextTemplates,
+        },
+      ],
+    },
+  ],
+};
+
+const eventDetailsBlock: Template = {
+  name: "event_details",
+  label: "Event Details",
+  ui: { itemProps: () => ({ label: "Event Details" }) },
+  fields: [
+    {
+      type: "string",
+      name: "placeholder",
+      label: "This block pulls Title, Date, and Address from the fields above.",
+      ui: { component: "hidden" },
+    },
+  ],
+};
+
+const eventImageBlock: Template = {
+  name: "event_image",
+  label: "Event Image",
+  ui: { itemProps: () => ({ label: "Event Image" }) },
+  fields: [
+    {
+      type: "string",
+      name: "placeholder",
+      ui: { component: "hidden" },
+      label: "This block pulls the main event image from the field above.",
+    },
+  ],
+};
+const eventDirectionsBlock: Template = {
+  name: "event_directions",
+  label: "Event Directions",
+  ui: { itemProps: () => ({ label: "Event Directions" }) },
+  fields: [
+    {
+      type: "string",
+      name: "placeholder",
+      ui: { component: "hidden" },
+      label: "This block shows the map links and copyable address.",
+    },
+  ],
+};
+const eventMapEmbedBlock: Template = {
+  name: "event_map_embed",
+  label: "Event Map Embed",
+  ui: { itemProps: () => ({ label: "Event Map Embed" }) },
+  fields: [
+    {
+      type: "string",
+      name: "placeholder",
+      ui: { component: "hidden" },
+      label: "This block displays the embedded Google map.",
+    },
+  ],
+};
+const eventContentBlock: Template = {
+  name: "event_content",
+  label: "Event Content",
+  ui: { itemProps: () => ({ label: "Event Page Content" }) },
+  fields: [
+    {
+      type: "object",
+      label: "Page Content (Blocks)",
+      name: "contentBlocks",
+      list: true,
+      templates: [
+        sectionHeaderBlock,
+        richTextContentBlock,
+        twoColumnBlock,
+        imageGalleryBlock,
+        buttonGroupBlock,
+      ],
+    },
+  ],
+};
+
+const categorizedBlocks: { label: string; templates: Template[] }[] = [
+  {
+    label: "Text & Content",
+    templates: [
+      sectionHeaderBlock,
+      richTextContentBlock,
+      twoColumnBlock,
+      faqBlock,
+    ],
+  },
+  {
+    label: "Media & Interactive",
+    templates: [imageGalleryBlock, buttonGroupBlock, interactiveCalendarBlock],
+  },
+  {
+    label: "Page Sections",
+    templates: [
+      missionStatementBlock,
+      quickLinksBlock,
+      eventSpotlightBlock,
+      teamBoardBlock,
+      volunteerBlock,
+    ],
+  },
+  {
+    label: "Donations & Events",
+    templates: [zeffyDonationBlock, itemDonationListBlock, eventsListingBlock],
+  },
+];
+const allEventLayoutBlocks: Template[] = [
+  eventDetailsBlock,
+  eventImageBlock,
+  eventDirectionsBlock,
+  eventMapEmbedBlock,
+  eventContentBlock,
+];
+
 const schema = defineSchema({
   collections: [
     {
-      label: "Global",
-      name: "global",
-      path: "content/global",
+      label: "Site Settings",
+      name: "settings",
+      path: "content/settings",
       format: "mdx",
       ui: {
         global: true,
-        allowedActions: {
-          create: false,
-          delete: false,
-        },
+        allowedActions: { create: false, delete: false },
       },
       fields: [
+        {
+          type: "object",
+          name: "announcement",
+          label: "Announcement Banner",
+          fields: [
+            { type: "boolean", name: "show", label: "Show Announcement?" },
+            { type: "string", name: "text", label: "Announcement Text" },
+            createButtonField("button", "Announcement Button"),
+          ],
+        },
         {
           type: "object",
           name: "header",
@@ -482,18 +604,13 @@ const schema = defineSchema({
               label: "Navigation Links",
               list: true,
               ui: {
-                itemProps: (item: { title?: string }) => ({
+                itemProps: (item: ItemProps) => ({
                   label: item.title || "New Link",
                 }),
               },
               fields: [
-                {
-                  type: "string",
-                  name: "title",
-                  label: "Title",
-                  required: true,
-                },
-                { type: "string", name: "path", label: "Path", required: true },
+                createRequiredStringField("Title", "title"),
+                createRequiredStringField("Path", "path"),
               ],
             },
           ],
@@ -504,7 +621,9 @@ const schema = defineSchema({
           label: "Footer Settings",
           fields: [
             createImageField("logo", "Footer Logo"),
-            { type: "string", name: "contactEmail", label: "Contact Email" },
+            createRequiredStringField("Contact Header", "contactHeader"),
+            createRequiredStringField("Contact Email", "contactEmail"),
+            createRequiredStringField("Socials Header", "socialsHeader"),
           ],
         },
         {
@@ -528,39 +647,19 @@ const schema = defineSchema({
       path: "content/pages",
       format: "mdx",
       ui: {
-        router: ({ document }) => {
-          if (document._sys.filename === "home") {
-            return `/`;
-          }
-          return `/${document._sys.filename}`;
-        },
+        router: ({ document }: { document: { _sys: { filename: string } } }) =>
+          document._sys.filename === "home"
+            ? `/`
+            : `/${document._sys.filename}`,
       },
       fields: [
-        {
-          type: "string",
-          label: "Title",
-          name: "title",
-          isTitle: true,
-          required: true,
-        },
+        createRequiredStringField("Title", "title"),
         {
           type: "object",
           label: "Page Sections (Blocks)",
           name: "blocks",
           list: true,
-          templates: [
-            topBannerBlock,
-            eventSpotlightBlock,
-            quickLinksBlock,
-            missionStatementBlock,
-            teamBoardBlock,
-            donationBlock,
-            volunteerBlock,
-            faqBlock,
-            richTextContentBlock,
-            eventsListingBlock,
-            interactiveCalendarBlock,
-          ],
+          templates: categorizedBlocks,
         },
       ],
     },
@@ -570,58 +669,66 @@ const schema = defineSchema({
       path: "content/events",
       format: "mdx",
       ui: {
-        router: ({ document }) => {
-          return `/events/${document._sys.filename}`;
-        },
+        router: ({ document }: { document: { _sys: { filename: string } } }) =>
+          `/events/${document._sys.filename}`,
         filename: {
-          slugify: (values) => {
+          slugify: (values: { date?: string; title?: string }) => {
             const date = values.date ? parseISO(values.date) : new Date();
             const datePart = format(date, "yyyy-MM-dd");
-            const titlePart = values.title
-              ? values.title.toLowerCase().replace(/[^a-z0-9]/gi, "-")
-              : "new-event";
+            const titlePart = (values.title || "new-event")
+              .toLowerCase()
+              .replace(/[^a-z0-9]/gi, "-");
             return `${datePart}-${titlePart}`;
           },
         },
       },
-      defaultItem: () => ({
-        title: "New Event",
-        type: "Event Type",
-        date: new Date().toISOString(),
-        address: "Event Location",
-        googleMapsLink: "#",
-        appleMapsLink: "#",
-        embedMapSrc: "#",
-        instagramLink: "https://www.instagram.com/WasteKnotOrlando",
-        body: "Event description goes here.",
-      }),
       fields: [
+        createRequiredStringField("Event Title", "title"),
         {
           type: "string",
-          name: "title",
-          label: "Event Title",
-          isTitle: true,
-          required: true,
+          name: "type",
+          label: "Event Type",
         },
-        { type: "string", name: "type", label: "Event Type" },
         {
           type: "datetime",
           name: "date",
           label: "Date & Time",
           required: true,
+          description: "(Required)",
           ui: { timeFormat: "HH:mm" },
         },
         createImageField(),
-        { type: "string", name: "address", label: "Address", required: true },
+        createRequiredStringField("Address", "address"),
+        {
+          type: "string",
+          name: "directionsHeader",
+          label: "Directions Header Text",
+          description: "Get Directions",
+        },
         { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
         { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
         { type: "string", name: "embedMapSrc", label: "Google Maps Embed URL" },
         { type: "string", name: "instagramLink", label: "Instagram Link" },
         {
-          type: "rich-text",
-          name: "body",
-          label: "Description",
-          isBody: true,
+          type: "string",
+          name: "instagramButtonText",
+          label: "Instagram Button Text",
+          description: "View on Insta",
+        },
+        {
+          type: "boolean",
+          name: "showSignUpButton",
+          label: "Show the Sign-Up Button?",
+        },
+        { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
+        {
+          type: "object",
+          label: "Event Page Layout",
+          name: "layout",
+          list: true,
+          description:
+            "Arrange layout of events here you can even add in new sections.",
+          templates: allEventLayoutBlocks,
         },
       ],
     },

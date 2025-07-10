@@ -15,6 +15,7 @@ const Section = styled("section")(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(8, 0),
 }));
+
 const SectionTitle = styled(Typography)(({ theme }) => ({
   textAlign: "center",
   marginBottom: theme.spacing(6),
@@ -28,6 +29,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
     margin: "16px auto 0",
   },
 }));
+
 const TeamMemberCard = styled(Card)(({ theme }) => ({
   textAlign: "center",
   height: "100%",
@@ -39,14 +41,20 @@ const TeamMemberCard = styled(Card)(({ theme }) => ({
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[6] },
 }));
+
 const TeamMemberImage = styled(CardMedia)({
   aspectRatio: "1 / 1",
   objectFit: "cover",
 });
+
 const TeamMemberContent = styled(CardContent)(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
 }));
+
+const RoleTypography = styled(Typography)({
+  fontWeight: 700,
+});
 
 export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_Board }) => {
   return (
@@ -73,8 +81,8 @@ export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_Board }) => {
               <TeamMemberCard>
                 <TeamMemberImage
                   component="img"
-                  image={member?.photo?.src}
-                  alt={member?.photo?.alt}
+                  image={member?.photo?.src || ""}
+                  alt={member?.photo?.alt || ""}
                   data-tina-field={tinaField(member!, "photo")}
                 />
                 <TeamMemberContent>
@@ -86,15 +94,14 @@ export const TeamBoardBlock = ({ data }: { data: PageBlocksTeam_Board }) => {
                   >
                     {member?.name}
                   </Typography>
-                  <Typography
+                  <RoleTypography
                     variant="h5"
                     component="p"
                     color="secondary"
-                    sx={{ fontWeight: 700 }}
                     data-tina-field={tinaField(member!, "role")}
                   >
                     {member?.role}
-                  </Typography>
+                  </RoleTypography>
                 </TeamMemberContent>
               </TeamMemberCard>
             </Grid>
