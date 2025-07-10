@@ -7,7 +7,7 @@ import Header from "@/components/global/Header";
 import Footer from "@/components/global/Footer";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Settings } from "@/tina/__generated__/types";
+import { Global as Settings } from "@/tina/__generated__/types";
 
 const RootBox = styled(Box)({
   display: "flex",
@@ -21,10 +21,10 @@ const MainContent = styled(Box)({
 
 export const AppWrapper = ({
   children,
-  settingsData,
+  globalData,
 }: {
   children: React.ReactNode;
-  settingsData: Settings;
+  globalData: Settings;
 }) => {
   const { activeTheme } = useAccessibility();
 
@@ -32,11 +32,11 @@ export const AppWrapper = ({
     <ThemeProvider theme={activeTheme}>
       <CssBaseline />
       <RootBox>
-        <Header header={settingsData.header} socials={settingsData.socials} />
+        <Header header={globalData.header} socials={globalData.socials} />
         <MainContent component="main" id="main-content">
           {children}
         </MainContent>
-        <Footer footer={settingsData.footer} socials={settingsData.socials} />
+        <Footer footer={globalData.footer} socials={globalData.socials} />
       </RootBox>
     </ThemeProvider>
   );
