@@ -8,7 +8,6 @@ import Footer from "@/components/global/Footer";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Settings } from "@/tina/__generated__/types";
-import { AnnouncementBanner } from "./AnnouncementBanner";
 
 const RootBox = styled(Box)({
   display: "flex",
@@ -34,7 +33,6 @@ export const AppWrapper = ({
       <CssBaseline />
       <RootBox>
         <Header header={settingsData.header} socials={settingsData.socials} />
-        <AnnouncementBanner data={settingsData.announcement} />
         <MainContent component="main" id="main-content">
           {children}
         </MainContent>

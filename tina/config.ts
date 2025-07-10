@@ -591,16 +591,6 @@ const schema = defineSchema({
       fields: [
         {
           type: "object",
-          name: "announcement",
-          label: "Announcement Banner",
-          fields: [
-            { type: "boolean", name: "show", label: "Show Announcement?" },
-            { type: "string", name: "text", label: "Announcement Text" },
-            createButtonField("button", "Announcement Button"),
-          ],
-        },
-        {
-          type: "object",
           name: "header",
           label: "Header Settings",
           fields: [
