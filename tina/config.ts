@@ -1,5 +1,6 @@
 import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
+import slugify from "slugify";
 
 const branch =
   process.env.GITHUB_BRANCH ||
@@ -631,10 +632,15 @@ const schema = defineSchema({
         filename: {
           slugify: (values: { date?: string; title?: string }) => {
             const date = values.date ? parseISO(values.date) : new Date();
-            const datePart = format(date, "yyyy-MM-dd");
-            const titlePart = (values.title || "new-event")
-              .toLowerCase()
-              .replace(/[^a-z0-9]/gi, "-");
+            const datePart = !isNaN(date.getTime())
+              ? format(date, "yyyy-MM-dd")
+              : format(new Date(), "yyyy-MM-dd");
+
+            const titlePart = slugify(values.title || "new-event", {
+              lower: true,
+              strict: true,
+            });
+
             return `${datePart}-${titlePart}`;
           },
         },
