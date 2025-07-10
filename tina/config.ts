@@ -91,14 +91,9 @@ const richTextTemplates: Template[] = [
 const topBannerBlock: Template = {
   name: "top_banner",
   label: "Top Banner",
-  ui: {
-    itemProps: () => ({
-      label: "Top Banner",
-    }),
-  },
+  ui: { itemProps: () => ({ label: "Top Banner" }) },
   fields: [createImageField("logo", "WasteKnotOrlando Logo Image")],
 };
-
 const sectionHeaderBlock: Template = {
   name: "section_header",
   label: "Section Header",
@@ -119,7 +114,6 @@ const sectionHeaderBlock: Template = {
     },
   ],
 };
-
 const richTextContentBlock: Template = {
   name: "rich_text_content",
   label: "Rich Text Content",
@@ -141,7 +135,6 @@ const richTextContentBlock: Template = {
     },
   ],
 };
-
 const twoColumnBlock: Template = {
   name: "two_column",
   label: "Two-Column Layout",
@@ -161,7 +154,6 @@ const twoColumnBlock: Template = {
     },
   ],
 };
-
 const imageGalleryBlock: Template = {
   name: "image_gallery",
   label: "Image Gallery",
@@ -187,7 +179,6 @@ const imageGalleryBlock: Template = {
     },
   ],
 };
-
 const buttonGroupBlock: Template = {
   name: "button_group",
   label: "Button Group",
@@ -208,7 +199,6 @@ const buttonGroupBlock: Template = {
     },
   ],
 };
-
 const eventSpotlightBlock: Template = {
   name: "event_spotlight",
   label: "Event Spotlight",
@@ -230,7 +220,6 @@ const eventSpotlightBlock: Template = {
     },
   ],
 };
-
 const quickLinksBlock: Template = {
   name: "quick_links",
   label: "Quick Links",
@@ -265,7 +254,6 @@ const quickLinksBlock: Template = {
     },
   ],
 };
-
 const missionStatementBlock: Template = {
   name: "mission_statement",
   label: "Mission Statement",
@@ -287,7 +275,6 @@ const missionStatementBlock: Template = {
     },
   ],
 };
-
 const zeffyDonationBlock: Template = {
   name: "zeffy_donation",
   label: "Zeffy Donation Block",
@@ -310,7 +297,6 @@ const zeffyDonationBlock: Template = {
     },
   ],
 };
-
 const itemDonationListBlock: Template = {
   name: "item_donation_list",
   label: "Item Donation List",
@@ -337,7 +323,6 @@ const itemDonationListBlock: Template = {
     },
   ],
 };
-
 const eventsListingBlock: Template = {
   name: "events_listing",
   label: "Events Listing",
@@ -374,7 +359,6 @@ const eventsListingBlock: Template = {
     },
   ],
 };
-
 const interactiveCalendarBlock: Template = {
   name: "interactive_calendar",
   label: "Interactive Calendar",
@@ -385,7 +369,6 @@ const interactiveCalendarBlock: Template = {
   },
   fields: [createRequiredStringField("Section Title", "title")],
 };
-
 const teamBoardBlock: Template = {
   name: "team_board",
   label: "Team/Board Section",
@@ -412,7 +395,6 @@ const teamBoardBlock: Template = {
     },
   ],
 };
-
 const volunteerBlock: Template = {
   name: "volunteer_section",
   label: "Volunteer/Collaborate Section",
@@ -440,7 +422,6 @@ const volunteerBlock: Template = {
     },
   ],
 };
-
 const faqBlock: Template = {
   name: "faq",
   label: "FAQ Section",
@@ -489,7 +470,6 @@ const eventDetailsBlock: Template = {
     },
   ],
 };
-
 const eventImageBlock: Template = {
   name: "event_image",
   label: "Event Image",
@@ -529,26 +509,6 @@ const eventMapEmbedBlock: Template = {
     },
   ],
 };
-const eventContentBlock: Template = {
-  name: "event_content",
-  label: "Event Content",
-  ui: { itemProps: () => ({ label: "Event Page Content" }) },
-  fields: [
-    {
-      type: "object",
-      label: "Page Content (Blocks)",
-      name: "contentBlocks",
-      list: true,
-      templates: [
-        sectionHeaderBlock,
-        richTextContentBlock,
-        twoColumnBlock,
-        imageGalleryBlock,
-        buttonGroupBlock,
-      ],
-    },
-  ],
-};
 
 const allPageBlockTemplates: Template[] = [
   topBannerBlock,
@@ -569,12 +529,12 @@ const allPageBlockTemplates: Template[] = [
   eventsListingBlock,
 ];
 
-const allEventLayoutBlocks: Template[] = [
+const allEventLayoutTemplates: Template[] = [
   eventDetailsBlock,
   eventImageBlock,
   eventDirectionsBlock,
   eventMapEmbedBlock,
-  eventContentBlock,
+  ...allPageBlockTemplates,
 ];
 
 const schema = defineSchema({
@@ -725,7 +685,7 @@ const schema = defineSchema({
           list: true,
           description:
             "Arrange layout of events here you can even add in new sections.",
-          templates: allEventLayoutBlocks,
+          templates: allEventLayoutTemplates,
         },
       ],
     },

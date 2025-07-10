@@ -1,6 +1,5 @@
 "use client";
 import { Event, PageBlocks, EventLayout } from "@/tina/__generated__/types";
-
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
 import { SectionHeaderBlock } from "./content/SectionHeaderBlock";
@@ -16,8 +15,11 @@ import { ZeffyDonationBlock } from "./sections/ZeffyDonationBlock";
 import { ItemDonationListBlock } from "./sections/ItemDonationListBlock";
 import EventsListing from "../sections/EventsListing";
 import InteractiveCalendar from "../sections/InteractiveCalendar";
-import { EventLayoutRenderer } from "./EventLayoutRenderer";
 import { TopBannerBlock } from "./TopBannerBlock";
+import { EventDetailsBlock } from "./event/EventDetailsBlock";
+import { EventImageBlock } from "./event/EventImageBlock";
+import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
+import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
 
 type AnyBlock = PageBlocks | EventLayout;
 
@@ -25,32 +27,49 @@ interface BlockRendererProps {
   blocks: AnyBlock[] | null | undefined;
   eventData?: Event;
   allEvents?: Event[];
+  mostUpcomingEvent?: Event | null;
 }
 
 export const BlockRenderer = ({
   blocks,
   eventData,
   allEvents = [],
+  mostUpcomingEvent,
 }: BlockRendererProps) => {
   return (
     <>
       {blocks?.map((block, i) => {
         if (!block) return null;
 
-        if (block.__typename.startsWith("EventLayout")) {
-          if (!eventData) return null;
-          return (
-            <EventLayoutRenderer key={i} block={block} eventData={eventData} />
-          );
-        }
-
         switch (block.__typename) {
+          case "EventLayoutEvent_details":
+            return eventData ? (
+              <EventDetailsBlock key={i} data={eventData} />
+            ) : null;
+          case "EventLayoutEvent_image":
+            return eventData ? (
+              <EventImageBlock key={i} data={eventData} />
+            ) : null;
+          case "EventLayoutEvent_directions":
+            return eventData ? (
+              <EventDirectionsBlock key={i} data={eventData} />
+            ) : null;
+          case "EventLayoutEvent_map_embed":
+            return eventData ? (
+              <EventMapEmbedBlock key={i} data={eventData} />
+            ) : null;
           case "PageBlocksButtonGroup":
             return <ButtonGroupBlock key={i} data={block} />;
           case "PageBlocksTop_banner":
             return <TopBannerBlock key={i} data={block} />;
           case "PageBlocksEvent_spotlight":
-            return <EventSpotlightBlock key={i} data={block} />;
+            return (
+              <EventSpotlightBlock
+                key={i}
+                data={block}
+                mostUpcomingEvent={mostUpcomingEvent}
+              />
+            );
           case "PageBlocksQuick_links":
             return <QuickLinksBlock key={i} data={block} />;
           case "PageBlocksMission_statement":
