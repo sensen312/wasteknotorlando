@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import NextLink from "next/link";
 import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
@@ -14,11 +14,25 @@ import {
   Chip,
   Stack,
   CardActionArea,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
-import { tinaField } from "tinacms/dist/react";
+import {
+  LocationOn,
+  CalendarToday,
+  Instagram,
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
+import { tinaField, useCMS } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
+import { useRouter } from "next/navigation";
 
 type UpcomingEvent = Event & {
   dateObj: Date;
@@ -58,12 +72,13 @@ const EventListContainer = styled(Box)(({ theme }) => ({
 
 const StyledEventCard = styled(Card)(({ theme }) => ({
   display: "flex",
+  position: "relative",
   flexDirection: "column",
   [theme.breakpoints.up("md")]: { flexDirection: "row" },
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-  overflow: "hidden",
+  overflow: "visible",
   "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[6] },
 }));
 
@@ -159,6 +174,18 @@ const StyledLocationOn = styled(LocationOn)({
   fontSize: "1.2rem",
 });
 
+const AdminActions = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing(1),
+  right: theme.spacing(1),
+  zIndex: 10,
+  display: "flex",
+  gap: theme.spacing(1),
+  backgroundColor: "rgba(255, 255, 255, 0.8)",
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(0.5),
+}));
+
 export default function EventsListing({
   data,
   allEvents = [],
@@ -166,10 +193,33 @@ export default function EventsListing({
   data: PageBlocksEvents_listing;
   allEvents?: Event[];
 }) {
+  const cms = useCMS();
+  const router = useRouter();
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
     e.stopPropagation();
     window.open(link, "_blank", "noopener,noreferrer");
+  };
+
+  const handleAddEvent = () => {
+    window.location.href = "/admin#/collections/event/~";
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await cms.api.tina.deleteDocument({
+        collection: "event",
+        relativePath: deleteTarget,
+      });
+      setDeleteTarget(null);
+      router.refresh();
+    } catch (error) {
+      console.error("Could not delete event ;-; because:", error);
+      cms.alerts.error("Could not delete event ;-;");
+    }
   };
 
   const upcomingEvents = useMemo(() => {
@@ -211,6 +261,17 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
+      {cms.enabled && (
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleAddEvent}
+          >
+            Add New Event
+          </Button>
+        </Box>
+      )}
       <EventListContainer>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
@@ -220,6 +281,35 @@ export default function EventsListing({
                   key={event.id}
                   data-tina-field={tinaField(event)}
                 >
+                  {cms.enabled && (
+                    <AdminActions>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          cms.events.dispatch({
+                            type: "forms:open",
+                            value: event._sys.path,
+                          });
+                        }}
+                        aria-label={`Edit ${event.title}`}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setDeleteTarget(event._sys.path);
+                        }}
+                        aria-label={`Delete ${event.title}`}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </AdminActions>
+                  )}
                   <StyledCardActionArea
                     component={NextLink}
                     href={`/events/${event._sys.filename}`}
@@ -317,6 +407,25 @@ export default function EventsListing({
           )}
         </Stack>
       </EventListContainer>
+      <Dialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Make sure you actually wanna delete you cannot undelete this event.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PageContainer>
   );
 }
