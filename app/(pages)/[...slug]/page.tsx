@@ -19,9 +19,11 @@ export default async function SlugPage(props: { params: { slug: string[] } }) {
 
     const eventsResult = await client.queries.eventConnection();
     const allEvents =
-      eventsResult.data.eventConnection.edges?.map((edge) => edge.node) || [];
+      eventsResult.data.eventConnection.edges
+        ?.map((edge) => edge?.node)
+        .filter((event): event is Event => !!event) || [];
 
-    return <PageClient {...res} allEvents={allEvents as Event[]} />;
+    return <PageClient {...res} allEvents={allEvents} />;
   } catch {
     notFound();
   }

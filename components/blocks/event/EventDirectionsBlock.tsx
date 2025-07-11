@@ -36,13 +36,13 @@ const MapsButtonStack = styled(Stack)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-export const EventDirectionsBlock = ({ data: event }: { data: Event }) => {
+export const EventDirectionsBlock = ({ eventData }: { eventData: Event }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    if (!event?.address) return;
+    if (!eventData?.address) return;
     navigator.clipboard
-      .writeText(event.address)
+      .writeText(eventData.address)
       .then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -54,36 +54,36 @@ export const EventDirectionsBlock = ({ data: event }: { data: Event }) => {
     <StyledContainer maxWidth="md">
       <Typography
         variant="h4"
-        data-tina-field={tinaField(event, "directionsHeader")}
+        data-tina-field={tinaField(eventData, "directionsHeader")}
         gutterBottom
       >
-        {event.directionsHeader || "Get Directions"}
+        {eventData.directionsHeader || "Get Directions"}
       </Typography>
-      <AddressBox data-tina-field={tinaField(event, "address")}>
-        <Typography>{event.address}</Typography>
+      <AddressBox data-tina-field={tinaField(eventData, "address")}>
+        <Typography>{eventData.address}</Typography>
         <IconButton onClick={handleCopy} aria-label="Copy address">
           {copied ? <CheckCircleOutline color="success" /> : <ContentCopy />}
         </IconButton>
       </AddressBox>
       <MapsButtonStack spacing={1.5}>
-        {event.googleMapsLink && (
+        {eventData.googleMapsLink && (
           <Button
             variant="outlined"
             startIcon={<MapIcon />}
             fullWidth
-            href={event.googleMapsLink}
+            href={eventData.googleMapsLink}
             target="_blank"
             rel="noopener noreferrer"
           >
             Google Maps
           </Button>
         )}
-        {event.appleMapsLink && (
+        {eventData.appleMapsLink && (
           <Button
             variant="outlined"
             startIcon={<AppleIcon />}
             fullWidth
-            href={event.appleMapsLink}
+            href={eventData.appleMapsLink}
             target="_blank"
             rel="noopener noreferrer"
           >

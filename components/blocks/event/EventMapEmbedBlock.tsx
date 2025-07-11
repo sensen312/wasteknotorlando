@@ -1,5 +1,5 @@
 "use client";
-import { EventCore_layoutEvent_map_embed } from "@/tina/__generated__/types";
+import { Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -32,18 +32,14 @@ const parseIframeSrc = (iframeString?: string): string | null => {
   return match ? match[1] : null;
 };
 
-export const EventMapEmbedBlock = ({
-  data,
-}: {
-  data: EventCore_layoutEvent_map_embed;
-}) => {
-  const mapSrc = parseIframeSrc(data.iframeEmbed);
+export const EventMapEmbedBlock = ({ eventData }: { eventData: Event }) => {
+  const mapSrc = parseIframeSrc(eventData.embedMapSrc);
 
   if (!mapSrc) return null;
 
   return (
     <StyledContainer maxWidth="lg">
-      <MapWrapper data-tina-field={tinaField(data, "iframeEmbed")}>
+      <MapWrapper data-tina-field={tinaField(eventData, "embedMapSrc")}>
         <StyledIframe
           src={mapSrc}
           allowFullScreen

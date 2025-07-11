@@ -214,7 +214,7 @@ const eventSpotlightBlock: Template = {
       type: "reference",
       label: "Event to Feature",
       name: "event",
-      description: "Select the event you want to spotlight.",
+      description: "Select an event to spotlight.",
       collections: ["event"],
       required: false,
     },
@@ -455,38 +455,25 @@ const eventDetailsBlock: Template = {
   label: "Event Details",
   ui: { itemProps: () => ({ label: "Event Details" }) },
   fields: [
-    createRequiredStringField("Address", "address"),
     {
       type: "string",
-      name: "instagramLink",
-      label: "Instagram Link",
-    },
-    {
-      type: "string",
-      name: "instagramButtonText",
-      label: "Instagram Button Text",
-      description: "Default: View on Insta",
-    },
-    {
-      type: "boolean",
-      name: "showSignUpButton",
-      label: "Show the Sign-Up Button?",
-    },
-    {
-      type: "string",
-      name: "signUpLink",
-      label: "Sign-Up Form URL",
+      name: "placeholder",
+      label: "This block is now automatic.",
     },
   ],
 };
-
 const eventImageBlock: Template = {
   name: "event_image",
   label: "Event Image",
   ui: { itemProps: () => ({ label: "Event Image" }) },
-  fields: [createImageField()],
+  fields: [
+    {
+      type: "string",
+      name: "placeholder",
+      label: "This block is now automatic.",
+    },
+  ],
 };
-
 const eventDirectionsBlock: Template = {
   name: "event_directions",
   label: "Event Directions",
@@ -494,15 +481,11 @@ const eventDirectionsBlock: Template = {
   fields: [
     {
       type: "string",
-      name: "directionsHeader",
-      label: "Directions Header Text",
-      description: "Default: Get Directions",
+      name: "placeholder",
+      label: "This block is now automatic.",
     },
-    { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
-    { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
   ],
 };
-
 const eventMapEmbedBlock: Template = {
   name: "event_map_embed",
   label: "Event Map Embed",
@@ -510,11 +493,8 @@ const eventMapEmbedBlock: Template = {
   fields: [
     {
       type: "string",
-      name: "iframeEmbed",
-      label: "Paste Iframe Map Embed Here from google maps",
-      ui: {
-        component: "textarea",
-      },
+      name: "placeholder",
+      label: "This block is now automatic.",
     },
   ],
 };
@@ -635,11 +615,7 @@ const schema = defineSchema({
       },
       fields: [
         createRequiredStringField("Event Title", "title"),
-        {
-          type: "string",
-          name: "type",
-          label: "Event Type",
-        },
+        { type: "string", name: "type", label: "Event Type" },
         {
           type: "datetime",
           name: "date",
@@ -648,6 +624,35 @@ const schema = defineSchema({
           description: "(Required)",
           ui: { timeFormat: "HH:mm" },
         },
+        createImageField(),
+        createRequiredStringField("Address", "address"),
+        {
+          type: "string",
+          name: "directionsHeader",
+          label: "Directions Header Text",
+          description: "Default: Get Directions",
+        },
+        { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
+        { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
+        {
+          type: "string",
+          name: "embedMapSrc",
+          label: "Paste Iframe Map Embed Here from google maps",
+          ui: { component: "textarea" },
+        },
+        { type: "string", name: "instagramLink", label: "Instagram Link" },
+        {
+          type: "string",
+          name: "instagramButtonText",
+          label: "Instagram Button Text",
+          description: "Default: View on Insta",
+        },
+        {
+          type: "boolean",
+          name: "showSignUpButton",
+          label: "Show the Sign-Up Button?",
+        },
+        { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
         {
           type: "object",
           label: "Core Event Layout",

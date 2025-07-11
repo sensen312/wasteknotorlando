@@ -1,8 +1,5 @@
 "use client";
-import {
-  Event,
-  EventCore_layoutEvent_details,
-} from "@/tina/__generated__/types";
+import { Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography, Chip, Stack, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -43,13 +40,7 @@ const ActionStack = styled(Stack)({
   marginTop: "24px",
 });
 
-export const EventDetailsBlock = ({
-  data: blockData,
-  eventData,
-}: {
-  data: EventCore_layoutEvent_details;
-  eventData: Event;
-}) => {
+export const EventDetailsBlock = ({ eventData }: { eventData: Event }) => {
   const eventDate = new Date(eventData.date);
   const formattedDate = eventDate.toLocaleDateString("en-US", {
     weekday: "long",
@@ -66,7 +57,7 @@ export const EventDetailsBlock = ({
   });
 
   return (
-    <Container maxWidth="lg" data-tina-field={tinaField(blockData)}>
+    <Container maxWidth="lg" data-tina-field={tinaField(eventData)}>
       <DetailsStack spacing={2}>
         <Box>
           {eventData.type && (
@@ -92,39 +83,39 @@ export const EventDetailsBlock = ({
               {formattedDate} at {formattedTime}
             </Typography>
           </InfoLine>
-          <InfoLine data-tina-field={tinaField(blockData, "address")}>
+          <InfoLine data-tina-field={tinaField(eventData, "address")}>
             <InfoIcon>
               <Place />
             </InfoIcon>
             <Typography variant="h6" component="p">
-              {blockData.address}
+              {eventData.address}
             </Typography>
           </InfoLine>
         </Box>
 
         <ActionStack direction="row" spacing={2} flexWrap="wrap">
-          {blockData.showSignUpButton && blockData.signUpLink && (
+          {eventData.showSignUpButton && eventData.signUpLink && (
             <Button
-              href={blockData.signUpLink}
+              href={eventData.signUpLink}
               target="_blank"
               rel="noopener noreferrer"
               variant="contained"
               color="secondary"
-              data-tina-field={tinaField(blockData, "signUpLink")}
+              data-tina-field={tinaField(eventData, "signUpLink")}
             >
               Sign Up
             </Button>
           )}
-          {blockData.instagramLink && (
+          {eventData.instagramLink && (
             <Button
-              href={blockData.instagramLink}
+              href={eventData.instagramLink}
               target="_blank"
               rel="noopener noreferrer"
               variant="outlined"
               startIcon={<Instagram />}
-              data-tina-field={tinaField(blockData, "instagramLink")}
+              data-tina-field={tinaField(eventData, "instagramLink")}
             >
-              {blockData.instagramButtonText || "View on Instagram"}
+              {eventData.instagramButtonText || "View on Instagram"}
             </Button>
           )}
         </ActionStack>

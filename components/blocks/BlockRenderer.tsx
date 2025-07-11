@@ -2,11 +2,7 @@
 import {
   Event,
   PageBlocks,
-  EventLayout,
-  EventCore_layoutEvent_details,
-  EventCore_layoutEvent_image,
-  EventCore_layoutEvent_directions,
-  EventCore_layoutEvent_map_embed,
+  EventCore_layout,
   PageBlocksTop_banner,
   PageBlocksSection_header,
   PageBlocksRich_text_content,
@@ -24,7 +20,6 @@ import {
   PageBlocksItem_donation_list,
   PageBlocksEvents_listing,
 } from "@/tina/__generated__/types";
-
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
 import { SectionHeaderBlock } from "./content/SectionHeaderBlock";
@@ -46,7 +41,7 @@ import { EventImageBlock } from "./event/EventImageBlock";
 import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
 
-type AnyBlock = PageBlocks | EventLayout;
+type AnyBlock = PageBlocks | EventCore_layout;
 
 interface BlockRendererProps {
   blocks: AnyBlock[] | null | undefined;
@@ -58,7 +53,7 @@ interface BlockRendererProps {
 export const BlockRenderer = ({
   blocks,
   eventData,
-  allEvents = [],
+  allEvents,
   mostUpcomingEvent,
 }: BlockRendererProps) => {
   return (
@@ -66,101 +61,80 @@ export const BlockRenderer = ({
       {blocks?.map((block, i) => {
         if (!block) return null;
 
-        if (block.__typename.startsWith("EventCore_layout")) {
-          switch (block.__typename) {
-            case "EventCore_layoutEvent_details":
-              return eventData ? (
-                <EventDetailsBlock
-                  key={i}
-                  data={block as EventCore_layoutEvent_details}
-                  eventData={eventData}
-                />
-              ) : null;
-            case "EventCore_layoutEvent_image":
-              return (
-                <EventImageBlock
-                  key={i}
-                  data={block as EventCore_layoutEvent_image}
-                />
-              );
-            case "EventCore_layoutEvent_directions":
-              return eventData ? (
-                <EventDirectionsBlock
-                  key={i}
-                  data={block as EventCore_layoutEvent_directions}
-                  eventData={eventData}
-                />
-              ) : null;
-            case "EventCore_layoutEvent_map_embed":
-              return (
-                <EventMapEmbedBlock
-                  key={i}
-                  data={block as EventCore_layoutEvent_map_embed}
-                />
-              );
-            default:
-              return null;
-          }
-        }
-
-        const templateName = block.__typename.split("_").pop();
+        const templateName = block.__typename?.split("_").pop();
 
         switch (templateName) {
-          case "Top_banner":
+          case "details":
+            return eventData ? (
+              <EventDetailsBlock key={i} eventData={eventData} />
+            ) : null;
+          case "image":
+            return eventData ? (
+              <EventImageBlock key={i} eventData={eventData} />
+            ) : null;
+          case "directions":
+            return eventData ? (
+              <EventDirectionsBlock key={i} eventData={eventData} />
+            ) : null;
+          case "embed":
+            return eventData ? (
+              <EventMapEmbedBlock key={i} eventData={eventData} />
+            ) : null;
+          case "banner":
             return (
               <TopBannerBlock key={i} data={block as PageBlocksTop_banner} />
             );
-          case "Section_header":
+          case "header":
             return (
               <SectionHeaderBlock
                 key={i}
                 data={block as PageBlocksSection_header}
               />
             );
-          case "Rich_text_content":
+          case "content":
             return (
               <RichTextContentBlock
                 key={i}
                 data={block as PageBlocksRich_text_content}
               />
             );
-          case "Two_column":
+          case "column":
             return (
               <TwoColumnBlock key={i} data={block as PageBlocksTwo_column} />
             );
           case "Faq":
             return <FaqBlock key={i} data={block as PageBlocksFaq} />;
-          case "Image_gallery":
+          case "gallery":
             return (
               <ImageGalleryBlock
                 key={i}
                 data={block as PageBlocksImage_gallery}
               />
             );
-          case "Button_group":
+          case "group":
             return (
               <ButtonGroupBlock key={i} data={block as PageBlocksButtonGroup} />
             );
-          case "Interactive_calendar":
-            return (
+          case "calendar":
+            return allEvents ? (
               <InteractiveCalendar
                 key={i}
                 data={block as PageBlocksInteractive_calendar}
-                events={allEvents as Event[]}
+                events={allEvents}
               />
-            );
-          case "Mission_statement":
+            ) : null;
+          case "statement":
             return (
               <MissionStatementBlock
                 key={i}
                 data={block as PageBlocksMission_statement}
               />
             );
-          case "Quick_links":
+          case "links":
             return (
               <QuickLinksBlock key={i} data={block as PageBlocksQuick_links} />
             );
-          case "Event_spotlight":
+          case "spotlight":
             return (
               <EventSpotlightBlock
                 key={i}
@@ -168,43 +142,42 @@ export const BlockRenderer = ({
                 mostUpcomingEvent={mostUpcomingEvent}
               />
             );
-          case "Team_board":
+          case "board":
             return (
               <TeamBoardBlock key={i} data={block as PageBlocksTeam_board} />
             );
-          case "Volunteer_section":
+          case "section":
             return (
               <VolunteerBlock
                 key={i}
                 data={block as PageBlocksVolunteer_section}
               />
             );
-          case "Zeffy_donation":
+          case "donation":
             return (
               <ZeffyDonationBlock
                 key={i}
                 data={block as PageBlocksZeffy_donation}
               />
             );
-          case "Item_donation_list":
+          case "list":
             return (
               <ItemDonationListBlock
                 key={i}
                 data={block as PageBlocksItem_donation_list}
               />
             );
-          case "Events_listing":
-            return (
+          case "listing":
+            return allEvents ? (
               <EventsListing
                 key={i}
                 data={block as PageBlocksEvents_listing}
                 allEvents={allEvents}
               />
-            );
+            ) : null;
           default:
             console.warn(
-              "HOW DID U CHOOSE THIS BLOCK IT DOESNT EVEN EXIST",
-              block.__typename
+              `Unhandled block type: ${block.__typename}, Template: ${templateName}`
             );
             return null;
         }

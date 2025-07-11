@@ -26,6 +26,7 @@ export default function EventPageClient(props: {
   data: EventQuery;
   variables: { relativePath: string };
   query: string;
+  allEvents?: EventType[];
 }) {
   const { data } = useTina(props);
   const eventData = data.event;
@@ -53,6 +54,7 @@ export default function EventPageClient(props: {
         <BlockRenderer
           blocks={eventData.additional_blocks}
           eventData={eventData as EventType}
+          allEvents={props.allEvents}
         />
       )}
     </main>

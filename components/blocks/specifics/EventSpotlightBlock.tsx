@@ -71,12 +71,10 @@ const BannerTitle = styled(Typography)({
 
 export const EventSpotlightBlock = ({
   data,
-  mostUpcomingEvent,
 }: {
   data: PageBlocksEvent_Spotlight;
-  mostUpcomingEvent?: Event | null;
 }) => {
-  const event = mostUpcomingEvent || data.event;
+  const event = data.event;
 
   if (!event) {
     return (
@@ -116,7 +114,7 @@ export const EventSpotlightBlock = ({
             <BannerImage
               component="img"
               image={eventData.image?.src ?? undefined}
-              alt={eventData.image?.alt ?? ""}
+              _alt={eventData.image?.alt ?? ""}
             />
             <BannerOverlay>
               <BannerTitle variant="h3" component="h3" gutterBottom>
