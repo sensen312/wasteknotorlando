@@ -214,7 +214,7 @@ const eventSpotlightBlock: Template = {
       type: "reference",
       label: "Event to Feature",
       name: "event",
-      description: "Select the event you want to spotlight,",
+      description: "Select the event you want to spotlight.",
       collections: ["event"],
       required: false,
     },
