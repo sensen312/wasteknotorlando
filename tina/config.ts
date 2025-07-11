@@ -450,38 +450,6 @@ const allPageBlockTemplates: Template[] = [
   eventsListingBlock,
 ];
 
-const eventDetailsBlock: Template = {
-  name: "event_details",
-  label: "Event Details",
-  ui: { itemProps: () => ({ label: "Event Details" }) },
-  fields: [],
-};
-const eventImageBlock: Template = {
-  name: "event_image",
-  label: "Event Image",
-  ui: { itemProps: () => ({ label: "Event Image" }) },
-  fields: [],
-};
-const eventDirectionsBlock: Template = {
-  name: "event_directions",
-  label: "Event Directions",
-  ui: { itemProps: () => ({ label: "Event Directions" }) },
-  fields: [],
-};
-const eventMapEmbedBlock: Template = {
-  name: "event_map_embed",
-  label: "Event Map Embed",
-  ui: { itemProps: () => ({ label: "Event Map Embed" }) },
-  fields: [],
-};
-
-const coreEventLayoutTemplates: Template[] = [
-  eventDetailsBlock,
-  eventImageBlock,
-  eventDirectionsBlock,
-  eventMapEmbedBlock,
-];
-
 const schema = defineSchema({
   collections: [
     {
@@ -631,19 +599,22 @@ const schema = defineSchema({
         { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
         {
           type: "object",
-          label: "Core Event Layout",
-          name: "core_layout",
+          label: "Page Layout",
+          name: "layout_blocks",
           list: true,
-          description:
-            "Add and or reorder the main content blocks for the event page.",
-          templates: coreEventLayoutTemplates,
           ui: {
-            itemProps: (item: any) => ({
-              label:
-                item._template?.replace(/_/g, " ").replace("event ", "") ||
-                "Core Block",
+            itemProps: (item) => ({
+              label: item.label || "New Block",
             }),
           },
+          fields: [
+            {
+              type: "string",
+              name: "label",
+              label: "Component",
+              options: ["Details", "Image", "Directions", "Map Embed"],
+            },
+          ],
         },
         {
           type: "object",
