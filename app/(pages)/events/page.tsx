@@ -1,7 +1,7 @@
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import EventsPageClient from "./EventsPageClient";
-import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
+import { Event } from "@/tina/__generated__/types";
 
 export default async function EventsPage() {
   try {
@@ -9,17 +9,13 @@ export default async function EventsPage() {
       relativePath: "events.mdx",
     });
 
-    const eventsListingBlock = pageResult.data.page.blocks?.find(
-      (block): block is PageBlocksEvents_listing =>
-        block?.__typename === "PageBlocksEvents_listing"
-    );
-
-    const curatedEvents =
-      eventsListingBlock?.events
-        ?.map((item) => item?.event)
+    const eventsResult = await client.queries.eventConnection();
+    const allEvents =
+      eventsResult.data.eventConnection.edges
+        ?.map((edge) => edge?.node)
         .filter((event): event is Event => !!event) || [];
 
-    return <EventsPageClient pageData={pageResult} allEvents={curatedEvents} />;
+    return <EventsPageClient pageData={pageResult} allEvents={allEvents} />;
   } catch (error) {
     console.error("Failed to fetch data for events page:", error);
     notFound();

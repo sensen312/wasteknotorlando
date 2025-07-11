@@ -2,7 +2,7 @@ import client from "@/tina/client";
 import { notFound } from "next/navigation";
 import fs from "fs";
 import path from "path";
-import { BlockRenderer } from "@/components/blocks/BlockRenderer";
+import EventPageClient from "./EventPageClient";
 
 export default async function IndividualEventPage({
   params,
@@ -14,16 +14,12 @@ export default async function IndividualEventPage({
       relativePath: `${params.slug}.mdx`,
     });
 
-    const eventData = eventResult.data.event;
-
-    if (!eventData) {
-      notFound();
-    }
-
     return (
-      <main id="main-content">
-        <BlockRenderer blocks={eventData.layout} eventData={eventData} />
-      </main>
+      <EventPageClient
+        data={eventResult.data}
+        variables={eventResult.variables}
+        query={eventResult.query}
+      />
     );
   } catch (e) {
     console.error(e);

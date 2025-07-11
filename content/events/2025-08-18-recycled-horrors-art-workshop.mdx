@@ -20,13 +20,12 @@ instagramLink: "https://www.instagram.com/wasteknotorlando/p/DK2qNmHpLrl/"
 instagramButtonText: View on Instagram
 showSignUpButton: true
 signUpLink: "https://www.zeffy.com/ticketing/81825-recycled-horrors-art-workshop"
-layout:
+core_layout:
   - _template: event_details
   - _template: event_image
-  - contentBlocks:
-      - body: ""
-        _template: rich_text_content
-    _template: event_content
   - _template: event_directions
   - _template: event_map_embed
+additional_blocks:
+  - body: ""
+    _template: rich_text_content
 ---

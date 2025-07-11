@@ -20,6 +20,7 @@ import { EventDetailsBlock } from "./event/EventDetailsBlock";
 import { EventImageBlock } from "./event/EventImageBlock";
 import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
+import { EventContentBlock } from "./event/EventContentBlock";
 
 type AnyBlock = PageBlocks | EventLayout;
 
@@ -50,6 +51,8 @@ export const BlockRenderer = ({
             return eventData ? (
               <EventImageBlock key={i} data={eventData} />
             ) : null;
+          case "EventLayoutEvent_content":
+            return <EventContentBlock key={i} data={block} />;
           case "EventLayoutEvent_directions":
             return eventData ? (
               <EventDirectionsBlock key={i} data={eventData} />

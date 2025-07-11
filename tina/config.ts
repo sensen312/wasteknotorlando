@@ -331,28 +331,6 @@ const eventsListingBlock: Template = {
     createRequiredStringField("Section Title", "title"),
     createRequiredStringField("Text when no events.", "noEventsText"),
     createRequiredStringField("Instagram Button Text", "instaButtonText"),
-    {
-      type: "object",
-      name: "events",
-      label: "Events",
-      list: true,
-      ui: {
-        itemProps: (item: ItemProps) => ({
-          label:
-            item && typeof item.event === "string"
-              ? item.event.split("/").pop().replace(".mdx", "")
-              : "New Event",
-        }),
-      },
-      fields: [
-        {
-          type: "reference",
-          name: "event",
-          label: "Event",
-          collections: ["event"],
-        },
-      ],
-    },
   ],
 };
 const interactiveCalendarBlock: Template = {
@@ -453,6 +431,25 @@ const faqBlock: Template = {
   ],
 };
 
+const allPageBlockTemplates: Template[] = [
+  topBannerBlock,
+  sectionHeaderBlock,
+  richTextContentBlock,
+  twoColumnBlock,
+  faqBlock,
+  imageGalleryBlock,
+  buttonGroupBlock,
+  interactiveCalendarBlock,
+  missionStatementBlock,
+  quickLinksBlock,
+  eventSpotlightBlock,
+  teamBoardBlock,
+  volunteerBlock,
+  zeffyDonationBlock,
+  itemDonationListBlock,
+  eventsListingBlock,
+];
+
 const eventDetailsBlock: Template = {
   name: "event_details",
   label: "Event Details",
@@ -506,47 +503,11 @@ const eventMapEmbedBlock: Template = {
   ],
 };
 
-const allPageBlockTemplates: Template[] = [
-  topBannerBlock,
-  sectionHeaderBlock,
-  richTextContentBlock,
-  twoColumnBlock,
-  faqBlock,
-  imageGalleryBlock,
-  buttonGroupBlock,
-  interactiveCalendarBlock,
-  missionStatementBlock,
-  quickLinksBlock,
-  eventSpotlightBlock,
-  teamBoardBlock,
-  volunteerBlock,
-  zeffyDonationBlock,
-  itemDonationListBlock,
-  eventsListingBlock,
-];
-
-const eventContentBlock: Template = {
-  name: "event_content",
-  label: "Event Content",
-  ui: { itemProps: () => ({ label: "Event Rich Content" }) },
-  fields: [
-    {
-      type: "object",
-      label: "Content Sections",
-      name: "contentBlocks",
-      list: true,
-      templates: allPageBlockTemplates,
-    },
-  ],
-};
-
-const allEventLayoutTemplates: Template[] = [
+const coreEventLayoutTemplates: Template[] = [
   eventDetailsBlock,
   eventImageBlock,
-  eventContentBlock,
   eventDirectionsBlock,
   eventMapEmbedBlock,
-  ...allPageBlockTemplates,
 ];
 
 const schema = defineSchema({
@@ -697,12 +658,26 @@ const schema = defineSchema({
         { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
         {
           type: "object",
-          label: "Event Page Layout",
-          name: "layout",
+          label: "Core Event Layout",
+          name: "core_layout",
           list: true,
-          description:
-            "Arrange layout of events here you can even add in new sections.",
-          templates: allEventLayoutTemplates,
+          description: "2x2 event blocks that can be reordered.",
+          templates: coreEventLayoutTemplates,
+          ui: {
+            itemProps: (item: any) => ({
+              label:
+                item._template?.replace("event_", "").replace("_", " ") ||
+                "Core Block",
+            }),
+          },
+        },
+        {
+          type: "object",
+          label: "Additional Content Blocks",
+          name: "additional_blocks",
+          list: true,
+          description: "Add more content here.",
+          templates: allPageBlockTemplates,
         },
       ],
     },
