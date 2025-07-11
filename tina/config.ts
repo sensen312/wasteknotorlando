@@ -212,9 +212,10 @@ const eventSpotlightBlock: Template = {
     createRequiredStringField("Section Title", "title"),
     {
       type: "reference",
-      label: "Event to Feature",
+      label: "Event to Feature (Optional)",
       name: "event",
-      description: "Select an event to spotlight.",
+      description:
+        "Select an event to spotlight. If empty, the next upcoming event will be shown automatically.",
       collections: ["event"],
       required: false,
     },
@@ -454,49 +455,25 @@ const eventDetailsBlock: Template = {
   name: "event_details",
   label: "Event Details",
   ui: { itemProps: () => ({ label: "Event Details" }) },
-  fields: [
-    {
-      type: "string",
-      name: "placeholder",
-      label: "This block is now automatic.",
-    },
-  ],
+  fields: [],
 };
 const eventImageBlock: Template = {
   name: "event_image",
   label: "Event Image",
   ui: { itemProps: () => ({ label: "Event Image" }) },
-  fields: [
-    {
-      type: "string",
-      name: "placeholder",
-      label: "This block is now automatic.",
-    },
-  ],
+  fields: [],
 };
 const eventDirectionsBlock: Template = {
   name: "event_directions",
   label: "Event Directions",
   ui: { itemProps: () => ({ label: "Event Directions" }) },
-  fields: [
-    {
-      type: "string",
-      name: "placeholder",
-      label: "This block is now automatic.",
-    },
-  ],
+  fields: [],
 };
 const eventMapEmbedBlock: Template = {
   name: "event_map_embed",
   label: "Event Map Embed",
   ui: { itemProps: () => ({ label: "Event Map Embed" }) },
-  fields: [
-    {
-      type: "string",
-      name: "placeholder",
-      label: "This block is now automatic.",
-    },
-  ],
+  fields: [],
 };
 
 const coreEventLayoutTemplates: Template[] = [
