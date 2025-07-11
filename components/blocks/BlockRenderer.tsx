@@ -40,6 +40,7 @@ import { EventDetailsBlock } from "./event/EventDetailsBlock";
 import { EventImageBlock } from "./event/EventImageBlock";
 import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
+import type { TinaCMS } from "tinacms";
 
 type AnyBlock = PageBlocks | EventCore_layout;
 
@@ -48,6 +49,7 @@ interface BlockRendererProps {
   eventData?: Event;
   allEvents?: Event[];
   mostUpcomingEvent?: Event | null;
+  cms?: TinaCMS;
 }
 
 export const BlockRenderer = ({
@@ -55,6 +57,7 @@ export const BlockRenderer = ({
   eventData,
   allEvents,
   mostUpcomingEvent,
+  cms,
 }: BlockRendererProps) => {
   return (
     <>
@@ -168,16 +171,17 @@ export const BlockRenderer = ({
               />
             );
           case "listing":
-            return allEvents ? (
+            return allEvents && cms ? (
               <EventsListing
                 key={i}
                 data={block as PageBlocksEvents_listing}
                 allEvents={allEvents}
+                cms={cms}
               />
             ) : null;
           default:
             console.warn(
-              `Unhandled block type: ${block.__typename}, Template: ${templateName}`
+              `HOW DID U CHOOSE THIS BLOCK IT DOESNT EVEN EXIST: ${block.__typename}, TEMPLATE: ${templateName}`
             );
             return null;
         }

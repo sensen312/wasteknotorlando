@@ -31,10 +31,9 @@ import {
   Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
-import { useCMS } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { useRouter } from "next/navigation";
-
+import type { TinaCMS } from "tinacms";
 type UpcomingEvent = Event & {
   dateObj: Date;
 };
@@ -190,11 +189,12 @@ const AdminActions = styled(Box)(({ theme }) => ({
 export default function EventsListing({
   data,
   allEvents = [],
+  cms,
 }: {
   data: PageBlocksEvents_listing;
   allEvents?: Event[];
+  cms: TinaCMS;
 }) {
-  const cms = useCMS();
   const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 

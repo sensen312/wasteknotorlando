@@ -10,7 +10,7 @@ export default function ListingPageClient(props: {
   query: string;
   allEvents: Event[];
 }) {
-  const { data } = useTina({
+  const { data, cms } = useTina({
     query: props.query,
     variables: props.variables,
     data: props.data,
@@ -23,7 +23,11 @@ export default function ListingPageClient(props: {
   return (
     <main id="main-content">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <BlockRenderer blocks={data.page.blocks} allEvents={props.allEvents} />
+        <BlockRenderer
+          blocks={data.page.blocks}
+          allEvents={props.allEvents}
+          cms={cms}
+        />
       </Container>
     </main>
   );
