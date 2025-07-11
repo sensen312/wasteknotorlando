@@ -457,10 +457,7 @@ const schema = defineSchema({
       name: "global",
       path: "content/global",
       format: "mdx",
-      ui: {
-        global: true,
-        allowedActions: { create: false, delete: false },
-      },
+
       fields: [
         {
           type: "object",

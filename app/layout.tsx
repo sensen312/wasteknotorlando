@@ -5,6 +5,7 @@ import "./globals.css";
 import { AppWrapper } from "@/components/global/ClientWrappers";
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
+import { Global } from "@/tina/__generated__/types";
 
 export const metadata: Metadata = {
   title: "WasteKnotOrlando",
@@ -23,12 +24,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const globalDataResult = await client.queries.global({
-    relativePath: "index.mdx",
-  });
+  const globalConnectionResult = await client.queries.globalConnection();
 
-  if (!globalDataResult.data.global) {
-    console.error("Failed fechting global data check content/global/index.mdx");
+  const globalData = globalConnectionResult.data.globalConnection.edges?.[0]
+    ?.node as Global;
+
+  if (!globalData) {
+    console.error(
+      "Failed to fetch global data. Dude u need something in 'content/global'."
+    );
     notFound();
   }
 
@@ -38,9 +42,7 @@ export default async function RootLayout({
         <SkipToContentLink />
         <AppRouterCacheProvider options={{ key: "mui" }}>
           <AccessibilityProvider>
-            <AppWrapper globalData={globalDataResult.data.global}>
-              {children}
-            </AppWrapper>
+            <AppWrapper globalData={globalData}>{children}</AppWrapper>
           </AccessibilityProvider>
         </AppRouterCacheProvider>
       </body>
