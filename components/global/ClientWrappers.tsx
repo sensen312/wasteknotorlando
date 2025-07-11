@@ -7,7 +7,8 @@ import Header from "@/components/global/Header";
 import Footer from "@/components/global/Footer";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Global as Settings } from "@/tina/__generated__/types";
+import { useTina } from "tinacms/dist/react";
+import { GlobalQuery } from "@/tina/__generated__/types";
 
 const RootBox = styled(Box)({
   display: "flex",
@@ -19,14 +20,15 @@ const MainContent = styled(Box)({
   flexGrow: 1,
 });
 
-export const AppWrapper = ({
-  children,
-  globalData,
-}: {
+export const AppWrapper = (props: {
   children: React.ReactNode;
-  globalData: Settings;
+  data: GlobalQuery;
+  variables: { relativePath: string };
+  query: string;
 }) => {
+  const { data: liveData } = useTina(props);
   const { activeTheme } = useAccessibility();
+  const globalData = liveData.global;
 
   return (
     <ThemeProvider theme={activeTheme}>
@@ -34,7 +36,7 @@ export const AppWrapper = ({
       <RootBox>
         <Header header={globalData.header} socials={globalData.socials} />
         <MainContent component="main" id="main-content">
-          {children}
+          {props.children}
         </MainContent>
         <Footer footer={globalData.footer} socials={globalData.socials} />
       </RootBox>
