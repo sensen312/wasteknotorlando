@@ -423,7 +423,7 @@ const faqBlock: Template = {
           name: "answer",
           label: "Answer",
           required: true,
-          description: "(Required)",
+          description: "(Required!)",
           templates: richTextTemplates,
         },
       ],
