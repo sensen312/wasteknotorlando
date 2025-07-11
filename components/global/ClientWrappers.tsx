@@ -20,13 +20,16 @@ const MainContent = styled(Box)({
   flexGrow: 1,
 });
 
-export const AppWrapper = (props: {
+export const AppWrapper = ({
+  children,
+  ...tinaProps // lol
+}: {
   children: React.ReactNode;
   data: GlobalQuery;
   variables: { relativePath: string };
   query: string;
 }) => {
-  const { data: liveData } = useTina(props);
+  const { data: liveData } = useTina(tinaProps);
   const { activeTheme } = useAccessibility();
   const globalData = liveData.global;
 
@@ -36,7 +39,7 @@ export const AppWrapper = (props: {
       <RootBox>
         <Header header={globalData.header} socials={globalData.socials} />
         <MainContent component="main" id="main-content">
-          {props.children}
+          {children}
         </MainContent>
         <Footer footer={globalData.footer} socials={globalData.socials} />
       </RootBox>
