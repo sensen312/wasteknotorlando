@@ -1,5 +1,8 @@
 "use client";
-import { Event } from "@/tina/__generated__/types";
+import {
+  Event,
+  EventCore_layoutEvent_details,
+} from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography, Chip, Stack, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -40,8 +43,14 @@ const ActionStack = styled(Stack)({
   marginTop: "24px",
 });
 
-export const EventDetailsBlock = ({ data: event }: { data: Event }) => {
-  const eventDate = new Date(event.date);
+export const EventDetailsBlock = ({
+  data: blockData,
+  eventData,
+}: {
+  data: EventCore_layoutEvent_details;
+  eventData: Event;
+}) => {
+  const eventDate = new Date(eventData.date);
   const formattedDate = eventDate.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -57,25 +66,25 @@ export const EventDetailsBlock = ({ data: event }: { data: Event }) => {
   });
 
   return (
-    <Container maxWidth="lg" data-tina-field={tinaField(event)}>
+    <Container maxWidth="lg" data-tina-field={tinaField(blockData)}>
       <DetailsStack spacing={2}>
         <Box>
-          {event.type && (
+          {eventData.type && (
             <EventTypeChip
-              label={event.type}
-              data-tina-field={tinaField(event, "type")}
+              label={eventData.type}
+              data-tina-field={tinaField(eventData, "type")}
             />
           )}
           <EventTitle
             variant="h2"
             component="h1"
-            data-tina-field={tinaField(event, "title")}
+            data-tina-field={tinaField(eventData, "title")}
           >
-            {event.title}
+            {eventData.title}
           </EventTitle>
         </Box>
         <Box>
-          <InfoLine data-tina-field={tinaField(event, "date")}>
+          <InfoLine data-tina-field={tinaField(eventData, "date")}>
             <InfoIcon>
               <CalendarToday />
             </InfoIcon>
@@ -83,39 +92,39 @@ export const EventDetailsBlock = ({ data: event }: { data: Event }) => {
               {formattedDate} at {formattedTime}
             </Typography>
           </InfoLine>
-          <InfoLine data-tina-field={tinaField(event, "address")}>
+          <InfoLine data-tina-field={tinaField(blockData, "address")}>
             <InfoIcon>
               <Place />
             </InfoIcon>
             <Typography variant="h6" component="p">
-              {event.address}
+              {blockData.address}
             </Typography>
           </InfoLine>
         </Box>
 
         <ActionStack direction="row" spacing={2} flexWrap="wrap">
-          {event.showSignUpButton && event.signUpLink && (
+          {blockData.showSignUpButton && blockData.signUpLink && (
             <Button
-              href={event.signUpLink}
+              href={blockData.signUpLink}
               target="_blank"
               rel="noopener noreferrer"
               variant="contained"
               color="secondary"
-              data-tina-field={tinaField(event, "signUpLink")}
+              data-tina-field={tinaField(blockData, "signUpLink")}
             >
               Sign Up
             </Button>
           )}
-          {event.instagramLink && (
+          {blockData.instagramLink && (
             <Button
-              href={event.instagramLink}
+              href={blockData.instagramLink}
               target="_blank"
               rel="noopener noreferrer"
               variant="outlined"
               startIcon={<Instagram />}
-              data-tina-field={tinaField(event, "instagramLink")}
+              data-tina-field={tinaField(blockData, "instagramLink")}
             >
-              {event.instagramButtonText || "View on Instagram"}
+              {blockData.instagramButtonText || "View on Instagram"}
             </Button>
           )}
         </ActionStack>

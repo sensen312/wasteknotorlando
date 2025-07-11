@@ -1,5 +1,5 @@
 "use client";
-import { Event } from "@/tina/__generated__/types";
+import { EventCore_layoutEvent_image } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { CardMedia } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -12,15 +12,19 @@ const StyledEventImage = styled(CardMedia)(({ theme }) => ({
   margin: theme.spacing(4, 0),
 }));
 
-export const EventImageBlock = ({ data: event }: { data: Event }) => {
-  if (!event.image?.src) return null;
+export const EventImageBlock = ({
+  data,
+}: {
+  data: EventCore_layoutEvent_image;
+}) => {
+  if (!data.image?.src) return null;
 
   return (
     <StyledEventImage
       component="img"
-      image={event.image.src}
-      alt={event.image.alt ?? ""}
-      data-tina-field={tinaField(event, "image")}
+      image={data.image.src}
+      alt={data.image.alt ?? ""}
+      data-tina-field={tinaField(data, "image")}
     />
   );
 };

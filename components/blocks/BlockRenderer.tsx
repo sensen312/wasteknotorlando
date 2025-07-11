@@ -1,5 +1,30 @@
 "use client";
-import { Event, PageBlocks, EventLayout } from "@/tina/__generated__/types";
+import {
+  Event,
+  PageBlocks,
+  EventLayout,
+  EventCore_layoutEvent_details,
+  EventCore_layoutEvent_image,
+  EventCore_layoutEvent_directions,
+  EventCore_layoutEvent_map_embed,
+  PageBlocksTop_banner,
+  PageBlocksSection_header,
+  PageBlocksRich_text_content,
+  PageBlocksTwo_column,
+  PageBlocksFaq,
+  PageBlocksImage_gallery,
+  PageBlocksButtonGroup,
+  PageBlocksInteractive_calendar,
+  PageBlocksMission_statement,
+  PageBlocksQuick_links,
+  PageBlocksEvent_spotlight,
+  PageBlocksTeam_board,
+  PageBlocksVolunteer_section,
+  PageBlocksZeffy_donation,
+  PageBlocksItem_donation_list,
+  PageBlocksEvents_listing,
+} from "@/tina/__generated__/types";
+
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
 import { SectionHeaderBlock } from "./content/SectionHeaderBlock";
@@ -41,122 +66,145 @@ export const BlockRenderer = ({
       {blocks?.map((block, i) => {
         if (!block) return null;
 
-        switch (block.__typename) {
-          case "EventCore_layoutEvent_details":
-            return eventData ? (
-              <EventDetailsBlock key={i} data={eventData} />
-            ) : null;
-          case "EventCore_layoutEvent_image":
-            return eventData ? (
-              <EventImageBlock key={i} data={eventData} />
-            ) : null;
-          case "EventCore_layoutEvent_directions":
-            return eventData ? (
-              <EventDirectionsBlock key={i} data={eventData} />
-            ) : null;
-          case "EventCore_layoutEvent_map_embed":
-            return eventData ? (
-              <EventMapEmbedBlock key={i} data={eventData} />
-            ) : null;
+        if (block.__typename.startsWith("EventCore_layout")) {
+          switch (block.__typename) {
+            case "EventCore_layoutEvent_details":
+              return eventData ? (
+                <EventDetailsBlock
+                  key={i}
+                  data={block as EventCore_layoutEvent_details}
+                  eventData={eventData}
+                />
+              ) : null;
+            case "EventCore_layoutEvent_image":
+              return (
+                <EventImageBlock
+                  key={i}
+                  data={block as EventCore_layoutEvent_image}
+                />
+              );
+            case "EventCore_layoutEvent_directions":
+              return eventData ? (
+                <EventDirectionsBlock
+                  key={i}
+                  data={block as EventCore_layoutEvent_directions}
+                  eventData={eventData}
+                />
+              ) : null;
+            case "EventCore_layoutEvent_map_embed":
+              return (
+                <EventMapEmbedBlock
+                  key={i}
+                  data={block as EventCore_layoutEvent_map_embed}
+                />
+              );
+            default:
+              return null;
+          }
+        }
 
-          case "EventAdditional_blocksTop_banner":
-            return <TopBannerBlock key={i} data={block} />;
-          case "EventAdditional_blocksSection_header":
-            return <SectionHeaderBlock key={i} data={block} />;
-          case "EventAdditional_blocksRich_text_content":
-            return <RichTextContentBlock key={i} data={block} />;
-          case "EventAdditional_blocksTwo_column":
-            return <TwoColumnBlock key={i} data={block} />;
-          case "EventAdditional_blocksFaq":
-            return <FaqBlock key={i} data={block} />;
-          case "EventAdditional_blocksImage_gallery":
-            return <ImageGalleryBlock key={i} data={block} />;
-          case "EventAdditional_blocksButton_group":
-            return <ButtonGroupBlock key={i} data={block} />;
-          case "EventAdditional_blocksInteractive_calendar":
+        const templateName = block.__typename.split("_").pop();
+
+        switch (templateName) {
+          case "Top_banner":
+            return (
+              <TopBannerBlock key={i} data={block as PageBlocksTop_banner} />
+            );
+          case "Section_header":
+            return (
+              <SectionHeaderBlock
+                key={i}
+                data={block as PageBlocksSection_header}
+              />
+            );
+          case "Rich_text_content":
+            return (
+              <RichTextContentBlock
+                key={i}
+                data={block as PageBlocksRich_text_content}
+              />
+            );
+          case "Two_column":
+            return (
+              <TwoColumnBlock key={i} data={block as PageBlocksTwo_column} />
+            );
+          case "Faq":
+            return <FaqBlock key={i} data={block as PageBlocksFaq} />;
+          case "Image_gallery":
+            return (
+              <ImageGalleryBlock
+                key={i}
+                data={block as PageBlocksImage_gallery}
+              />
+            );
+          case "Button_group":
+            return (
+              <ButtonGroupBlock key={i} data={block as PageBlocksButtonGroup} />
+            );
+          case "Interactive_calendar":
             return (
               <InteractiveCalendar
                 key={i}
-                data={block}
+                data={block as PageBlocksInteractive_calendar}
                 events={allEvents as Event[]}
               />
             );
-          case "EventAdditional_blocksMission_statement":
-            return <MissionStatementBlock key={i} data={block} />;
-          case "EventAdditional_blocksQuick_links":
-            return <QuickLinksBlock key={i} data={block} />;
-          case "EventAdditional_blocksEvent_spotlight":
+          case "Mission_statement":
+            return (
+              <MissionStatementBlock
+                key={i}
+                data={block as PageBlocksMission_statement}
+              />
+            );
+          case "Quick_links":
+            return (
+              <QuickLinksBlock key={i} data={block as PageBlocksQuick_links} />
+            );
+          case "Event_spotlight":
             return (
               <EventSpotlightBlock
                 key={i}
-                data={block}
+                data={block as PageBlocksEvent_spotlight}
                 mostUpcomingEvent={mostUpcomingEvent}
               />
             );
-          case "EventAdditional_blocksTeam_board":
-            return <TeamBoardBlock key={i} data={block} />;
-          case "EventAdditional_blocksVolunteer_section":
-            return <VolunteerBlock key={i} data={block} />;
-          case "EventAdditional_blocksZeffy_donation":
-            return <ZeffyDonationBlock key={i} data={block} />;
-          case "EventAdditional_blocksItem_donation_list":
-            return <ItemDonationListBlock key={i} data={block} />;
-          case "EventAdditional_blocksEvents_listing":
-            return <EventsListing key={i} data={block} allEvents={allEvents} />;
-
-          case "PageBlocksButtonGroup":
-            return <ButtonGroupBlock key={i} data={block} />;
-          case "PageBlocksTop_banner":
-            return <TopBannerBlock key={i} data={block} />;
-          case "PageBlocksEvent_spotlight":
+          case "Team_board":
             return (
-              <EventSpotlightBlock
+              <TeamBoardBlock key={i} data={block as PageBlocksTeam_board} />
+            );
+          case "Volunteer_section":
+            return (
+              <VolunteerBlock
                 key={i}
-                data={block}
-                mostUpcomingEvent={mostUpcomingEvent}
+                data={block as PageBlocksVolunteer_section}
               />
             );
-          case "PageBlocksQuick_links":
-            return <QuickLinksBlock key={i} data={block} />;
-          case "PageBlocksMission_statement":
-            return <MissionStatementBlock key={i} data={block} />;
-          case "PageBlocksTeam_board":
-            return <TeamBoardBlock key={i} data={block} />;
-          case "PageBlocksVolunteer_section":
-            return <VolunteerBlock key={i} data={block} />;
-          case "PageBlocksFaq":
-            return <FaqBlock key={i} data={block} />;
-          case "PageBlocksRich_text_content":
-            return <RichTextContentBlock key={i} data={block} />;
-          case "PageBlocksEvents_listing":
-            return <EventsListing key={i} data={block} allEvents={allEvents} />;
-          case "PageBlocksInteractive_calendar":
+          case "Zeffy_donation":
             return (
-              <InteractiveCalendar
+              <ZeffyDonationBlock
                 key={i}
-                data={block}
-                events={allEvents as Event[]}
+                data={block as PageBlocksZeffy_donation}
               />
             );
-          case "PageBlocksImage_gallery":
-            return <ImageGalleryBlock key={i} data={block} />;
-          case "PageBlocksTwo_column":
-            return <TwoColumnBlock key={i} data={block} />;
-          case "PageBlocksSection_header":
-            return <SectionHeaderBlock key={i} data={block} />;
-          case "PageBlocksZeffy_donation":
-            return <ZeffyDonationBlock key={i} data={block} />;
-          case "PageBlocksItem_donation_list":
-            return <ItemDonationListBlock key={i} data={block} />;
-
+          case "Item_donation_list":
+            return (
+              <ItemDonationListBlock
+                key={i}
+                data={block as PageBlocksItem_donation_list}
+              />
+            );
+          case "Events_listing":
+            return (
+              <EventsListing
+                key={i}
+                data={block as PageBlocksEvents_listing}
+                allEvents={allEvents}
+              />
+            );
           default:
-            const unknownBlockType =
-              block && typeof block === "object" && "__typename" in block
-                ? (block as { __typename: string }).__typename
-                : "Unknown Block";
             console.warn(
               "HOW DID U CHOOSE THIS BLOCK IT DOESNT EVEN EXIST",
-              unknownBlockType
+              block.__typename
             );
             return null;
         }

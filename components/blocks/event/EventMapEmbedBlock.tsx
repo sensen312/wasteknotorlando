@@ -1,5 +1,5 @@
 "use client";
-import { Event } from "@/tina/__generated__/types";
+import { EventCore_layoutEvent_map_embed } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -25,19 +25,31 @@ const StyledIframe = styled("iframe")({
   border: 0,
 });
 
-export const EventMapEmbedBlock = ({ data: event }: { data: Event }) => {
-  const hasValidMapSrc = event.embedMapSrc && event.embedMapSrc !== "#";
-  if (!hasValidMapSrc) return null;
+// gets iframe from URL
+const parseIframeSrc = (iframeString?: string): string | null => {
+  if (!iframeString) return null;
+  const match = iframeString.match(/src="([^"]+)"/);
+  return match ? match[1] : null;
+};
+
+export const EventMapEmbedBlock = ({
+  data,
+}: {
+  data: EventCore_layoutEvent_map_embed;
+}) => {
+  const mapSrc = parseIframeSrc(data.iframeEmbed);
+
+  if (!mapSrc) return null;
 
   return (
     <StyledContainer maxWidth="lg">
-      <MapWrapper data-tina-field={tinaField(event, "embedMapSrc")}>
+      <MapWrapper data-tina-field={tinaField(data, "iframeEmbed")}>
         <StyledIframe
-          src={event.embedMapSrc!}
+          src={mapSrc}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title={`Google Map for ${event.title}`}
+          title={`Google Map for the event`}
         />
       </MapWrapper>
     </StyledContainer>

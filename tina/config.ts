@@ -455,27 +455,38 @@ const eventDetailsBlock: Template = {
   label: "Event Details",
   ui: { itemProps: () => ({ label: "Event Details" }) },
   fields: [
+    createRequiredStringField("Address", "address"),
     {
       type: "string",
-      name: "placeholder",
-      label: "This block gets Title, Date, and Address from the fields above.",
-      ui: { component: "hidden" },
+      name: "instagramLink",
+      label: "Instagram Link",
+    },
+    {
+      type: "string",
+      name: "instagramButtonText",
+      label: "Instagram Button Text",
+      description: "Default: View on Insta",
+    },
+    {
+      type: "boolean",
+      name: "showSignUpButton",
+      label: "Show the Sign-Up Button?",
+    },
+    {
+      type: "string",
+      name: "signUpLink",
+      label: "Sign-Up Form URL",
     },
   ],
 };
+
 const eventImageBlock: Template = {
   name: "event_image",
   label: "Event Image",
   ui: { itemProps: () => ({ label: "Event Image" }) },
-  fields: [
-    {
-      type: "string",
-      name: "placeholder",
-      ui: { component: "hidden" },
-      label: "This block gets the main event image from the field above.",
-    },
-  ],
+  fields: [createImageField()],
 };
+
 const eventDirectionsBlock: Template = {
   name: "event_directions",
   label: "Event Directions",
@@ -483,12 +494,15 @@ const eventDirectionsBlock: Template = {
   fields: [
     {
       type: "string",
-      name: "placeholder",
-      ui: { component: "hidden" },
-      label: "This block shows the map links and the address.",
+      name: "directionsHeader",
+      label: "Directions Header Text",
+      description: "Default: Get Directions",
     },
+    { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
+    { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
   ],
 };
+
 const eventMapEmbedBlock: Template = {
   name: "event_map_embed",
   label: "Event Map Embed",
@@ -496,9 +510,11 @@ const eventMapEmbedBlock: Template = {
   fields: [
     {
       type: "string",
-      name: "placeholder",
-      ui: { component: "hidden" },
-      label: "This block displays the embedded Google map.",
+      name: "iframeEmbed",
+      label: "Paste Iframe Map Embed Here from google maps",
+      ui: {
+        component: "textarea",
+      },
     },
   ],
 };
@@ -632,41 +648,18 @@ const schema = defineSchema({
           description: "(Required)",
           ui: { timeFormat: "HH:mm" },
         },
-        createImageField(),
-        createRequiredStringField("Address", "address"),
-        {
-          type: "string",
-          name: "directionsHeader",
-          label: "Directions Header Text",
-          description: "Default: Get Directions",
-        },
-        { type: "string", name: "googleMapsLink", label: "Google Maps Link" },
-        { type: "string", name: "appleMapsLink", label: "Apple Maps Link" },
-        { type: "string", name: "embedMapSrc", label: "Google Maps Embed URL" },
-        { type: "string", name: "instagramLink", label: "Instagram Link" },
-        {
-          type: "string",
-          name: "instagramButtonText",
-          label: "Instagram Button Text",
-          description: "Default: View on Insta",
-        },
-        {
-          type: "boolean",
-          name: "showSignUpButton",
-          label: "Show the Sign-Up Button?",
-        },
-        { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
         {
           type: "object",
           label: "Core Event Layout",
           name: "core_layout",
           list: true,
-          description: "2x2 event blocks that can be reordered.",
+          description:
+            "Add and or reorder the main content blocks for the event page.",
           templates: coreEventLayoutTemplates,
           ui: {
             itemProps: (item: any) => ({
               label:
-                item._template?.replace("event_", "").replace("_", " ") ||
+                item._template?.replace(/_/g, " ").replace("event ", "") ||
                 "Core Block",
             }),
           },
