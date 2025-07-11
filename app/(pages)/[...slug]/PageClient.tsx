@@ -10,7 +10,7 @@ export function PageClient(props: {
   allEvents?: Event[];
   mostUpcomingEvent?: Event | null;
 }) {
-  const { data } = useTina(props);
+  const { data, cms } = useTina(props);
 
   return (
     <main id="main-content">
@@ -18,6 +18,7 @@ export function PageClient(props: {
         blocks={data.page.blocks}
         allEvents={props.allEvents}
         mostUpcomingEvent={props.mostUpcomingEvent}
+        cms={cms}
       />
     </main>
   );

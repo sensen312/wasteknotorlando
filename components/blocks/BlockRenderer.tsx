@@ -2,7 +2,6 @@
 import {
   Event,
   PageBlocks,
-  EventCore_layout,
   PageBlocksTop_banner,
   PageBlocksSection_header,
   PageBlocksRich_text_content,
@@ -42,7 +41,7 @@ import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
 import type { TinaCMS } from "tinacms";
 
-type AnyBlock = PageBlocks | EventCore_layout;
+type AnyBlock = PageBlocks;
 
 interface BlockRendererProps {
   blocks: AnyBlock[] | null | undefined;
@@ -171,7 +170,7 @@ export const BlockRenderer = ({
               />
             );
           case "listing":
-            return allEvents && cms ? (
+            return allEvents ? (
               <EventsListing
                 key={i}
                 data={block as PageBlocksEvents_listing}

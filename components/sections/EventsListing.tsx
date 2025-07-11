@@ -34,6 +34,7 @@ import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { useRouter } from "next/navigation";
 import type { TinaCMS } from "tinacms";
+
 type UpcomingEvent = Event & {
   dateObj: Date;
 };
@@ -193,7 +194,7 @@ export default function EventsListing({
 }: {
   data: PageBlocksEvents_listing;
   allEvents?: Event[];
-  cms: TinaCMS;
+  cms?: TinaCMS;
 }) {
   const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -209,7 +210,7 @@ export default function EventsListing({
   };
 
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || !cms) return;
     try {
       await cms.api.tina.deleteDocument({
         collection: "event",
@@ -226,18 +227,11 @@ export default function EventsListing({
   const upcomingEvents = useMemo(() => {
     if (!allEvents) return [];
 
-    const tz = "America/New_York";
-    const now = new Date();
-    const todayStr = new Intl.DateTimeFormat("en-CA", {
-      timeZone: tz,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(now);
-    const today = new Date(`${todayStr}T00:00:00.000-04:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     return allEvents
-      .filter((event): event is Event => !!event)
+      .filter((event): event is Event => !!event && !!event.date)
       .map(
         (event: Event): UpcomingEvent => ({
           ...event,
@@ -262,7 +256,7 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      {cms.enabled && (
+      {cms?.enabled && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
           <Button
             variant="contained"
@@ -282,14 +276,14 @@ export default function EventsListing({
                   key={event.id}
                   data-tina-field={tinaField(event)}
                 >
-                  {cms.enabled && (
+                  {cms?.enabled && (
                     <AdminActions>
                       <IconButton
                         size="small"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          cms.events.dispatch({
+                          cms?.events.dispatch({
                             type: "forms:open",
                             value: event._sys.path,
                           });
