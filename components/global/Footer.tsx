@@ -87,7 +87,7 @@ const Footer = ({
               component="h3"
               data-tina-field={tinaField(footer, "contactHeader")}
             >
-              {footer.contactHeader || "Contacts:"}
+              {footer.contactHeader || "Contact Us:"}
             </SectionHeader>
             <FooterLink
               href={`mailto:${footer.contactEmail}`}
