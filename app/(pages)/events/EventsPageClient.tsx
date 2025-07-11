@@ -1,21 +1,37 @@
 "use client";
 import { useTina } from "tinacms/dist/react";
-import { PageQuery, Event } from "@/tina/__generated__/types";
+import { EventQuery, Event as EventType } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
+import { Container } from "@mui/material";
 
-export default function EventsPageClient(props: {
-  pageData: {
-    data: PageQuery;
-    variables: { relativePath: string };
-    query: string;
-  };
-  allEvents: Event[];
+export default function EventPageClient(props: {
+  data: EventQuery;
+  variables: { relativePath: string };
+  query: string;
 }) {
-  const { data: page } = useTina(props.pageData);
+  const { data } = useTina(props);
+  const eventData = data.event;
+
+  if (!eventData) {
+    return null;
+  }
 
   return (
     <main id="main-content">
-      <BlockRenderer blocks={page.page.blocks} allEvents={props.allEvents} />
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        {eventData.core_layout && (
+          <BlockRenderer
+            blocks={eventData.core_layout}
+            eventData={eventData as EventType}
+          />
+        )}
+        {eventData.additional_blocks && (
+          <BlockRenderer
+            blocks={eventData.additional_blocks}
+            eventData={eventData as EventType}
+          />
+        )}
+      </Container>
     </main>
   );
 }

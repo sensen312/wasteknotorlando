@@ -20,7 +20,6 @@ import { EventDetailsBlock } from "./event/EventDetailsBlock";
 import { EventImageBlock } from "./event/EventImageBlock";
 import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
-import { EventContentBlock } from "./event/EventContentBlock";
 
 type AnyBlock = PageBlocks | EventLayout;
 
@@ -43,24 +42,68 @@ export const BlockRenderer = ({
         if (!block) return null;
 
         switch (block.__typename) {
-          case "EventLayoutEvent_details":
+          case "Event_Core_layout_Event_details":
             return eventData ? (
               <EventDetailsBlock key={i} data={eventData} />
             ) : null;
-          case "EventLayoutEvent_image":
+          case "Event_Core_layout_Event_image":
             return eventData ? (
               <EventImageBlock key={i} data={eventData} />
             ) : null;
-          case "EventLayoutEvent_content":
-            return <EventContentBlock key={i} data={block} />;
-          case "EventLayoutEvent_directions":
+          case "Event_Core_layout_Event_directions":
             return eventData ? (
               <EventDirectionsBlock key={i} data={eventData} />
             ) : null;
-          case "EventLayoutEvent_map_embed":
+          case "Event_Core_layout_Event_map_embed":
             return eventData ? (
               <EventMapEmbedBlock key={i} data={eventData} />
             ) : null;
+
+          case "Event_Additional_blocks_Top_banner":
+            return <TopBannerBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Section_header":
+            return <SectionHeaderBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Rich_text_content":
+            return <RichTextContentBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Two_column":
+            return <TwoColumnBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Faq":
+            return <FaqBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Image_gallery":
+            return <ImageGalleryBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Button_group":
+            return <ButtonGroupBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Interactive_calendar":
+            return (
+              <InteractiveCalendar
+                key={i}
+                data={block}
+                events={allEvents as Event[]}
+              />
+            );
+          case "Event_Additional_blocks_Mission_statement":
+            return <MissionStatementBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Quick_links":
+            return <QuickLinksBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Event_spotlight":
+            return (
+              <EventSpotlightBlock
+                key={i}
+                data={block}
+                mostUpcomingEvent={mostUpcomingEvent}
+              />
+            );
+          case "Event_Additional_blocks_Team_board":
+            return <TeamBoardBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Volunteer_section":
+            return <VolunteerBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Zeffy_donation":
+            return <ZeffyDonationBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Item_donation_list":
+            return <ItemDonationListBlock key={i} data={block} />;
+          case "Event_Additional_blocks_Events_listing":
+            return <EventsListing key={i} data={block} allEvents={allEvents} />;
+
           case "PageBlocksButtonGroup":
             return <ButtonGroupBlock key={i} data={block} />;
           case "PageBlocksTop_banner":
