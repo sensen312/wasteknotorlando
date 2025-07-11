@@ -4,6 +4,10 @@ import { EventQuery, Event as EventType } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { Container, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { EventDetailsBlock } from "@/components/blocks/event/EventDetailsBlock";
+import { EventImageBlock } from "@/components/blocks/event/EventImageBlock";
+import { EventDirectionsBlock } from "@/components/blocks/event/EventDirectionsBlock";
+import { EventMapEmbedBlock } from "@/components/blocks/event/EventMapEmbedBlock";
 
 const FlexGridContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -22,6 +26,19 @@ const FlexGridItem = styled(Box)(({ theme }) => ({
   flexDirection: "column",
 }));
 
+const blockMap = {
+  Details: (props: { eventData: EventType }) => (
+    <EventDetailsBlock {...props} />
+  ),
+  Image: (props: { eventData: EventType }) => <EventImageBlock {...props} />,
+  Directions: (props: { eventData: EventType }) => (
+    <EventDirectionsBlock {...props} />
+  ),
+  "Map Embed": (props: { eventData: EventType }) => (
+    <EventMapEmbedBlock {...props} />
+  ),
+};
+
 export default function EventPageClient(props: {
   data: EventQuery;
   variables: { relativePath: string };
@@ -39,14 +56,15 @@ export default function EventPageClient(props: {
     <main id="main-content">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <FlexGridContainer>
-          {eventData.core_layout?.map((block, i) => (
-            <FlexGridItem key={i}>
-              <BlockRenderer
-                blocks={[block]}
-                eventData={eventData as EventType}
-              />
-            </FlexGridItem>
-          ))}
+          {eventData.layout_blocks?.map((block, i) => {
+            if (!block?.label) return null;
+            const Component = blockMap[block.label as keyof typeof blockMap];
+            return Component ? (
+              <FlexGridItem key={i}>
+                <Component eventData={eventData as EventType} />
+              </FlexGridItem>
+            ) : null;
+          })}
         </FlexGridContainer>
       </Container>
 
