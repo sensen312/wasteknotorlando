@@ -30,7 +30,8 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
-import { tinaField, useCMS } from "tinacms/dist/react";
+import { tinaField } from "tinacms/dist/react";
+import { useCMS } from "tinacms";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { useRouter } from "next/navigation";
 
