@@ -212,10 +212,9 @@ const eventSpotlightBlock: Template = {
     createRequiredStringField("Section Title", "title"),
     {
       type: "reference",
-      label: "Event to Feature (Optional)",
+      label: "Event to Feature",
       name: "event",
-      description:
-        "Select an event to spotlight. If empty, the next upcoming event will be shown automatically.",
+      description: "Select the event you want to spotlight,",
       collections: ["event"],
       required: false,
     },

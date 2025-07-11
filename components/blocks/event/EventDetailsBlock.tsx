@@ -99,14 +99,13 @@ export const EventDetailsBlock = ({ eventData }: { eventData: Event }) => {
               href={eventData.signUpLink}
               target="_blank"
               rel="noopener noreferrer"
-              variant="contained"
-              color="secondary"
+              variant="outlined"
               data-tina-field={tinaField(eventData, "signUpLink")}
             >
-              Sign Up
+              {eventData.signUpButtonText || "Sign Up"}
             </Button>
           )}
-          {eventData.instagramLink && (
+          {eventData.showInstagramButton && eventData.instagramLink && (
             <Button
               href={eventData.instagramLink}
               target="_blank"
