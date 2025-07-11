@@ -37,7 +37,7 @@ const createImageField = (name = "image", label = "Image") => ({
       ...createRequiredStringField(
         "Alternative Text",
         "alt",
-        "For screen readers."
+        "For screen readers"
       ),
     },
   ],
