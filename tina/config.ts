@@ -568,6 +568,12 @@ const schema = defineSchema({
           description: "(Required)",
           ui: { timeFormat: "HH:mm" },
         },
+        {
+          type: "rich-text",
+          name: "description",
+          label: "Event Description",
+          templates: richTextTemplates,
+        },
         createImageField(),
         createRequiredStringField("Address", "address"),
         {
@@ -585,6 +591,11 @@ const schema = defineSchema({
           ui: { component: "textarea" },
         },
         { type: "string", name: "instagramLink", label: "Instagram Link" },
+        {
+          type: "boolean",
+          name: "showInstagramButton",
+          label: "Show the Instagram Button?",
+        },
         {
           type: "string",
           name: "instagramButtonText",

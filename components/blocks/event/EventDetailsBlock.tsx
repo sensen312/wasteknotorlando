@@ -4,6 +4,7 @@ import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography, Chip, Stack, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { CalendarToday, Place, Instagram } from "@mui/icons-material";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 const DetailsStack = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -35,6 +36,13 @@ const EventTypeChip = styled(Chip)(({ theme }) => ({
 const EventTitle = styled(Typography)({
   marginTop: "16px",
 });
+
+const DescriptionBox = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+  "& p": {
+    margin: theme.spacing(1, 0),
+  },
+}));
 
 const ActionStack = styled(Stack)({
   marginTop: "24px",
@@ -74,6 +82,13 @@ export const EventDetailsBlock = ({ eventData }: { eventData: Event }) => {
             {eventData.title}
           </EventTitle>
         </Box>
+
+        {eventData.description && (
+          <DescriptionBox data-tina-field={tinaField(eventData, "description")}>
+            <TinaMarkdown content={eventData.description} />
+          </DescriptionBox>
+        )}
+
         <Box>
           <InfoLine data-tina-field={tinaField(eventData, "date")}>
             <InfoIcon>

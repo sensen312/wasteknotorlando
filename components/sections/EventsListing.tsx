@@ -1,12 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import NextLink from "next/link";
-import {
-  Event,
-  PageBlocksEvents_listing,
-  EventLayoutEvent_content,
-  PageBlocksRich_text_content,
-} from "@/tina/__generated__/types";
+import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
   Box,
   Typography,
@@ -23,60 +18,10 @@ import {
 import { styled } from "@mui/material/styles";
 import { LocationOn, CalendarToday, Instagram } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
+import { TinaMarkdown } from "tinacms/dist/rich-text";
 
 type UpcomingEvent = Event & {
   dateObj: Date;
-};
-
-type RichTextNode = {
-  type: string;
-  text?: string;
-  children?: RichTextNode[];
-};
-
-type RichTextAST = {
-  type: "root";
-  children: RichTextNode[];
-};
-
-function isRichTextAST(body: unknown): body is RichTextAST {
-  if (typeof body !== "object" || body === null) return false;
-  const potentialAST = body as Partial<RichTextAST>;
-  return potentialAST.type === "root" && Array.isArray(potentialAST.children);
-}
-
-const getEventPreviewText = (layout: Event["layout"]): string => {
-  if (!layout) return "";
-
-  const contentBlock = layout.find(
-    (block): block is EventLayoutEvent_content =>
-      block?.__typename === "EventLayoutEvent_content"
-  );
-  if (!contentBlock?.contentBlocks) return "";
-
-  const textBlock = contentBlock.contentBlocks.find(
-    (block): block is PageBlocksRich_text_content =>
-      block?.__typename === "PageBlocksRich_text_content"
-  );
-
-  if (!textBlock || !isRichTextAST(textBlock.body)) {
-    return "";
-  }
-
-  let text = "";
-  const extractText = (nodes: RichTextNode[]) => {
-    for (const node of nodes) {
-      if (node.type === "text" && node.text) {
-        text += node.text + " ";
-      }
-      if (node.children) {
-        extractText(node.children);
-      }
-    }
-  };
-
-  extractText(textBlock.body.children);
-  return text.trim();
 };
 
 const PageContainer = styled(Container)(({ theme }) => ({
@@ -182,13 +127,18 @@ const InfoIcon = styled(Box)(({ theme }) => ({
   color: theme.palette.primary.main,
 }));
 
-const DescriptionPreview = styled(Typography)({
+const DescriptionPreview = styled(Box)({
   marginTop: "16px",
   display: "-webkit-box",
   WebkitLineClamp: 3,
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
+  "& blockquote": {
+    margin: 0,
+    padding: 0,
+    border: "none",
+  },
 });
 
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
@@ -261,7 +211,7 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      <EventListContainer data-tina-field={tinaField(data, "events")}>
+      <EventListContainer>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map((event) =>
@@ -324,15 +274,18 @@ export default function EventsListing({
                             {event.address}
                           </Typography>
                         </InfoLine>
-                        <DescriptionPreview
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {getEventPreviewText(event.layout)}
-                        </DescriptionPreview>
+                        {event.description && (
+                          <DescriptionPreview
+                            data-tina-field={tinaField(event, "description")}
+                          >
+                            <Typography variant="body2" color="text.secondary">
+                              <TinaMarkdown content={event.description} />
+                            </Typography>
+                          </DescriptionPreview>
+                        )}
                       </StyledCardContent>
                       <StyledCardActions>
-                        {event.instagramLink && (
+                        {event.showInstagramButton && event.instagramLink && (
                           <Button
                             onClick={(e) =>
                               handleInstaClick(e, event.instagramLink!)
