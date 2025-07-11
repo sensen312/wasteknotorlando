@@ -42,38 +42,38 @@ export const BlockRenderer = ({
         if (!block) return null;
 
         switch (block.__typename) {
-          case "Event_Core_layout_Event_details":
+          case "EventCore_layoutEvent_details":
             return eventData ? (
               <EventDetailsBlock key={i} data={eventData} />
             ) : null;
-          case "Event_Core_layout_Event_image":
+          case "EventCore_layoutEvent_image":
             return eventData ? (
               <EventImageBlock key={i} data={eventData} />
             ) : null;
-          case "Event_Core_layout_Event_directions":
+          case "EventCore_layoutEvent_directions":
             return eventData ? (
               <EventDirectionsBlock key={i} data={eventData} />
             ) : null;
-          case "Event_Core_layout_Event_map_embed":
+          case "EventCore_layoutEvent_map_embed":
             return eventData ? (
               <EventMapEmbedBlock key={i} data={eventData} />
             ) : null;
 
-          case "Event_Additional_blocks_Top_banner":
+          case "EventAdditional_blocksTop_banner":
             return <TopBannerBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Section_header":
+          case "EventAdditional_blocksSection_header":
             return <SectionHeaderBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Rich_text_content":
+          case "EventAdditional_blocksRich_text_content":
             return <RichTextContentBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Two_column":
+          case "EventAdditional_blocksTwo_column":
             return <TwoColumnBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Faq":
+          case "EventAdditional_blocksFaq":
             return <FaqBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Image_gallery":
+          case "EventAdditional_blocksImage_gallery":
             return <ImageGalleryBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Button_group":
+          case "EventAdditional_blocksButton_group":
             return <ButtonGroupBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Interactive_calendar":
+          case "EventAdditional_blocksInteractive_calendar":
             return (
               <InteractiveCalendar
                 key={i}
@@ -81,11 +81,11 @@ export const BlockRenderer = ({
                 events={allEvents as Event[]}
               />
             );
-          case "Event_Additional_blocks_Mission_statement":
+          case "EventAdditional_blocksMission_statement":
             return <MissionStatementBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Quick_links":
+          case "EventAdditional_blocksQuick_links":
             return <QuickLinksBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Event_spotlight":
+          case "EventAdditional_blocksEvent_spotlight":
             return (
               <EventSpotlightBlock
                 key={i}
@@ -93,15 +93,15 @@ export const BlockRenderer = ({
                 mostUpcomingEvent={mostUpcomingEvent}
               />
             );
-          case "Event_Additional_blocks_Team_board":
+          case "EventAdditional_blocksTeam_board":
             return <TeamBoardBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Volunteer_section":
+          case "EventAdditional_blocksVolunteer_section":
             return <VolunteerBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Zeffy_donation":
+          case "EventAdditional_blocksZeffy_donation":
             return <ZeffyDonationBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Item_donation_list":
+          case "EventAdditional_blocksItem_donation_list":
             return <ItemDonationListBlock key={i} data={block} />;
-          case "Event_Additional_blocks_Events_listing":
+          case "EventAdditional_blocksEvents_listing":
             return <EventsListing key={i} data={block} allEvents={allEvents} />;
 
           case "PageBlocksButtonGroup":
