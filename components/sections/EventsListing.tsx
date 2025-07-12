@@ -32,7 +32,6 @@ import {
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
-import { useRouter } from "next/navigation";
 import type { TinaCMS } from "tinacms";
 
 type UpcomingEvent = Event & {
@@ -204,7 +203,6 @@ export default function EventsListing({
   cms?: TinaCMS;
   isCmsEnabled?: boolean;
 }) {
-  const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<{
     relativePath: string;
     title: string;
