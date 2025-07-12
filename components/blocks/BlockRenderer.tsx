@@ -18,6 +18,7 @@ import {
   PageBlocksZeffy_donation,
   PageBlocksItem_donation_list,
   PageBlocksEvents_listing,
+  PageBlocksCanva_canvaembed,
 } from "@/tina/__generated__/types";
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
@@ -40,6 +41,7 @@ import { EventImageBlock } from "./event/EventImageBlock";
 import { EventDirectionsBlock } from "./event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "./event/EventMapEmbedBlock";
 import type { TinaCMS } from "tinacms";
+import { CanvaEmbedBlock } from "./content/CanvaEmbedBlock";
 
 type AnyBlock = PageBlocks;
 
@@ -80,7 +82,7 @@ export const BlockRenderer = ({
             return eventData ? (
               <EventDirectionsBlock key={i} eventData={eventData} />
             ) : null;
-          case "embed":
+          case "embed": // for map
             return eventData ? (
               <EventMapEmbedBlock key={i} eventData={eventData} />
             ) : null;
@@ -183,6 +185,13 @@ export const BlockRenderer = ({
                 allEvents={referencedEvents}
                 cms={cms}
                 isCmsEnabled={isCmsEnabled}
+              />
+            );
+          case "canvaembed":
+            return (
+              <CanvaEmbedBlock
+                key={i}
+                data={block as PageBlocksCanva_canvaembed}
               />
             );
           default:

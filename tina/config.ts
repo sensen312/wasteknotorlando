@@ -455,6 +455,33 @@ const faqBlock: Template = {
   ],
 };
 
+const canvaEmbedBlock: Template = {
+  name: "canva_canvaembed",
+  label: "Canva Embed",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Canva: ${item.title || "New Canva Embed"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField(
+      "Title",
+      "title",
+      "A title for organizational purposes in the CMS."
+    ),
+    {
+      type: "string",
+      name: "embedCode",
+      label: "Canva Embed Code",
+      required: true,
+      description: "Paste the HTML embed code from Canva here.",
+      ui: {
+        component: "textarea",
+      },
+    },
+  ],
+};
+
 const allPageBlockTemplates: Template[] = [
   topBannerBlock,
   sectionHeaderBlock,
@@ -472,6 +499,7 @@ const allPageBlockTemplates: Template[] = [
   zeffyDonationBlock,
   itemDonationListBlock,
   eventsListingBlock,
+  canvaEmbedBlock,
 ];
 
 const schema = defineSchema({
