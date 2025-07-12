@@ -5,7 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Box, Container } from "@mui/material";
 
 const PageHeader = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(6, 0),
+  padding: theme.spacing(2, 0),
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
