@@ -151,7 +151,7 @@ const InfoIcon = styled(Box)(({ theme }) => ({
 const DescriptionPreview = styled(Box)({
   marginTop: "16px",
   display: "-webkit-box",
-  WebkitLineClamp: 3,
+  WebkitLineClamp: 4,
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
