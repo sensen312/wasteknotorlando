@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description:
     "Connecting the Orlando community to reuse items and keep them out of landfills.",
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
