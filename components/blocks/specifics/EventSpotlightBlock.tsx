@@ -43,7 +43,7 @@ const BannerActionArea = styled(CardActionArea)({
 
 const BannerImage = styled(CardMedia)({
   height: "100%",
-  objectFit: "contain",
+  objectFit: "cover",
 });
 
 const BannerOverlay = styled(Box)(({ theme }) => ({
@@ -95,6 +95,10 @@ export const EventSpotlightBlock = ({
 
   const eventData = event as Event;
 
+  const displayImage = eventData.banner_image?.src
+    ? eventData.banner_image
+    : eventData.image;
+
   return (
     <Container maxWidth="lg">
       <Box my={5}>
@@ -113,8 +117,8 @@ export const EventSpotlightBlock = ({
           >
             <BannerImage
               component="img"
-              image={eventData.image?.src ?? undefined}
-              _alt={eventData.image?.alt ?? ""}
+              image={displayImage?.src ?? undefined}
+              alt={displayImage?.alt ?? ""}
             />
             <BannerOverlay>
               <BannerTitle variant="h3" component="h3" gutterBottom>

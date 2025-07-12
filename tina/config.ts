@@ -625,6 +625,26 @@ const schema = defineSchema({
         },
         createImageField(),
         {
+          type: "object",
+          name: "banner_image",
+          label: "Homepage Banner Image",
+          description:
+            "Landscape image for homepage event spotlight. Main event image will be used if empty.",
+          fields: [
+            {
+              type: "image",
+              name: "src",
+              label: "Image File",
+            },
+            {
+              type: "string",
+              name: "alt",
+              label: "Alternative Text",
+              description: "For screen readers",
+            },
+          ],
+        },
+        {
           type: "string",
           name: "address",
           label: "Event Address",
