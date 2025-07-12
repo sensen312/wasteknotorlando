@@ -28,6 +28,7 @@ import {
   Instagram,
   Add as AddIcon,
   Delete as DeleteIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
@@ -82,9 +83,7 @@ const StyledEventCard = styled(Card)(({ theme }) => ({
   "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[6] },
 }));
 
-const StyledCardActionArea = styled(CardActionArea, {
-  shouldForwardProp: (prop) => prop !== "isCmsEnabled",
-})<{ isCmsEnabled?: boolean }>(({ theme, isCmsEnabled }) => ({
+const StyledCardActionArea = styled(CardActionArea)({
   display: "flex",
   flexDirection: "column",
   [theme.breakpoints.up("md")]: {
@@ -93,9 +92,9 @@ const StyledCardActionArea = styled(CardActionArea, {
   width: "100%",
   alignItems: "stretch",
   "&:hover .MuiCardActionArea-focusHighlight": {
-    opacity: isCmsEnabled ? 0 : 0.1,
+    opacity: 0.1,
   },
-}));
+});
 
 const ImageWrapper = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -198,10 +197,12 @@ export default function EventsListing({
   data,
   allEvents = [],
   cms,
+  isCmsEnabled,
 }: {
   data: PageBlocksEvents_listing;
   allEvents: Event[];
   cms?: TinaCMS;
+  isCmsEnabled?: boolean;
 }) {
   const router = useRouter();
   const [deleteTarget, setDeleteTarget] = useState<{
@@ -216,13 +217,23 @@ export default function EventsListing({
   };
 
   const handleAddEvent = () => {
-    window.location.href = "/admin/index.html#/collections/new/event/~";
+    window.location.href = "/admin/index.html#/collections/event";
+  };
+
+  const handleEditEvent = (
+    e: React.MouseEvent,
+    relativePathWithExt: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const relativePath = relativePathWithExt.replace(/\.mdx?$/, "");
+    window.location.href = `/admin/index.html#/collections/event/${relativePath}`;
   };
 
   const handleDeleteConfirmation = (event: Event) => {
-    if (!event._sys.filename) return;
+    const relativePath = event._sys.path.replace("content/events/", "");
     setDeleteTarget({
-      relativePath: `${event._sys.filename}.mdx`,
+      relativePath: relativePath,
       title: event.title,
     });
   };
@@ -236,7 +247,7 @@ export default function EventsListing({
       });
       cms.alerts.success(`YIPPIE EVENT IS GONE: ${deleteTarget.title}`);
       setDeleteTarget(null);
-      router.refresh();
+      // Let Tina's live updates handle the UI change instead of a hard refresh
     } catch (error) {
       console.error("Could not delete event ;-; because:", error);
       cms.alerts.error("Could not delete event ;-;");
@@ -262,8 +273,6 @@ export default function EventsListing({
           a.dateObj.getTime() - b.dateObj.getTime()
       );
   }, [allEvents]);
-
-  const isCmsEnabled = cms?.enabled;
 
   return (
     <PageContainer maxWidth="lg" data-tina-field={tinaField(data)}>
@@ -300,6 +309,13 @@ export default function EventsListing({
                     <AdminActions>
                       <IconButton
                         size="small"
+                        onClick={(e) => handleEditEvent(e, event._sys.filename)}
+                        aria-label={`Edit ${event.title}`}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteConfirmation(event);
@@ -311,23 +327,9 @@ export default function EventsListing({
                     </AdminActions>
                   )}
                   <StyledCardActionArea
-                    component={isCmsEnabled ? "div" : NextLink}
-                    href={
-                      isCmsEnabled
-                        ? undefined
-                        : `/events/${event._sys.filename}`
-                    }
-                    onClick={(e) => {
-                      if (isCmsEnabled) {
-                        e.preventDefault();
-                        cms.events.dispatch({
-                          type: "forms:open",
-                          value: event._sys.path,
-                        });
-                      }
-                    }}
-                    aria-label={`View thedetails for ${event.title}`}
-                    isCmsEnabled={isCmsEnabled}
+                    component={NextLink}
+                    href={`/events/${event._sys.filename}`}
+                    aria-label={`View details for ${event.title}`}
                   >
                     <ImageWrapper>
                       <StyledCardMedia

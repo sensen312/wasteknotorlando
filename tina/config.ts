@@ -457,7 +457,9 @@ const schema = defineSchema({
       name: "global",
       path: "content/global",
       format: "mdx",
-
+      ui: {
+        global: true,
+      },
       fields: [
         {
           type: "object",
@@ -554,8 +556,21 @@ const schema = defineSchema({
           },
         },
       },
+      defaultItem: () => ({
+        title: "New Event",
+        date: new Date().toISOString(),
+        type: "Swap",
+        address: "TBD",
+        layout_blocks: [{ label: "Details" }, { label: "Image" }],
+        showInstagramButton: false,
+        showSignUpButton: false,
+        is_archived: false,
+      }),
       fields: [
-        createRequiredStringField("Event Title", "title"),
+        {
+          ...createRequiredStringField("Event Title", "title"),
+          isTitle: true,
+        },
         { type: "string", name: "type", label: "Event Type" },
         {
           type: "datetime",
@@ -604,7 +619,16 @@ const schema = defineSchema({
           name: "showSignUpButton",
           label: "Show the Sign-Up Button?",
         },
+        createRequiredStringField("Sign Up Button Text", "signUpButtonText"),
         { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
+        {
+          type: "boolean",
+          name: "is_archived",
+          label: "Archive the event",
+          ui: {
+            component: "toggle",
+          },
+        },
         {
           type: "object",
           label: "Page Layout",

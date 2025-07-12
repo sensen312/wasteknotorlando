@@ -49,6 +49,7 @@ interface BlockRendererProps {
   allEvents?: Event[];
   mostUpcomingEvent?: Event | null;
   cms?: TinaCMS;
+  isCmsEnabled?: boolean;
 }
 
 export const BlockRenderer = ({
@@ -57,6 +58,7 @@ export const BlockRenderer = ({
   allEvents,
   mostUpcomingEvent,
   cms,
+  isCmsEnabled,
 }: BlockRendererProps) => {
   return (
     <>
@@ -176,6 +178,7 @@ export const BlockRenderer = ({
                 data={block as PageBlocksEvents_listing}
                 allEvents={allEvents}
                 cms={cms}
+                isCmsEnabled={isCmsEnabled}
               />
             ) : null;
           default:
