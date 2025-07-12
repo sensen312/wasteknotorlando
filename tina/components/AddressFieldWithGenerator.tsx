@@ -30,16 +30,17 @@ const AddressFieldWithGenerator = (props: AddressFieldProps) => {
 
     debounceTimeout.current = setTimeout(() => {
       if (addressValue && addressValue.trim() !== "") {
-        if (!Maps_API_KEY) {
-          form.alerts.error("We are missing google api key ;-;.");
-          return;
-        }
-
         const encodedAddress = encodeURIComponent(addressValue);
 
         const newGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
         const newAppleMapsLink = `https://maps.apple.com/?q=${encodedAddress}`;
-        const newEmbedMapSrc = `<iframe width="100%" height="450" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=${Maps_API_KEY}&q=${encodedAddress}"></iframe>`;
+        let newEmbedMapSrc = "";
+
+        if (Maps_API_KEY) {
+          newEmbedMapSrc = `<iframe width="100%" height="450" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=${Maps_API_KEY}&q=${encodedAddress}"></iframe>`;
+        } else {
+          form.alerts.error("We are missing google api key ;-;.");
+        }
 
         const currentValues = form.getState().values;
         let changed = false;

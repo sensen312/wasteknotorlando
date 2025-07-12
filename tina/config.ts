@@ -590,10 +590,18 @@ const schema = defineSchema({
         date: new Date().toISOString(),
         type: "Swap",
         address: "TBD",
-        layout_blocks: [{ label: "Details" }, { label: "Image" }],
+        layout_blocks: [
+          { label: "Details" },
+          { label: "Image" },
+          { label: "Directions" },
+          { label: "Map Embed" },
+        ],
         showInstagramButton: false,
         showSignUpButton: false,
         is_archived: false,
+        signUpButtonText: "Sign Up",
+        directionsHeader: "Get Directions",
+        instagramButtonText: "View on Insta",
       }),
       fields: [
         {
@@ -658,7 +666,12 @@ const schema = defineSchema({
           name: "showSignUpButton",
           label: "Show the Sign-Up Button?",
         },
-        createRequiredStringField("Sign Up Button Text", "signUpButtonText"),
+        {
+          type: "string",
+          name: "signUpButtonText",
+          label: "Sign Up Button Text",
+          description: "Default: Sign Up",
+        },
         { type: "string", name: "signUpLink", label: "Sign-Up Form URL" },
         {
           type: "boolean",
