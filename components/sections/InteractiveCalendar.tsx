@@ -194,18 +194,23 @@ export default function InteractiveCalendar({
 
   const eventsForMonth = useMemo(() => {
     const eventsMap = new Map<number, MappedEvent[]>();
-    events.forEach((event) => {
-      if (!event?.date) return;
-      const eventDate = new Date(event.date);
+    events
+      .filter((event) => event && !event.is_archived)
+      .forEach((event) => {
+        if (!event.date) return;
+        const eventDate = new Date(event.date);
 
-      if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
-        const day = eventDate.getDate();
-        if (!eventsMap.has(day)) {
-          eventsMap.set(day, []);
+        if (
+          eventDate.getFullYear() === year &&
+          eventDate.getMonth() === month
+        ) {
+          const day = eventDate.getDate();
+          if (!eventsMap.has(day)) {
+            eventsMap.set(day, []);
+          }
+          eventsMap.get(day)?.push({ ...event, dateObj: eventDate });
         }
-        eventsMap.get(day)?.push({ ...event, dateObj: eventDate });
-      }
-    });
+      });
 
     eventsMap.forEach((dayEvents) => {
       dayEvents.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());

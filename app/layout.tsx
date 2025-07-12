@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     "Connecting the Orlando community to reuse items and keep them out of landfills.",
   icons: {
     icon: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
