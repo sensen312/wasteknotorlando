@@ -247,7 +247,6 @@ export default function EventsListing({
       });
       cms.alerts.success(`YIPPIE EVENT IS GONE: ${deleteTarget.title}`);
       setDeleteTarget(null);
-      // Let Tina's live updates handle the UI change instead of a hard refresh
     } catch (error) {
       console.error("Could not delete event ;-; because:", error);
       cms.alerts.error("Could not delete event ;-;");
