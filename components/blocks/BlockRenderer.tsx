@@ -65,9 +65,7 @@ export const BlockRenderer = ({
       {blocks?.map((block, i) => {
         if (!block) return null;
 
-        const templateName = block.__typename
-          ?.replace("PageBlocks", "")
-          .replace(/_/g, "");
+        const templateName = block.__typename?.split("_").pop();
 
         switch (templateName) {
           case "details":
@@ -86,42 +84,42 @@ export const BlockRenderer = ({
             return eventData ? (
               <EventMapEmbedBlock key={i} eventData={eventData} />
             ) : null;
-          case "topbanner":
+          case "banner":
             return (
               <TopBannerBlock key={i} data={block as PageBlocksTop_banner} />
             );
-          case "sectionheader":
+          case "header":
             return (
               <SectionHeaderBlock
                 key={i}
                 data={block as PageBlocksSection_header}
               />
             );
-          case "richtextcontent":
+          case "content":
             return (
               <RichTextContentBlock
                 key={i}
                 data={block as PageBlocksRich_text_content}
               />
             );
-          case "twocolumn":
+          case "column":
             return (
               <TwoColumnBlock key={i} data={block as PageBlocksTwo_column} />
             );
-          case "faq":
+          case "Faq":
             return <FaqBlock key={i} data={block as PageBlocksFaq} />;
-          case "imagegallery":
+          case "gallery":
             return (
               <ImageGalleryBlock
                 key={i}
                 data={block as PageBlocksImage_gallery}
               />
             );
-          case "buttongroup":
+          case "group":
             return (
               <ButtonGroupBlock key={i} data={block as PageBlocksButtonGroup} />
             );
-          case "interactivecalendar":
+          case "calendar":
             return allEvents ? (
               <InteractiveCalendar
                 key={i}
@@ -129,18 +127,18 @@ export const BlockRenderer = ({
                 events={allEvents}
               />
             ) : null;
-          case "missionstatement":
+          case "statement":
             return (
               <MissionStatementBlock
                 key={i}
                 data={block as PageBlocksMission_statement}
               />
             );
-          case "quicklinks":
+          case "links":
             return (
               <QuickLinksBlock key={i} data={block as PageBlocksQuick_links} />
             );
-          case "eventspotlight":
+          case "spotlight":
             return (
               <EventSpotlightBlock
                 key={i}
@@ -148,32 +146,32 @@ export const BlockRenderer = ({
                 mostUpcomingEvent={mostUpcomingEvent}
               />
             );
-          case "teamboard":
+          case "board":
             return (
               <TeamBoardBlock key={i} data={block as PageBlocksTeam_board} />
             );
-          case "volunteersection":
+          case "section":
             return (
               <VolunteerBlock
                 key={i}
                 data={block as PageBlocksVolunteer_section}
               />
             );
-          case "zeffydonation":
+          case "donation":
             return (
               <ZeffyDonationBlock
                 key={i}
                 data={block as PageBlocksZeffy_donation}
               />
             );
-          case "itemdonationlist":
+          case "list":
             return (
               <ItemDonationListBlock
                 key={i}
                 data={block as PageBlocksItem_donation_list}
               />
             );
-          case "eventslisting":
+          case "listing":
             const eventListingData = block as PageBlocksEvents_listing;
             const referencedEvents = eventListingData.events
               ?.map((e) => e?.event)

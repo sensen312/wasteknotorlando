@@ -339,7 +339,7 @@ const eventsListingBlock: Template = {
       list: true,
       description: "List of events.",
       ui: {
-        itemProps: (item: any) => ({
+        itemProps: (item) => ({
           label:
             item.event?.replace("content/events/", "").replace(".mdx", "") ||
             "New Event Reference",
