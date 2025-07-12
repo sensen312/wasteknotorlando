@@ -27,7 +27,7 @@ import {
   CalendarToday,
   Instagram,
   Add as AddIcon,
-  Delete as DeleteIcon,
+  Archive as ArchiveIcon,
   Edit as EditIcon,
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
@@ -203,7 +203,7 @@ export default function EventsListing({
   cms?: TinaCMS;
   isCmsEnabled?: boolean;
 }) {
-  const [deleteTarget, setDeleteTarget] = useState<{
+  const [archiveTarget, setArchiveTarget] = useState<{
     relativePath: string;
     title: string;
   } | null>(null);
@@ -215,7 +215,8 @@ export default function EventsListing({
   };
 
   const handleAddEvent = () => {
-    window.location.href = "/admin/index.html#/collections/event";
+    if (!cms) return;
+    cms.redirect("/admin/index.html#/collections/new/event/~");
   };
 
   const handleEditEvent = (
@@ -224,30 +225,35 @@ export default function EventsListing({
   ) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!cms) return;
     const relativePath = relativePathWithExt.replace(/\.mdx?$/, "");
-    window.location.href = `/admin/index.html#/collections/event/${relativePath}`;
+    cms.redirect(`/admin/index.html#/collections/event/${relativePath}`);
   };
 
-  const handleDeleteConfirmation = (event: Event) => {
-    const relativePath = event._sys.path.replace("content/events/", "");
-    setDeleteTarget({
-      relativePath: relativePath,
+  const handleArchiveConfirmation = (event: Event) => {
+    setArchiveTarget({
+      relativePath: event._sys.filename,
       title: event.title,
     });
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget || !cms) return;
+  const handleArchive = async () => {
+    if (!archiveTarget || !cms) return;
     try {
-      await cms.api.tina.deleteDocument({
+      await cms.api.tina.updateDocument({
         collection: "event",
-        relativePath: deleteTarget.relativePath,
+        relativePath: `${archiveTarget.relativePath}.mdx`,
+        params: {
+          is_archived: true,
+        },
       });
-      cms.alerts.success(`YIPPIE EVENT IS GONE: ${deleteTarget.title}`);
-      setDeleteTarget(null);
+      cms.alerts.success(`Successfully archived event: ${archiveTarget.title}`);
+      setArchiveTarget(null);
+      // reloading page for now might need a better solution here later
+      window.location.reload();
     } catch (error) {
-      console.error("Could not delete event ;-; because:", error);
-      cms.alerts.error("Could not delete event ;-;");
+      console.error("Could not archive event:", error);
+      cms.alerts.error("Could not archive event ;-;");
     }
   };
 
@@ -257,7 +263,9 @@ export default function EventsListing({
     today.setHours(0, 0, 0, 0);
 
     return allEvents
-      .filter((event): event is Event => !!event && !!event.date)
+      .filter(
+        (event): event is Event => !!event && !!event.date && !event.is_archived
+      )
       .map(
         (event: Event): UpcomingEvent => ({
           ...event,
@@ -315,11 +323,11 @@ export default function EventsListing({
                         size="small"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteConfirmation(event);
+                          handleArchiveConfirmation(event);
                         }}
-                        aria-label={`Delete ${event.title}`}
+                        aria-label={`Archive ${event.title}`}
                       >
-                        <DeleteIcon fontSize="small" />
+                        <ArchiveIcon fontSize="small" />
                       </IconButton>
                     </AdminActions>
                   )}
@@ -421,21 +429,21 @@ export default function EventsListing({
         </Stack>
       </EventListContainer>
       <Dialog
-        open={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        open={!!archiveTarget}
+        onClose={() => setArchiveTarget(null)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Confirm Archival</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Make sure you actually wanna delete you cannot undelete this event.
+            Archive the event so that it doesnt show up on the public site.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteTarget(null)}>Cancel</Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
-            Delete
+          <Button onClick={() => setArchiveTarget(null)}>Cancel</Button>
+          <Button onClick={handleArchive} color="primary" autoFocus>
+            Archive
           </Button>
         </DialogActions>
       </Dialog>

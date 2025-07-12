@@ -326,6 +326,7 @@ const eventsListingBlock: Template = {
     itemProps: (item: ItemProps) => ({
       label: `Events Listing: ${item.title || "No Title"}`,
     }),
+    description: "Lets you display events.",
   },
   fields: [
     createRequiredStringField("Section Title", "title"),
@@ -555,6 +556,11 @@ const schema = defineSchema({
             return `${datePart}-${titlePart}`;
           },
         },
+        itemProps: (item: { is_archived?: boolean; title?: string }) => ({
+          label: `${item.is_archived ? "[Archived] " : ""}${
+            item.title || "New Event"
+          }`,
+        }),
       },
       defaultItem: () => ({
         title: "New Event",
@@ -624,7 +630,8 @@ const schema = defineSchema({
         {
           type: "boolean",
           name: "is_archived",
-          label: "Archive the event",
+          label: "Archive Event",
+          description: "Archived events will not appear on the live site.",
           ui: {
             component: "toggle",
           },

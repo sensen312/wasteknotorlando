@@ -3,6 +3,7 @@ import { useTina } from "tinacms/dist/react";
 import { PageQuery, Event } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { Container } from "@mui/material";
+import { useEffect } from "react";
 
 export default function ListingPageClient(props: {
   data: PageQuery;
@@ -16,6 +17,12 @@ export default function ListingPageClient(props: {
     data: props.data,
   });
 
+  const isCmsEnabled = !!cms?.enabled;
+
+  useEffect(() => {
+    console.log("CMS ENABLED YAY:", isCmsEnabled);
+  }, [isCmsEnabled]);
+
   if (!data || !data.page) {
     return null;
   }
@@ -27,6 +34,7 @@ export default function ListingPageClient(props: {
           blocks={data.page.blocks}
           allEvents={props.allEvents}
           cms={cms}
+          isCmsEnabled={isCmsEnabled}
         />
       </Container>
     </main>
