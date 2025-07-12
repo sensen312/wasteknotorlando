@@ -629,7 +629,7 @@ const schema = defineSchema({
           name: "address",
           label: "Event Address",
           description:
-            "All the map links will be generated automatically with this field.",
+            "Paste the full address here once you do wait 1 second and the other maps field should be auto filled (in theory)",
           required: true,
           ui: {
             component: AddressFieldWithGenerator,
