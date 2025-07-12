@@ -1,48 +1,65 @@
 import React, { useEffect, useRef } from "react";
 import { TextField } from "@mui/material";
-import type { Form } from "@tinacms/toolkit";
-import type { FieldHookConfig } from "tinacms";
+import type { Form, FieldHookConfig } from "tinacms";
 
 const Maps_API_KEY = process.env.NEXT_PUBLIC_Maps_API_KEY;
 
+interface EventFormShape {
+  address: string;
+  googleMapsLink: string;
+  appleMapsLink: string;
+  embedMapSrc: string;
+  [key: string]: unknown;
+}
+
 interface AddressFieldProps {
-  form: Form;
-  input: FieldHookConfig<string>["input"];
+  form: Form<EventFormShape>;
+  input: FieldHookConfig<string, EventFormShape>["input"];
 }
 
 const AddressFieldWithGenerator = (props: AddressFieldProps) => {
   const { form, input } = props;
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-  const isInitialMount = useRef(true);
+
+  const addressValue = form.getState().values.address;
 
   useEffect(() => {
-    const address = form.getFieldState("address")?.value;
-
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
 
     debounceTimeout.current = setTimeout(() => {
-      if (address && address.trim() !== "") {
+      if (addressValue && addressValue.trim() !== "") {
         if (!Maps_API_KEY) {
-          form.alerts.error("Google Maps API key is missing.");
+          form.alerts.error("We are missing google api key ;-;.");
           return;
         }
 
-        const encodedAddress = encodeURIComponent(address);
+        const encodedAddress = encodeURIComponent(addressValue);
+
         const newGoogleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
         const newAppleMapsLink = `https://maps.apple.com/?q=${encodedAddress}`;
         const newEmbedMapSrc = `<iframe width="100%" height="450" style="border:0;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=${Maps_API_KEY}&q=${encodedAddress}"></iframe>`;
 
-        form.change("googleMapsLink", newGoogleMapsLink);
-        form.change("appleMapsLink", newAppleMapsLink);
-        form.change("embedMapSrc", newEmbedMapSrc);
-        form.alerts.success("Map links automatically generated.");
+        const currentValues = form.getState().values;
+        let changed = false;
+
+        if (currentValues.googleMapsLink !== newGoogleMapsLink) {
+          form.change("googleMapsLink", newGoogleMapsLink);
+          changed = true;
+        }
+        if (currentValues.appleMapsLink !== newAppleMapsLink) {
+          form.change("appleMapsLink", newAppleMapsLink);
+          changed = true;
+        }
+        if (currentValues.embedMapSrc !== newEmbedMapSrc) {
+          form.change("embedMapSrc", newEmbedMapSrc);
+          changed = true;
+        }
+
+        if (changed) {
+          form.alerts.success("Map links automatically generated.");
+        }
       }
     }, 1500);
 
@@ -51,7 +68,7 @@ const AddressFieldWithGenerator = (props: AddressFieldProps) => {
         clearTimeout(debounceTimeout.current);
       }
     };
-  }, [form.getFieldState("address")?.value, form]);
+  }, [addressValue, form]);
 
   return (
     <TextField
