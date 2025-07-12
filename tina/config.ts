@@ -1,6 +1,7 @@
 import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
+import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
 const branch =
   process.env.GITHUB_BRANCH ||
@@ -615,7 +616,17 @@ const schema = defineSchema({
           templates: richTextTemplates,
         },
         createImageField(),
-        createRequiredStringField("Address", "address"),
+        {
+          type: "string",
+          name: "address",
+          label: "Event Address",
+          description:
+            "All the map links will be generated automatically with this field.",
+          required: true,
+          ui: {
+            component: AddressFieldWithGenerator,
+          },
+        },
         {
           type: "string",
           name: "directionsHeader",
@@ -627,7 +638,7 @@ const schema = defineSchema({
         {
           type: "string",
           name: "embedMapSrc",
-          label: "Paste Iframe Map Embed Here from google maps",
+          label: "Google Maps Embed Code",
           ui: { component: "textarea" },
         },
         { type: "string", name: "instagramLink", label: "Instagram Link" },
