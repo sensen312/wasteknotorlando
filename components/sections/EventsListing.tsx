@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import NextLink from "next/link";
 import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
 import {
@@ -208,6 +208,12 @@ export default function EventsListing({
     title: string;
   } | null>(null);
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleInstaClick = (e: React.MouseEvent, link: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -290,7 +296,7 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      {isCmsEnabled && (
+      {isClient && isCmsEnabled && (
         <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
           <Button
             variant="contained"
@@ -310,7 +316,7 @@ export default function EventsListing({
                   key={event.id}
                   data-tina-field={tinaField(event)}
                 >
-                  {isCmsEnabled && (
+                  {isClient && isCmsEnabled && (
                     <AdminActions>
                       <IconButton
                         size="small"
