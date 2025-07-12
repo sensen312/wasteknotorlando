@@ -82,7 +82,7 @@ const StyledEventCard = styled(Card)(({ theme }) => ({
   "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[6] },
 }));
 
-const StyledCardActionArea = styled(CardActionArea)({
+const StyledCardActionArea = styled(CardActionArea)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   [theme.breakpoints.up("md")]: {
@@ -93,7 +93,7 @@ const StyledCardActionArea = styled(CardActionArea)({
   "&:hover .MuiCardActionArea-focusHighlight": {
     opacity: 0.1,
   },
-});
+}));
 
 const ImageWrapper = styled(Box)(({ theme }) => ({
   width: "100%",
