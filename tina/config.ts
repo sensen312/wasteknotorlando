@@ -332,6 +332,28 @@ const eventsListingBlock: Template = {
     createRequiredStringField("Section Title", "title"),
     createRequiredStringField("Text when no events.", "noEventsText"),
     createRequiredStringField("Instagram Button Text", "instaButtonText"),
+    {
+      type: "object",
+      name: "events",
+      label: "Events List",
+      list: true,
+      description: "List of events.",
+      ui: {
+        itemProps: (item: any) => ({
+          label:
+            item.event?.replace("content/events/", "").replace(".mdx", "") ||
+            "New Event Reference",
+        }),
+      },
+      fields: [
+        {
+          type: "reference",
+          name: "event",
+          label: "Event",
+          collections: ["event"],
+        },
+      ],
+    },
   ],
 };
 const interactiveCalendarBlock: Template = {

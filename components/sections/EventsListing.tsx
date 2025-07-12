@@ -2,6 +2,7 @@
 import { useMemo, useState, useEffect } from "react";
 import NextLink from "next/link";
 import { Event, PageBlocksEvents_listing } from "@/tina/__generated__/types";
+import { format } from "date-fns";
 import {
   Box,
   Typography,
@@ -371,16 +372,12 @@ export default function EventsListing({
                             <StyledCalendarToday />
                           </InfoIcon>
                           <Typography variant="body1">
-                            {event.dateObj.toLocaleDateString("en-US", {
-                              timeZone: "America/New_York",
-                            })}{" "}
-                            at{" "}
-                            {event.dateObj.toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              timeZone: "America/New_York",
-                              timeZoneName: "short",
-                            })}
+                            {isClient
+                              ? format(
+                                  new Date(event.date),
+                                  "eeee, MMMM d, yyyy 'at' h:mm a"
+                                )
+                              : "..."}
                           </Typography>
                         </InfoLine>
                         <InfoLine data-tina-field={tinaField(event, "address")}>

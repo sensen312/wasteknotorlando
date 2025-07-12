@@ -65,7 +65,9 @@ export const BlockRenderer = ({
       {blocks?.map((block, i) => {
         if (!block) return null;
 
-        const templateName = block.__typename?.split("_").pop();
+        const templateName = block.__typename
+          ?.replace("PageBlocks", "")
+          .replace(/_/g, "");
 
         switch (templateName) {
           case "details":
@@ -84,42 +86,42 @@ export const BlockRenderer = ({
             return eventData ? (
               <EventMapEmbedBlock key={i} eventData={eventData} />
             ) : null;
-          case "banner":
+          case "topbanner":
             return (
               <TopBannerBlock key={i} data={block as PageBlocksTop_banner} />
             );
-          case "header":
+          case "sectionheader":
             return (
               <SectionHeaderBlock
                 key={i}
                 data={block as PageBlocksSection_header}
               />
             );
-          case "content":
+          case "richtextcontent":
             return (
               <RichTextContentBlock
                 key={i}
                 data={block as PageBlocksRich_text_content}
               />
             );
-          case "column":
+          case "twocolumn":
             return (
               <TwoColumnBlock key={i} data={block as PageBlocksTwo_column} />
             );
-          case "Faq":
+          case "faq":
             return <FaqBlock key={i} data={block as PageBlocksFaq} />;
-          case "gallery":
+          case "imagegallery":
             return (
               <ImageGalleryBlock
                 key={i}
                 data={block as PageBlocksImage_gallery}
               />
             );
-          case "group":
+          case "buttongroup":
             return (
               <ButtonGroupBlock key={i} data={block as PageBlocksButtonGroup} />
             );
-          case "calendar":
+          case "interactivecalendar":
             return allEvents ? (
               <InteractiveCalendar
                 key={i}
@@ -127,18 +129,18 @@ export const BlockRenderer = ({
                 events={allEvents}
               />
             ) : null;
-          case "statement":
+          case "missionstatement":
             return (
               <MissionStatementBlock
                 key={i}
                 data={block as PageBlocksMission_statement}
               />
             );
-          case "links":
+          case "quicklinks":
             return (
               <QuickLinksBlock key={i} data={block as PageBlocksQuick_links} />
             );
-          case "spotlight":
+          case "eventspotlight":
             return (
               <EventSpotlightBlock
                 key={i}
@@ -146,41 +148,45 @@ export const BlockRenderer = ({
                 mostUpcomingEvent={mostUpcomingEvent}
               />
             );
-          case "board":
+          case "teamboard":
             return (
               <TeamBoardBlock key={i} data={block as PageBlocksTeam_board} />
             );
-          case "section":
+          case "volunteersection":
             return (
               <VolunteerBlock
                 key={i}
                 data={block as PageBlocksVolunteer_section}
               />
             );
-          case "donation":
+          case "zeffydonation":
             return (
               <ZeffyDonationBlock
                 key={i}
                 data={block as PageBlocksZeffy_donation}
               />
             );
-          case "list":
+          case "itemdonationlist":
             return (
               <ItemDonationListBlock
                 key={i}
                 data={block as PageBlocksItem_donation_list}
               />
             );
-          case "listing":
-            return allEvents ? (
+          case "eventslisting":
+            const eventListingData = block as PageBlocksEvents_listing;
+            const referencedEvents = eventListingData.events
+              ?.map((e) => e?.event)
+              .filter(Boolean) as Event[] | [];
+            return (
               <EventsListing
                 key={i}
-                data={block as PageBlocksEvents_listing}
-                allEvents={allEvents}
+                data={eventListingData}
+                allEvents={referencedEvents}
                 cms={cms}
                 isCmsEnabled={isCmsEnabled}
               />
-            ) : null;
+            );
           default:
             console.warn(
               `HOW DID U CHOOSE THIS BLOCK IT DOESNT EVEN EXIST: ${block.__typename}, TEMPLATE: ${templateName}`
