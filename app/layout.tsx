@@ -10,10 +10,6 @@ export const metadata: Metadata = {
   title: "WasteKnotOrlando",
   description:
     "Connecting the Orlando community to reuse items and keep them out of landfills.",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
 };
 
 const SkipToContentLink = () => (
