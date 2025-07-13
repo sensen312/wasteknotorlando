@@ -464,11 +464,7 @@ const canvaEmbedBlock: Template = {
     }),
   },
   fields: [
-    createRequiredStringField(
-      "Title",
-      "title",
-      "A title for organizational purposes in the CMS."
-    ),
+    createRequiredStringField("Title", "title", "A title for organization."),
     {
       type: "string",
       name: "embedCode",
@@ -522,6 +518,27 @@ const allPageBlockTemplates: Template[] = [
   canvaEmbedBlock,
   backButtonBlock,
 ];
+
+const seoField = {
+  type: "object" as const,
+  name: "seo",
+  label: "SEO Settings",
+  fields: [
+    {
+      type: "string" as const,
+      name: "title",
+      label: "SEO Title",
+      description: "Overrides the page title for SEO.",
+    },
+    {
+      type: "string" as const,
+      name: "description",
+      label: "SEO Description",
+      description: "Description for seach engine results.",
+      ui: { component: "textarea" as const },
+    },
+  ],
+};
 
 const schema = defineSchema({
   collections: [
@@ -596,6 +613,7 @@ const schema = defineSchema({
       },
       fields: [
         createRequiredStringField("Title", "title"),
+        seoField,
         {
           type: "object",
           label: "Page Sections (Blocks)",
@@ -657,6 +675,7 @@ const schema = defineSchema({
           ...createRequiredStringField("Event Title", "title"),
           isTitle: true,
         },
+        seoField,
         { type: "string", name: "type", label: "Event Type" },
         {
           type: "datetime",
