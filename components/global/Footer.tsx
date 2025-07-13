@@ -2,15 +2,14 @@
 
 import React from "react";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  Container,
-  Typography,
-  Link as MuiLink,
-  IconButton,
-} from "@mui/material";
+import { Box, Container, IconButton } from "@mui/material";
 import * as Icons from "@mui/icons-material";
-import { GlobalFooter, GlobalSocials, Maybe } from "@/tina/__generated__/types";
+import {
+  GlobalFooter,
+  GlobalFooterBlocks,
+  GlobalSocials,
+  Maybe,
+} from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { BlockRenderer } from "../blocks/BlockRenderer";
 
@@ -83,7 +82,9 @@ const Footer = ({
             )}
           </FooterSection>
 
-          {footer.blocks && <BlockRenderer blocks={footer.blocks as any} />}
+          {footer.blocks && (
+            <BlockRenderer blocks={footer.blocks as GlobalFooterBlocks[]} />
+          )}
 
           <FooterSocialsSection>
             <Box data-tina-field={tinaField(socials)}>
