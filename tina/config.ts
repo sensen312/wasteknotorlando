@@ -521,31 +521,89 @@ const allPageBlockTemplates: Template[] = [
 
 const footerContactBlock: Template = {
   name: "footer_contact",
-  label: "Footer Contact Section",
+  label: "Footer Contact Info",
   ui: {
     itemProps: (item: ItemProps) => ({
-      label: `Contact: ${item.header || "New Contact Section"}`,
-    }),
-  },
-  fields: [
-    createRequiredStringField("Header", "header"),
-    createRequiredStringField("Email", "email"),
-  ],
-};
-
-const footerTextBlock: Template = {
-  name: "footer_text",
-  label: "Footer Text Section",
-  ui: {
-    itemProps: (item: ItemProps) => ({
-      label: `Text: ${item.header || "New Text Section"}`,
+      label: (item.header as string) || "Contact Section",
     }),
   },
   fields: [
     createRequiredStringField("Header", "header"),
     {
+      type: "object",
+      name: "contact_items",
+      label: "Contact Items",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({
+          label: (item.label as string) || "New Contact Item",
+        }),
+      },
+      fields: [
+        createRequiredStringField(
+          "Label",
+          "label",
+          "Contact Label (email) (phone#)"
+        ),
+        createRequiredStringField("Value", "value", "Put the contact here."),
+        {
+          type: "string",
+          name: "item_type",
+          label: "Type",
+          description: "Controls how the link is made choose text if etc",
+          options: ["Text", "Email", "Phone"],
+          required: true,
+        },
+      ],
+    },
+  ],
+};
+
+const footerLinksBlock: Template = {
+  name: "footer_links",
+  label: "Footer Link List",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: (item.header as string) || "Link List",
+    }),
+    description: "Creates a column of links in the footer",
+  },
+  fields: [
+    createRequiredStringField(
+      "Header",
+      "header",
+      "Title for the list like our friends or resources."
+    ),
+    {
+      type: "object",
+      name: "links",
+      label: "Links",
+      description: "You can add or reorder the list.",
+      list: true,
+      ui: {
+        itemProps: (item: ItemProps) => ({
+          label: (item.text as string) || "New Link",
+        }),
+      },
+      fields: [
+        createRequiredStringField(
+          "Link Text",
+          "text",
+          "Text that will be displayed for the link."
+        ),
+        createRequiredStringField("Link URL", "url", "Actual URL"),
+      ],
+    },
+  ],
+};
+
+const footerRichTextBlock: Template = {
+  name: "footer_text",
+  label: "Footer Rich Text",
+  fields: [
+    {
       type: "rich-text",
-      name: "content",
+      name: "body",
       label: "Content",
       templates: richTextTemplates,
     },
@@ -618,7 +676,11 @@ const schema = defineSchema({
               name: "blocks",
               label: "Footer Content Blocks",
               list: true,
-              templates: [footerContactBlock, footerTextBlock],
+              templates: [
+                footerContactBlock,
+                footerLinksBlock,
+                footerRichTextBlock,
+              ],
             },
           ],
         },
