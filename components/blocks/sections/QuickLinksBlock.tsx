@@ -25,7 +25,7 @@ const StyledKeyLinkButton = styled(Button)(({ theme }) => ({
   border: `2px solid ${alpha(theme.palette.primary.main, 0.3)}`,
   color: theme.palette.primary.main,
   height: 150,
-  width: "clamp(200px, 30vw, 250px)",
+  width: "clamp(250px, 30vw, 250px)",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -46,6 +46,15 @@ const StyledKeyLinkButton = styled(Button)(({ theme }) => ({
 const LinkTitle = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(1),
   fontSize: "1.25rem",
+
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    fontSize: "1.25rem",
+    letterSpacing: "0.25px", // looks the best so far
+
+    [theme.breakpoints.up("lg")]: {
+      fontSize: "1.3rem",
+    },
+  }),
 }));
 
 type MuiIcon = React.ComponentType<{
