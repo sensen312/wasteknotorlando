@@ -62,6 +62,13 @@ const StyledListItemIcon = styled(ListItemIcon, {
   color: isSuccess ? theme.palette.success.main : theme.palette.error.main,
 }));
 
+const StyledListItemText = styled(ListItemText)(({ theme }) => ({
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    overflowWrap: "break-word",
+    wordWrap: "break-word",
+  }),
+}));
+
 export const ItemDonationListBlock = ({
   data,
 }: {
@@ -93,7 +100,7 @@ export const ItemDonationListBlock = ({
                     <StyledListItemIcon isSuccess>
                       <CheckCircleOutline />
                     </StyledListItemIcon>
-                    <ListItemText primary={item} />
+                    <StyledListItemText primary={item} />
                   </ListItem>
                 ) : null
               )}
@@ -115,7 +122,7 @@ export const ItemDonationListBlock = ({
                       <StyledListItemIcon>
                         <HighlightOff />
                       </StyledListItemIcon>
-                      <ListItemText primary={item} />
+                      <StyledListItemText primary={item} />
                     </ListItem>
                   ) : null
               )}
