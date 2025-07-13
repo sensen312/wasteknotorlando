@@ -6,15 +6,45 @@ import { AppWrapper } from "@/components/global/ClientWrappers";
 import client from "@/tina/client";
 import { notFound } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "WasteKnotOrlando",
-  description:
-    "Connecting the Orlando community to reuse items and keep them out of landfills.",
-  icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const siteURL = "https://www.wasteknotorlando.org";
+  const siteName = "WasteKnot Orlando";
+  const description =
+    "Connecting the Orlando community to reuse items and keep them out of landfills.";
+  const iconPath = "/icon.png";
+
+  return {
+    metadataBase: new URL(siteURL),
+    title: {
+      default: siteName,
+      template: `%s | ${siteName}`,
+    },
+    description: description,
+    icons: {
+      icon: iconPath,
+      apple: "/apple-icon.png",
+    },
+    openGraph: {
+      title: {
+        default: siteName,
+        template: `%s | ${siteName}`,
+      },
+      description: description,
+      url: siteURL,
+      siteName: siteName,
+      images: [
+        {
+          url: iconPath,
+          width: 452,
+          height: 452,
+          alt: `${siteName} Logo`,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+  };
+}
 
 const SkipToContentLink = () => (
   <a href="#main-content" className="skip-link">
