@@ -20,7 +20,7 @@ const PageContainer = styled(Container)(({ theme }) => ({
 }));
 
 const MainSection = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(5),
+  padding: theme.spacing(2),
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
   border: `1px solid ${theme.palette.divider}`,
@@ -69,12 +69,6 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   }),
 }));
 
-const StyledListItem = styled(ListItem)(({ theme }) => ({
-  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
-    paddingRight: 0,
-  }),
-}));
-
 export const ItemDonationListBlock = ({
   data,
 }: {
@@ -102,12 +96,12 @@ export const ItemDonationListBlock = ({
             <List dense data-tina-field={tinaField(data, "acceptedItems")}>
               {data.acceptedItems?.map((item: string | null, index: number) =>
                 item ? (
-                  <StyledListItem key={index} disableGutters>
+                  <ListItem key={index} disableGutters>
                     <StyledListItemIcon isSuccess>
                       <CheckCircleOutline />
                     </StyledListItemIcon>
                     <StyledListItemText primary={item} />
-                  </StyledListItem>
+                  </ListItem>
                 ) : null
               )}
             </List>
@@ -124,12 +118,12 @@ export const ItemDonationListBlock = ({
               {data.notAcceptedItems?.map(
                 (item: string | null, index: number) =>
                   item ? (
-                    <StyledListItem key={index} disableGutters>
+                    <ListItem key={index} disableGutters>
                       <StyledListItemIcon>
                         <HighlightOff />
                       </StyledListItemIcon>
                       <StyledListItemText primary={item} />
-                    </StyledListItem>
+                    </ListItem>
                   ) : null
               )}
             </List>
