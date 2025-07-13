@@ -8,7 +8,7 @@ import { TinaMarkdown } from "tinacms/dist/rich-text";
 const Section = styled("section")(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(4, 0),
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(2),
 }));
 const MissionContainer = styled(Box)(({ theme }) => ({
   display: "flex",
