@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import {
   AppBar,
   Toolbar,
@@ -29,7 +29,9 @@ import { GlobalHeader, GlobalSocials } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+  borderBottom: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
+  boxShadow: "none",
 }));
 const LogoLink = styled(MuiLink)({
   flexGrow: 1,
@@ -165,12 +167,7 @@ export default function Header({
   );
 
   return (
-    <StyledAppBar
-      position="sticky"
-      color="transparent"
-      elevation={0}
-      data-tina-field={tinaField(header)}
-    >
+    <StyledAppBar position="sticky" data-tina-field={tinaField(header)}>
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           <LogoLink component={NextLink} href="/">

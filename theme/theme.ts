@@ -133,11 +133,11 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 16,
-          boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+          boxShadow: "0 4px 12px rgba(0, 91, 57, 0.1)",
           transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
           "&:hover": {
             transform: "translateY(-4px)",
-            boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
+            boxShadow: "0 8px 20px rgba(0, 91, 57, 0.15)",
           },
         },
       },
@@ -146,16 +146,14 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 16,
-          boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+          boxShadow: "0 4px 12px rgba(0, 91, 57, 0.1)",
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          boxShadow: "none",
-          backgroundColor: "rgba(254, 254, 254, 0.8)",
-          backdropFilter: "blur(8px)",
+          // controlled by header now
         },
       },
     },

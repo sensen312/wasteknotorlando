@@ -12,11 +12,25 @@ export const RichTextContentBlock = ({
   return (
     <Container maxWidth="md">
       <Box
-        sx={{
+        sx={(theme) => ({
           my: 4,
-          ".prose": { a: { color: "primary.main" } },
           textAlign: data.align || "left",
-        }}
+          ".prose blockquote": {
+            borderLeft: `4px solid ${theme.palette.secondary.main}`,
+            paddingLeft: "1rem",
+            margin: "1.5rem 0",
+            fontStyle: "italic",
+            color: "text.secondary",
+          },
+          ".prose a": {
+            color: "primary.main",
+            textDecoration: "none",
+            fontWeight: "bold",
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          },
+        })}
         className="prose"
         data-tina-field={tinaField(data, "body")}
       >

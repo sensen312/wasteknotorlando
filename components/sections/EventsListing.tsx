@@ -110,11 +110,20 @@ const ImageWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledCardMedia = styled(CardMedia)({
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   width: "100%",
   height: "100%",
   objectFit: "cover",
-});
+  boxShadow: "0 4px 12px rgba(0, 91, 57, 0.1)",
+  [theme.breakpoints.down("md")]: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  [theme.breakpoints.up("md")]: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+}));
 
 const EventInfoContainer = styled(Box)({
   display: "flex",

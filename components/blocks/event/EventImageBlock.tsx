@@ -10,6 +10,8 @@ const StyledEventImage = styled(CardMedia)(({ theme }) => ({
   height: "auto",
   objectFit: "contain",
   margin: theme.spacing(4, 0),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: "0 4px 12px rgba(0, 91, 57, 0.1)",
 }));
 
 export const EventImageBlock = ({ eventData }: { eventData: Event }) => {
