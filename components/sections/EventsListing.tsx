@@ -30,6 +30,7 @@ import {
   Add as AddIcon,
   Archive as ArchiveIcon,
   Edit as EditIcon,
+  HowToReg,
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
@@ -165,6 +166,17 @@ const DescriptionPreview = styled(Box)({
 const StyledCardActions = styled(CardActions)(({ theme }) => ({
   padding: theme.spacing(0, 3, 3, 3),
   alignSelf: "flex-start",
+}));
+
+const ButtonContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: theme.spacing(1),
+  [theme.breakpoints.up("sm")]: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 }));
 
 const NoEventsTypography = styled(Typography)(({ theme }) => ({
@@ -399,21 +411,47 @@ export default function EventsListing({
                         )}
                       </StyledCardContent>
                       <StyledCardActions>
-                        {event.showInstagramButton && event.instagramLink && (
-                          <Button
-                            onClick={(e) =>
-                              handleInstaClick(e, event.instagramLink!)
-                            }
-                            size="small"
-                            variant="contained"
-                            color="primary"
-                            startIcon={<Instagram />}
-                            aria-label={`View Instagram post for ${event.title}`}
-                            data-tina-field={tinaField(event, "instagramLink")}
-                          >
-                            {data.instaButtonText || "Check the insta"}
-                          </Button>
-                        )}
+                        <ButtonContainer>
+                          {event.showInstagramButton && event.instagramLink && (
+                            <Button
+                              onClick={(e) =>
+                                handleInstaClick(e, event.instagramLink!)
+                              }
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              startIcon={<Instagram />}
+                              aria-label={`View Instagram post for ${event.title}`}
+                              data-tina-field={tinaField(
+                                event,
+                                "instagramLink"
+                              )}
+                            >
+                              {data.instaButtonText || "Check the insta"}
+                            </Button>
+                          )}
+                          {event.showSignUpButton && event.signUpLink && (
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                window.open(
+                                  event.signUpLink!,
+                                  "_blank",
+                                  "noopener,noreferrer"
+                                );
+                              }}
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              startIcon={<HowToReg />}
+                              aria-label={`Sign up for ${event.title}`}
+                              data-tina-field={tinaField(event, "signUpLink")}
+                            >
+                              {event.signUpButtonText || "Sign Up"}
+                            </Button>
+                          )}
+                        </ButtonContainer>
                       </StyledCardActions>
                     </EventInfoContainer>
                   </StyledCardActionArea>
