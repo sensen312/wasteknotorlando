@@ -6,6 +6,7 @@ import {
   PageBlocksEvents_Listing,
   PageBlocksBack_button,
   EventAdditional_blocksBack_button,
+  GlobalFooterBlocks,
 } from "@/tina/__generated__/types";
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
@@ -31,7 +32,8 @@ type AllBlockTypes =
   | PageBlocks
   | EventAdditional_Blocks
   | PageBlocksBack_button
-  | EventAdditional_blocksBack_button;
+  | EventAdditional_blocksBack_button
+  | GlobalFooterBlocks;
 
 interface BlockRendererProps {
   blocks: AllBlockTypes[] | null | undefined;
@@ -65,6 +67,7 @@ export const BlockRenderer = ({
             return <SectionHeaderBlock key={i} data={block} />;
           case "PageBlocksRich_text_content":
           case "EventAdditional_blocksRich_text_content":
+          case "GlobalFooterBlocksRich_text_content":
             return <RichTextContentBlock key={i} data={block} />;
           case "PageBlocksTwo_column":
           case "EventAdditional_blocksTwo_column":
@@ -83,6 +86,7 @@ export const BlockRenderer = ({
             return <MissionStatementBlock key={i} data={block} />;
           case "PageBlocksQuick_links":
           case "EventAdditional_blocksQuick_links":
+          case "GlobalFooterBlocksQuick_links":
             return <QuickLinksBlock key={i} data={block} />;
           case "PageBlocksTeam_board":
           case "EventAdditional_blocksTeam_board":

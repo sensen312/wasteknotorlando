@@ -9,9 +9,10 @@ import {
   Link as MuiLink,
   IconButton,
 } from "@mui/material";
-import { Instagram, VolunteerActivism } from "@mui/icons-material";
-import { GlobalFooter, GlobalSocials } from "@/tina/__generated__/types";
+import * as Icons from "@mui/icons-material";
+import { GlobalFooter, GlobalSocials, Maybe } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
+import { BlockRenderer } from "../blocks/BlockRenderer";
 
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -41,31 +42,32 @@ const FooterSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-const SectionHeader = styled(Typography)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-}));
-
 const LogoNameImage = styled("img")({
   width: "100%",
   maxWidth: "280px",
   height: "auto",
 });
 
-const FooterLink = styled(MuiLink)({
-  color: "inherit",
-  display: "block",
-  textDecoration: "none",
-  "&:hover": {
-    textDecoration: "underline",
-  },
+const FooterSocialsSection = styled(FooterSection)({
+  minWidth: "150px",
 });
+
+type MuiIcon = React.ComponentType<{
+  fontSize?: "small" | "inherit" | "large" | "medium";
+}>;
+
+const getIcon = (iconName: string): React.ReactNode => {
+  if (!iconName) return null;
+  const Icon = (Icons as Record<string, MuiIcon>)[iconName];
+  return Icon ? <Icon /> : null;
+};
 
 const Footer = ({
   footer,
   socials,
 }: {
   footer: GlobalFooter;
-  socials: GlobalSocials;
+  socials: Maybe<Maybe<GlobalSocials>[]>;
 }) => {
   return (
     <FooterContainer component="footer" data-tina-field={tinaField(footer)}>
@@ -81,53 +83,29 @@ const Footer = ({
             )}
           </FooterSection>
 
-          <FooterSection>
-            <SectionHeader
-              variant="h5"
-              component="h3"
-              data-tina-field={tinaField(footer, "contactHeader")}
-            >
-              {footer.contactHeader || "Contact Us:"}
-            </SectionHeader>
-            <FooterLink
-              href={`mailto:${footer.contactEmail}`}
-              data-tina-field={tinaField(footer, "contactEmail")}
-            >
-              {footer.contactEmail}
-            </FooterLink>
-          </FooterSection>
+          {footer.blocks && <BlockRenderer blocks={footer.blocks as any} />}
 
-          <FooterSection>
-            <SectionHeader
-              variant="h5"
-              component="h3"
-              data-tina-field={tinaField(footer, "socialsHeader")}
-            >
-              {footer.socialsHeader || "Our socials"}
-            </SectionHeader>
+          <FooterSocialsSection>
             <Box data-tina-field={tinaField(socials)}>
-              {socials.instagramUrl && (
-                <IconButton
-                  href={socials.instagramUrl}
-                  color="inherit"
-                  aria-label="Instagram"
-                  data-tina-field={tinaField(socials, "instagramUrl")}
-                >
-                  <Instagram />
-                </IconButton>
-              )}
-              {socials.donationUrl && (
-                <IconButton
-                  href={socials.donationUrl}
-                  color="inherit"
-                  aria-label="Zeffy"
-                  data-tina-field={tinaField(socials, "donationUrl")}
-                >
-                  <VolunteerActivism />
-                </IconButton>
+              {socials?.map(
+                (social) =>
+                  social &&
+                  social.url && (
+                    <IconButton
+                      key={social.platform}
+                      href={social.url}
+                      color="inherit"
+                      aria-label={social.platform || ""}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-tina-field={tinaField(social)}
+                    >
+                      {getIcon(social.icon || "")}
+                    </IconButton>
+                  )
               )}
             </Box>
-          </FooterSection>
+          </FooterSocialsSection>
         </FooterLayoutContainer>
       </Container>
     </FooterContainer>

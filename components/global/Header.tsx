@@ -16,16 +16,11 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import {
-  Menu as MenuIcon,
-  Instagram,
-  VolunteerActivism,
-  AccessibilityNew,
-} from "@mui/icons-material";
+import * as Icons from "@mui/icons-material";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useAccessibility } from "@/context/AccessibilityContext";
-import { GlobalHeader, GlobalSocials } from "@/tina/__generated__/types";
+import { GlobalHeader, GlobalSocials, Maybe } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -63,12 +58,22 @@ const NavButton = styled(Button)(({ theme }) => ({
   whiteSpace: "nowrap",
 }));
 
+type MuiIcon = React.ComponentType<{
+  fontSize?: "small" | "inherit" | "large" | "medium";
+}>;
+
+const getIcon = (iconName: string): React.ReactNode => {
+  if (!iconName) return null;
+  const Icon = (Icons as Record<string, MuiIcon>)[iconName];
+  return Icon ? <Icon /> : null;
+};
+
 export default function Header({
   header,
   socials,
 }: {
   header: GlobalHeader;
-  socials: GlobalSocials;
+  socials: Maybe<Maybe<GlobalSocials>[]>;
 }) {
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -126,6 +131,40 @@ export default function Header({
           {item?.title}
         </NavButton>
       )
+    );
+
+  const renderSocials = (isMobile = false) =>
+    socials?.map(
+      (social) =>
+        social &&
+        social.url && (
+          <React.Fragment key={social.platform}>
+            {isMobile ? (
+              <MenuItem
+                component="a"
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconButton color="primary" aria-label={social.platform || ""}>
+                  {getIcon(social.icon || "")}
+                </IconButton>
+                <Typography>{social.platform}</Typography>
+              </MenuItem>
+            ) : (
+              <IconButton
+                href={social.url}
+                color="primary"
+                aria-label={social.platform || ""}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-tina-field={tinaField(social)}
+              >
+                {getIcon(social.icon || "")}
+              </IconButton>
+            )}
+          </React.Fragment>
+        )
     );
 
   const accessibilityMenu = (
@@ -192,32 +231,13 @@ export default function Header({
               {renderNavLinks()}
             </Stack>
             <DesktopIconsContainer data-tina-field={tinaField(socials)}>
-              {socials.instagramUrl && (
-                <IconButton
-                  href={socials.instagramUrl}
-                  color="primary"
-                  aria-label="Instagram"
-                  data-tina-field={tinaField(socials, "instagramUrl")}
-                >
-                  <Instagram />
-                </IconButton>
-              )}
-              {socials.donationUrl && (
-                <IconButton
-                  href={socials.donationUrl}
-                  color="primary"
-                  aria-label="Zeffy Donation"
-                  data-tina-field={tinaField(socials, "donationUrl")}
-                >
-                  <VolunteerActivism />
-                </IconButton>
-              )}
+              {renderSocials()}
               <IconButton
                 color="primary"
                 aria-label="Accessibility Settings"
                 onClick={handleAccessibilityMenuOpen}
               >
-                <AccessibilityNew />
+                <Icons.AccessibilityNew />
               </IconButton>
             </DesktopIconsContainer>
           </DesktopNavContainer>
@@ -227,7 +247,7 @@ export default function Header({
               aria-label="Accessibility Settings"
               onClick={handleAccessibilityMenuOpen}
             >
-              <AccessibilityNew />
+              <Icons.AccessibilityNew />
             </IconButton>
             <IconButton
               ref={mobileMenuButtonRef}
@@ -239,7 +259,7 @@ export default function Header({
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
             >
-              <MenuIcon />
+              <Icons.Menu />
             </IconButton>
           </MobileNavContainer>
           <MobileMenu
@@ -252,22 +272,7 @@ export default function Header({
             transformOrigin={{ vertical: "top", horizontal: "right" }}
           >
             {renderNavLinks(true)}
-            {socials.instagramUrl && (
-              <MenuItem component="a" href={socials.instagramUrl}>
-                <IconButton color="primary" aria-label="Instagram">
-                  <Instagram />
-                </IconButton>
-                <Typography>Instagram</Typography>
-              </MenuItem>
-            )}
-            {socials.donationUrl && (
-              <MenuItem component="a" href={socials.donationUrl}>
-                <IconButton color="primary" aria-label="Zeffy Donation">
-                  <VolunteerActivism />
-                </IconButton>
-                <Typography>Zeffy</Typography>
-              </MenuItem>
-            )}
+            {renderSocials(true)}
           </MobileMenu>
           {accessibilityMenu}
         </Toolbar>

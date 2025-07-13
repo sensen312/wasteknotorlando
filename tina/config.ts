@@ -519,6 +519,39 @@ const allPageBlockTemplates: Template[] = [
   backButtonBlock,
 ];
 
+const footerContactBlock: Template = {
+  name: "footer_contact",
+  label: "Footer Contact Section",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Contact: ${item.header || "New Contact Section"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Header", "header"),
+    createRequiredStringField("Email", "email"),
+  ],
+};
+
+const footerTextBlock: Template = {
+  name: "footer_text",
+  label: "Footer Text Section",
+  ui: {
+    itemProps: (item: ItemProps) => ({
+      label: `Text: ${item.header || "New Text Section"}`,
+    }),
+  },
+  fields: [
+    createRequiredStringField("Header", "header"),
+    {
+      type: "rich-text",
+      name: "content",
+      label: "Content",
+      templates: richTextTemplates,
+    },
+  ],
+};
+
 const seoField = {
   type: "object" as const,
   name: "seo",
@@ -580,22 +613,37 @@ const schema = defineSchema({
           label: "Footer Settings",
           fields: [
             createImageField("logo", "Footer Logo"),
-            createRequiredStringField("Contact Header", "contactHeader"),
-            createRequiredStringField("Contact Email", "contactEmail"),
-            createRequiredStringField("Socials Header", "socialsHeader"),
+            {
+              type: "object",
+              name: "blocks",
+              label: "Footer Content Blocks",
+              list: true,
+              templates: [footerContactBlock, footerTextBlock],
+            },
           ],
         },
         {
           type: "object",
           name: "socials",
           label: "Social Links",
+          list: true,
+          ui: {
+            itemProps: (item: ItemProps) => ({
+              label: item.platform || "New Social Link",
+            }),
+          },
           fields: [
-            { type: "string", name: "instagramUrl", label: "Instagram URL" },
-            {
-              type: "string",
-              name: "donationUrl",
-              label: "Donation URL (Zeffy URL)",
-            },
+            createRequiredStringField(
+              "Platform",
+              "platform",
+              "(Instagram) (Facebook) etc"
+            ),
+            createRequiredStringField(
+              "Icon",
+              "icon",
+              "Find icon names from materialUI library."
+            ),
+            createRequiredStringField("URL", "url"),
           ],
         },
       ],
