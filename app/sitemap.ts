@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import client from "@/tina/client";
 
+export const dynamic = "force-static";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = "https://www.wasteknotorlando.org";
 
