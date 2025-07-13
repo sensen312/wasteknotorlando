@@ -69,6 +69,12 @@ const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   }),
 }));
 
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  ...(theme.typography.fontFamily.includes("OpenDyslexic") && {
+    paddingRight: 0,
+  }),
+}));
+
 export const ItemDonationListBlock = ({
   data,
 }: {
@@ -96,12 +102,12 @@ export const ItemDonationListBlock = ({
             <List dense data-tina-field={tinaField(data, "acceptedItems")}>
               {data.acceptedItems?.map((item: string | null, index: number) =>
                 item ? (
-                  <ListItem key={index} disableGutters>
+                  <StyledListItem key={index} disableGutters>
                     <StyledListItemIcon isSuccess>
                       <CheckCircleOutline />
                     </StyledListItemIcon>
                     <StyledListItemText primary={item} />
-                  </ListItem>
+                  </StyledListItem>
                 ) : null
               )}
             </List>
@@ -118,12 +124,12 @@ export const ItemDonationListBlock = ({
               {data.notAcceptedItems?.map(
                 (item: string | null, index: number) =>
                   item ? (
-                    <ListItem key={index} disableGutters>
+                    <StyledListItem key={index} disableGutters>
                       <StyledListItemIcon>
                         <HighlightOff />
                       </StyledListItemIcon>
                       <StyledListItemText primary={item} />
-                    </ListItem>
+                    </StyledListItem>
                   ) : null
               )}
             </List>
