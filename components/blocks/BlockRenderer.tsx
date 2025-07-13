@@ -4,6 +4,8 @@ import {
   PageBlocks,
   EventAdditional_Blocks,
   PageBlocksEvents_Listing,
+  PageBlocksBack_button,
+  EventAdditional_blocksBack_button,
 } from "@/tina/__generated__/types";
 import { ImageGalleryBlock } from "./content/ImageGalleryBlock";
 import { RichTextContentBlock } from "./content/RichTextContentBlock";
@@ -23,8 +25,13 @@ import InteractiveCalendar from "../sections/InteractiveCalendar";
 import { TopBannerBlock } from "./TopBannerBlock";
 import { CanvaEmbedBlock } from "./content/CanvaEmbedBlock";
 import type { TinaCMS } from "tinacms";
+import { BackButtonBlock } from "./specifics/BackButtonBlock";
 
-type AllBlockTypes = PageBlocks | EventAdditional_Blocks;
+type AllBlockTypes =
+  | PageBlocks
+  | EventAdditional_Blocks
+  | PageBlocksBack_button
+  | EventAdditional_blocksBack_button;
 
 interface BlockRendererProps {
   blocks: AllBlockTypes[] | null | undefined;
@@ -92,6 +99,9 @@ export const BlockRenderer = ({
           case "PageBlocksCanva_canvaembed":
           case "EventAdditional_blocksCanva_canvaembed":
             return <CanvaEmbedBlock key={i} data={block} />;
+          case "PageBlocksBack_button":
+          case "EventAdditional_blocksBack_button":
+            return <BackButtonBlock key={i} data={block} />;
           case "PageBlocksInteractive_calendar":
           case "EventAdditional_blocksInteractive_calendar":
             return (

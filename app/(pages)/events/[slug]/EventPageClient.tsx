@@ -8,6 +8,7 @@ import { EventDetailsBlock } from "@/components/blocks/event/EventDetailsBlock";
 import { EventImageBlock } from "@/components/blocks/event/EventImageBlock";
 import { EventDirectionsBlock } from "@/components/blocks/event/EventDirectionsBlock";
 import { EventMapEmbedBlock } from "@/components/blocks/event/EventMapEmbedBlock";
+import { BackButtonBlock } from "@/components/blocks/specifics/BackButtonBlock";
 
 const FlexGridContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -55,6 +56,9 @@ export default function EventPageClient(props: {
   return (
     <main id="main-content">
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <BackButtonBlock
+          data={{ __typename: "PageBlocksBack_button", link: "/events" }}
+        />
         <FlexGridContainer>
           {eventData.layout_blocks?.map((block, i) => {
             if (!block?.label) return null;

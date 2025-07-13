@@ -482,6 +482,26 @@ const canvaEmbedBlock: Template = {
   ],
 };
 
+const backButtonBlock: Template = {
+  name: "back_button",
+  label: "Back Button",
+  ui: {
+    itemProps: (item: { link?: string }) => ({
+      label: `Back Button ➞ ${item.link || "No link ;-;"}`,
+    }),
+    description: "Back button to link back to a specified page.",
+  },
+  fields: [
+    {
+      type: "string",
+      name: "link",
+      label: "Link",
+      description: "Enter the page path like ( /events or /about).",
+      required: true,
+    },
+  ],
+};
+
 const allPageBlockTemplates: Template[] = [
   topBannerBlock,
   sectionHeaderBlock,
@@ -500,6 +520,7 @@ const allPageBlockTemplates: Template[] = [
   itemDonationListBlock,
   eventsListingBlock,
   canvaEmbedBlock,
+  backButtonBlock,
 ];
 
 const schema = defineSchema({
