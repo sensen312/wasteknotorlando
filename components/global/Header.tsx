@@ -56,6 +56,14 @@ const MobileMenu = styled(Menu)({
 const NavButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(0, 1),
   whiteSpace: "nowrap",
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette.primary.main,
+  boxShadow: `0 1px 3px ${alpha(theme.palette.common.black, 0.1)}`,
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.action.hover, 0.7),
+    boxShadow: `0 2px 5px ${alpha(theme.palette.common.black, 0.15)}`,
+  },
 }));
 
 type MuiIcon = React.ComponentType<{
@@ -123,10 +131,12 @@ export default function Header({
       ) : (
         <NavButton
           key={item?.title}
+          variant="contained"
           color="primary"
           component={NextLink}
           href={item?.path || "#"}
           data-tina-field={tinaField(item!)}
+          disableElevation
         >
           {item?.title}
         </NavButton>
