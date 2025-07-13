@@ -418,7 +418,7 @@ export default function EventsListing({
                                 handleInstaClick(e, event.instagramLink!)
                               }
                               size="small"
-                              variant="outlined"
+                              variant="contained"
                               color="primary"
                               startIcon={<Instagram />}
                               aria-label={`View Instagram post for ${event.title}`}
