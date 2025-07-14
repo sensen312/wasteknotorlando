@@ -2,6 +2,8 @@ import { createMediaHandler } from "next-tinacms-s3/dist/handlers";
 import { isAuthorized } from "@tinacms/auth";
 import { NextApiRequest } from "next";
 
+export const dynamic = "force-static";
+
 const handler = createMediaHandler({
   config: {
     credentials: {
