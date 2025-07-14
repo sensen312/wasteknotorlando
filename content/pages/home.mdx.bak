@@ -2,7 +2,7 @@
 title: Home
 blocks:
   - logo:
-      src: https://wasteknotorlando-media-assets.s3.us-east-2.amazonaws.com/biglogo.png
+      src: /uploads/biglogo.png
       alt: The full WasteKnot Orlando logo.
     _template: top_banner
   - title: 'Upcoming Event:'

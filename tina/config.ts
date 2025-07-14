@@ -944,9 +944,9 @@ export default defineConfig({
     basePath: "",
   },
   media: {
-    tina: {
-      publicFolder: "public",
-      mediaRoot: "uploads",
+    loadCustomStore: async () => {
+      const pack = await import("next-tinacms-s3");
+      return pack.S3MediaStore;
     },
   },
   schema,
