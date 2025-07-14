@@ -413,7 +413,11 @@ export default function EventsListing({
                           <DescriptionPreview
                             data-tina-field={tinaField(event, "description")}
                           >
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              component="div"
+                            >
                               <TinaMarkdown content={event.description} />
                             </Typography>
                           </DescriptionPreview>
