@@ -64,18 +64,13 @@ const MobileMenu = styled(Menu)({
   "& .MuiPaper-root": { width: "100%", maxWidth: 250, borderRadius: 8 },
 });
 const NavButton = styled(Button)(({ theme }) => ({
-  padding: theme.spacing(0.75, 1.5),
-  margin: theme.spacing(0, 0.5),
+  margin: theme.spacing(0, 1),
   whiteSpace: "nowrap",
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
+  backgroundColor: "transparent",
   color: theme.palette.primary.main,
-  boxShadow: `0 1px 3px ${alpha(theme.palette.common.black, 0.1)}`,
-  transition: "transform 0.15s ease-out, box-shadow 0.15s ease-out",
   "&:hover": {
-    backgroundColor: theme.palette.background.paper,
-    transform: "translateY(-2px)",
-    boxShadow: `0 4px 8px ${alpha(theme.palette.common.black, 0.15)}`,
+    backgroundColor: "transparent",
+    boxShadow: `0 2px 5px ${alpha(theme.palette.common.black, 0.15)}`,
   },
 }));
 
@@ -171,12 +166,11 @@ export default function Header({
     );
 
   const renderSocials = (isMobile = false) =>
-    socials?.map((social) => {
-      if (!social || !social.url) {
-        return null;
-      }
-      if (isMobile) {
-        return (
+    socials?.map(
+      (social) =>
+        social &&
+        social.url &&
+        (isMobile ? (
           <MenuItem
             key={social.platform}
             component="a"
@@ -189,22 +183,20 @@ export default function Header({
             </IconButton>
             <Typography>{social.platform}</Typography>
           </MenuItem>
-        );
-      }
-      return (
-        <IconButton
-          key={social.platform}
-          href={social.url}
-          color="primary"
-          aria-label={social.platform || ""}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-tina-field={tinaField(social)}
-        >
-          {getIcon(social.icon || "")}
-        </IconButton>
-      );
-    });
+        ) : (
+          <IconButton
+            key={social.platform}
+            href={social.url}
+            color="primary"
+            aria-label={social.platform || ""}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-tina-field={tinaField(social)}
+          >
+            {getIcon(social.icon || "")}
+          </IconButton>
+        ))
+    );
 
   const accessibilityMenu = (
     <Menu
@@ -268,7 +260,7 @@ export default function Header({
             <Stack
               component="nav"
               direction="row"
-              spacing={2}
+              spacing={1}
               data-tina-field={tinaField(header, "navLinks")}
             >
               {renderNavLinks()}
