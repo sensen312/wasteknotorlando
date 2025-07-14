@@ -1,6 +1,6 @@
-import { createMediaHandler } from "next-tinacms-s3";
+import { createMediaHandler } from "next-tinacms-s3/dist/handlers";
 import { isAuthorized } from "@tinacms/auth";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest } from "next";
 
 const handler = createMediaHandler({
   config: {
@@ -11,10 +11,7 @@ const handler = createMediaHandler({
     region: process.env.NEXT_PUBLIC_S3_REGION,
   },
   bucket: process.env.NEXT_PUBLIC_S3_BUCKET || "",
-  authorized: async (
-    req: NextApiRequest,
-    _res: NextApiResponse
-  ): Promise<boolean> => {
+  authorized: async (req: NextApiRequest): Promise<boolean> => {
     if (process.env.NODE_ENV === "development") {
       return true;
     }
