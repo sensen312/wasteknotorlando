@@ -219,6 +219,13 @@ const eventSpotlightBlock: Template = {
       collections: ["event"],
       required: false,
     },
+    {
+      type: "number",
+      name: "banner_position",
+      label: "Banner Image Vertical Position %",
+      description:
+        "Controls focus of banner image so that you can make it fit. 0=top of image, 50=center, 100=bottom. 40 is default.",
+    },
   ],
 };
 const quickLinksBlock: Template = {
@@ -819,13 +826,6 @@ const schema = defineSchema({
               name: "alt",
               label: "Alternative Text",
               description: "For screen readers",
-            },
-            {
-              type: "number",
-              name: "banner_position",
-              label: "Banner Image Vertical Position (%)",
-              description:
-                "Controls focus of banner image so that you can make it fit. 0=top of image, 50=center, 100=bottom. 40 is default.",
             },
           ],
         },

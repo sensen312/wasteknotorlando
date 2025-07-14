@@ -69,12 +69,6 @@ const BannerTitle = styled(Typography)({
   textShadow: "1px 1px 20px rgba(0,0,0,0.7)",
 });
 
-type BannerImageWithPosition = {
-  src?: string | null;
-  alt?: string | null;
-  banner_position?: number | null;
-};
-
 export const EventSpotlightBlock = ({
   data,
 }: {
@@ -101,11 +95,11 @@ export const EventSpotlightBlock = ({
 
   const eventData = event as Event;
 
-  const displayImage = (
-    eventData.banner_image?.src ? eventData.banner_image : eventData.image
-  ) as BannerImageWithPosition | null;
+  const displayImage = eventData.banner_image?.src
+    ? eventData.banner_image
+    : eventData.image;
 
-  const bannerPosition = displayImage?.banner_position;
+  const bannerPosition = data.banner_position;
   const objectPositionValue = `center ${
     bannerPosition !== null && bannerPosition !== undefined
       ? bannerPosition
@@ -133,6 +127,7 @@ export const EventSpotlightBlock = ({
               image={displayImage?.src ?? undefined}
               alt={displayImage?.alt ?? ""}
               sx={{ objectPosition: objectPositionValue }}
+              data-tina-field={tinaField(data, "banner_position")}
             />
             <BannerOverlay>
               <BannerTitle variant="h3" component="h3" gutterBottom>
