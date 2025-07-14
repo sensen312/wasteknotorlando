@@ -226,6 +226,18 @@ const eventSpotlightBlock: Template = {
       description:
         "Controls focus of banner image so that you can make it fit. 0=top of image, 50=center, 100=bottom. 40 is default.",
     },
+    {
+      type: "number",
+      name: "banner_height_mobile",
+      label: "Mobile Banner Height",
+      description: "Set banner height in pixels for mobile. 200 is default.",
+    },
+    {
+      type: "number",
+      name: "banner_height_desktop",
+      label: "Desktop Banner Height",
+      description: "Set banner height in pixels for desktop. 300 is default.",
+    },
   ],
 };
 const quickLinksBlock: Template = {

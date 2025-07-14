@@ -29,13 +29,18 @@ const SectionHeader = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const BannerCard = styled(Card)(({ theme }) => ({
-  position: "relative",
-  height: "200px",
-  [theme.breakpoints.up("md")]: {
-    height: "300px",
-  },
-}));
+const BannerCard = styled(Card, {
+  shouldForwardProp: (prop) =>
+    prop !== "mobileHeight" && prop !== "desktopHeight",
+})<{ mobileHeight?: number | null; desktopHeight?: number | null }>(
+  ({ theme, mobileHeight, desktopHeight }) => ({
+    position: "relative",
+    height: `${mobileHeight || 200}px`,
+    [theme.breakpoints.up("md")]: {
+      height: `${desktopHeight || 300}px`,
+    },
+  })
+);
 
 const BannerActionArea = styled(CardActionArea)({
   height: "100%",
@@ -106,6 +111,9 @@ export const EventSpotlightBlock = ({
       : 40
   }%`;
 
+  const mobileHeight = data.banner_height_mobile;
+  const desktopHeight = data.banner_height_desktop;
+
   return (
     <Container maxWidth="lg">
       <Box my={5}>
@@ -116,7 +124,11 @@ export const EventSpotlightBlock = ({
         >
           {data.title}
         </SectionHeader>
-        <BannerCard data-tina-field={tinaField(eventData)}>
+        <BannerCard
+          data-tina-field={tinaField(eventData)}
+          mobileHeight={mobileHeight}
+          desktopHeight={desktopHeight}
+        >
           <BannerActionArea
             component={NextLink}
             href={`/events/${eventData._sys.filename}`}
