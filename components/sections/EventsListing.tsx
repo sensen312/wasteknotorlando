@@ -22,7 +22,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import {
   LocationOn,
   CalendarToday,
@@ -79,9 +79,15 @@ const StyledEventCard = styled(Card)(({ theme }) => ({
   [theme.breakpoints.up("md")]: { flexDirection: "row" },
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: theme.shadows[2],
-  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   overflow: "visible",
-  "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[6] },
+  backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+  transition:
+    "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: theme.shadows[6],
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15),
+  },
 }));
 
 const StyledCardActionArea = styled(CardActionArea)(({ theme }) => ({

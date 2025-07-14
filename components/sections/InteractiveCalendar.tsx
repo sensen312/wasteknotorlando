@@ -64,7 +64,7 @@ const CalendarPaper = styled(Paper)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius * 2,
   overflow: "hidden",
   boxShadow: theme.shadows[2],
-  background: theme.palette.background.default,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.1), // Applied light green alpha background
 }));
 
 const CalendarHeader = styled(Box)({

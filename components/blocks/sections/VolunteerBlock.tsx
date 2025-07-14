@@ -2,7 +2,7 @@
 import { PageBlocksVolunteer_Section } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Container, Typography, Paper, Button, Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 
 const PageWrapper = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(5),
@@ -57,13 +57,18 @@ const InfoCard = styled(Paper)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   textAlign: "center",
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.1),
   borderRadius: theme.shape.borderRadius * 2,
   border: "none",
   borderTop: `5px solid ${theme.palette.primary.main}`,
   boxShadow: theme.shadows[2],
-  transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
-  "&:hover": { transform: "translateY(-8px)", boxShadow: theme.shadows[8] },
+  transition:
+    "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-8px)",
+    boxShadow: theme.shadows[8],
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15),
+  },
 }));
 const InfoCardHeader = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
