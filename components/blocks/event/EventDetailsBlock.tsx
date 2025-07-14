@@ -2,7 +2,7 @@
 import { Event } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 import { Box, Container, Typography, Chip, Stack, Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { CalendarToday, Place, Instagram } from "@mui/icons-material";
 import { TinaMarkdown } from "tinacms/dist/rich-text";
 
@@ -10,6 +10,12 @@ const DetailsStack = styled(Stack)(({ theme }) => ({
   padding: theme.spacing(4),
   height: "100%",
   justifyContent: "center",
+  borderRadius: theme.shape.borderRadius * 2,
+  backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+  transition: "background-color 0.3s ease-in-out",
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.secondary.main, 0.15),
+  },
 }));
 
 const InfoLine = styled(Box)(({ theme }) => ({
