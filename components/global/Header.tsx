@@ -23,11 +23,21 @@ import { useAccessibility } from "@/context/AccessibilityContext";
 import { GlobalHeader, GlobalSocials, Maybe } from "@/tina/__generated__/types";
 import { tinaField } from "tinacms/dist/react";
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
+const StyledAppBar = styled(AppBar, {
+  shouldForwardProp: (prop) => prop !== "isScrolled",
+})<{ isScrolled: boolean }>(({ theme, isScrolled }) => ({
+  transition: theme.transitions.create(["background-color", "box-shadow"], {
+    duration: theme.transitions.duration.short,
+  }),
   backgroundColor: alpha(theme.palette.secondary.main, 0.1),
   borderBottom: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
   boxShadow: "none",
+  ...(isScrolled && {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[2],
+  }),
 }));
+
 const LogoLink = styled(MuiLink)({
   flexGrow: 1,
   display: "flex",
@@ -90,6 +100,8 @@ export default function Header({
     useState<null | HTMLElement>(null);
   const [accessibilityMenuAnchorEl, setAccessibilityMenuAnchorEl] =
     useState<null | HTMLElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const {
@@ -103,6 +115,18 @@ export default function Header({
   const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
 
   const navItems = header.navLinks || [];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -221,7 +245,11 @@ export default function Header({
   );
 
   return (
-    <StyledAppBar position="sticky" data-tina-field={tinaField(header)}>
+    <StyledAppBar
+      position="sticky"
+      isScrolled={isScrolled}
+      data-tina-field={tinaField(header)}
+    >
       <Container maxWidth="lg">
         <Toolbar disableGutters>
           <LogoLink component={NextLink} href="/">
