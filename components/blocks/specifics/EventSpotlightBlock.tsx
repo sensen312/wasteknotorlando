@@ -44,7 +44,6 @@ const BannerActionArea = styled(CardActionArea)({
 const BannerImage = styled(CardMedia)({
   height: "100%",
   objectFit: "cover",
-  objectPosition: "center 40%", // need to allow adjustment in Tina
 });
 
 const BannerOverlay = styled(Box)(({ theme }) => ({
@@ -69,6 +68,12 @@ const BannerOverlay = styled(Box)(({ theme }) => ({
 const BannerTitle = styled(Typography)({
   textShadow: "1px 1px 20px rgba(0,0,0,0.7)",
 });
+
+type BannerImageWithPosition = {
+  src?: string | null;
+  alt?: string | null;
+  banner_position?: number | null;
+};
 
 export const EventSpotlightBlock = ({
   data,
@@ -96,9 +101,16 @@ export const EventSpotlightBlock = ({
 
   const eventData = event as Event;
 
-  const displayImage = eventData.banner_image?.src
-    ? eventData.banner_image
-    : eventData.image;
+  const displayImage = (
+    eventData.banner_image?.src ? eventData.banner_image : eventData.image
+  ) as BannerImageWithPosition | null;
+
+  const bannerPosition = displayImage?.banner_position;
+  const objectPositionValue = `center ${
+    bannerPosition !== null && bannerPosition !== undefined
+      ? bannerPosition
+      : 40
+  }%`;
 
   return (
     <Container maxWidth="lg">
@@ -120,6 +132,7 @@ export const EventSpotlightBlock = ({
               component="img"
               image={displayImage?.src ?? undefined}
               alt={displayImage?.alt ?? ""}
+              sx={{ objectPosition: objectPositionValue }}
             />
             <BannerOverlay>
               <BannerTitle variant="h3" component="h3" gutterBottom>
