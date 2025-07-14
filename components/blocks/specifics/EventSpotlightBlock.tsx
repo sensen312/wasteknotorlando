@@ -36,7 +36,7 @@ const BannerCard = styled(Card, {
   ({ theme, mobileHeight, desktopHeight }) => ({
     position: "relative",
     height: `${mobileHeight || 200}px`,
-    [theme.breakpoints.up("md")]: {
+    [theme.breakpoints.up("sm")]: {
       height: `${desktopHeight || 300}px`,
     },
   })
