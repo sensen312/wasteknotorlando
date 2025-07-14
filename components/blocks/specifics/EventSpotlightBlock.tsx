@@ -44,6 +44,7 @@ const BannerActionArea = styled(CardActionArea)({
 const BannerImage = styled(CardMedia)({
   height: "100%",
   objectFit: "cover",
+  objectPosition: "center 40%", // need to allow adjustment in Tina
 });
 
 const BannerOverlay = styled(Box)(({ theme }) => ({
