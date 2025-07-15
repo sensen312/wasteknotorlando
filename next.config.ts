@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
+const isProduction = process.env.CF_PAGES_BRANCH === "main";
+
 const nextConfig: NextConfig = {
+  output: isProduction ? "export" : undefined,
+
   images: {
     unoptimized: true,
     remotePatterns: [
