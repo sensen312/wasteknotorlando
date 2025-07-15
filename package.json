@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "dotenv -- tinacms dev -c \"next dev\"",
     "build:production": "echo 'Running production build on main branch' && npm run prebuild && next build && rm -rf build_output && mv out build_output",
-    "build:preview": "echo 'Running preview build' && npm run prebuild && next build && rm -rf build_output && mkdir build_output && rsync -a --exclude 'cache' .next/ build_output/",
+    "build:preview": "echo 'Running preview build' && npm run prebuild && next build && rm -rf build_output && mkdir build_output && cp -r .next/* build_output/ && rm -rf build_output/cache",
     "build": "if [ \"$CF_PAGES_BRANCH\" = \"main\" ]; then npm run build:production; else npm run build:preview; fi",
     "start": "next start",
     "lint": "next lint",
