@@ -4,6 +4,7 @@ import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
 const branch =
+  process.env.CF_PAGES_BRANCH ||
   process.env.GITHUB_BRANCH ||
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
