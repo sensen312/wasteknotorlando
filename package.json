@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "dotenv -- tinacms dev -c \"next dev\"",
-    "prebuild": "dotenv -- tinacms build",
-    "build": "next build",
+    "build:production": "echo 'Running production build on main branch' && npm run prebuild && next build && rm -rf build_output && mv out build_output",
+    "build:preview": "echo 'Running preview build' && npm run prebuild && next build && mv .next build_output",
+    "build": "if [ \"$CF_PAGES_BRANCH\" = \"main\" ]; then npm run build:production; else npm run build:preview; fi",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prebuild": "dotenv -- tinacms build"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.844.0",
