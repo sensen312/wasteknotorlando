@@ -2,6 +2,7 @@
 import { useTina } from "tinacms/dist/react";
 import { PageQuery, Event } from "@/tina/__generated__/types";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
+import { useEffect } from "react";
 
 export function PageClient(props: {
   data: PageQuery;
@@ -11,6 +12,10 @@ export function PageClient(props: {
   mostUpcomingEvent?: Event | null;
 }) {
   const { data, cms } = useTina(props);
+
+  useEffect(() => {
+    console.log("Page component mounted.");
+  }, []);
 
   return (
     <main id="main-content">
