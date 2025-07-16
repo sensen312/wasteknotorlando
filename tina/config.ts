@@ -939,7 +939,7 @@ export default defineConfig({
   build: {
     outputFolder: "admin",
     publicFolder: "public",
-    basePath: "",
+    basePath: "admin",
   },
   admin: {
     basePath: "",

@@ -27,7 +27,7 @@ async function checkAuth(req: NextRequest) {
   }
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const user = await isAuthorized(req as any);
+    const user = await isAuthorized(req as any); // to bypass the linter
     if (user && user.verified) {
       return { isAuthorized: true };
     }
