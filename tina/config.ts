@@ -11,17 +11,14 @@ const branch =
   "main";
 
 class S3MediaStore implements MediaStore {
+  private apiUrl = "/api/s3/media";
+
   async persist(media: { file: File; directory: string }[]) {
     const newFiles = [];
     for (const item of media) {
       const { file, directory } = item;
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("directory", directory);
-      formData.append("fileName", file.name);
-      formData.append("fileType", file.type);
 
-      const presignRes = await fetch(`/api/s3/media`, {
+      const presignRes = await fetch(this.apiUrl, {
         method: "POST",
         body: JSON.stringify({
           fileName: file.name,
@@ -35,7 +32,7 @@ class S3MediaStore implements MediaStore {
         throw new Error(error.message || "Failed to get presigned URL");
       }
 
-      const { uploadURL, url } = await presignRes.json();
+      const { uploadURL, url, key } = await presignRes.json();
 
       const uploadRes = await fetch(uploadURL, {
         method: "PUT",
@@ -51,9 +48,9 @@ class S3MediaStore implements MediaStore {
 
       newFiles.push({
         type: "file",
-        id: url,
+        id: key,
         filename: file.name,
-        directory,
+        directory: directory,
         src: url,
       });
     }
@@ -61,22 +58,21 @@ class S3MediaStore implements MediaStore {
   }
 
   async delete(media: { id: string }) {
-    await fetch(`/api/s3/media`, {
+    await fetch(this.apiUrl, {
       method: "DELETE",
-      body: JSON.stringify({ key: media.id.split(".amazonaws.com/")[1] }),
+      body: JSON.stringify({ key: media.id }),
     });
   }
 
   async list(options: { directory?: string; offset?: number; limit?: number }) {
-    const { directory = "", offset = 0, limit = 36 } = options;
+    const { directory = "" } = options;
     const res = await fetch(
-      `/api/s3/media?prefix=${encodeURIComponent(
-        directory
-      )}&limit=${limit}&offset=${offset}`
+      `${this.apiUrl}?prefix=${encodeURIComponent(directory)}`
     );
 
     if (!res.ok) {
-      throw new Error("Failed to list media");
+      const error = await res.json();
+      throw new Error(error.message || "Failed to list media");
     }
     return res.json();
   }
