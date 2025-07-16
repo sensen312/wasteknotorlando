@@ -7,7 +7,6 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { randomBytes } from "crypto";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -109,7 +108,12 @@ export async function POST(req: NextRequest) {
   try {
     const { fileType, directory, fileName } = await req.json();
 
-    const randomStr = randomBytes(4).toString("hex");
+    const buffer = new Uint8Array(4);
+    crypto.getRandomValues(buffer);
+    const randomStr = Array.from(buffer)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
     const key = `${directory ? directory + "/" : ""}${randomStr}-${fileName}`;
 
     const command = new PutObjectCommand({
