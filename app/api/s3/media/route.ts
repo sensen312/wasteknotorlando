@@ -26,6 +26,7 @@ async function checkAuth(req: NextRequest) {
     return { isAuthorized: true };
   }
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = await isAuthorized(req as any);
     if (user && user.verified) {
       return { isAuthorized: true };
