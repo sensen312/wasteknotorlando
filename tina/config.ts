@@ -1,4 +1,4 @@
-import { defineConfig, defineSchema, Template } from "tinacms";
+import { defineConfig, defineSchema, Template, MediaStore } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
@@ -9,6 +9,78 @@ const branch =
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
   "main";
+
+class S3MediaStore implements MediaStore {
+  async persist(media: { file: File; directory: string }[]) {
+    const newFiles = [];
+    for (const item of media) {
+      const { file, directory } = item;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("directory", directory);
+      formData.append("fileName", file.name);
+      formData.append("fileType", file.type);
+
+      const presignRes = await fetch(`/api/s3/media`, {
+        method: "POST",
+        body: JSON.stringify({
+          fileName: file.name,
+          directory,
+          fileType: file.type,
+        }),
+      });
+
+      if (!presignRes.ok) {
+        const error = await presignRes.json();
+        throw new Error(error.message || "Failed to get presigned URL");
+      }
+
+      const { uploadURL, url } = await presignRes.json();
+
+      const uploadRes = await fetch(uploadURL, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload to S3");
+      }
+
+      newFiles.push({
+        type: "file",
+        id: url,
+        filename: file.name,
+        directory,
+        src: url,
+      });
+    }
+    return newFiles;
+  }
+
+  async delete(media: { id: string }) {
+    await fetch(`/api/s3/media`, {
+      method: "DELETE",
+      body: JSON.stringify({ key: media.id.split(".amazonaws.com/")[1] }),
+    });
+  }
+
+  async list(options: { directory?: string; offset?: number; limit?: number }) {
+    const { directory = "", offset = 0, limit = 36 } = options;
+    const res = await fetch(
+      `/api/s3/media?prefix=${encodeURIComponent(
+        directory
+      )}&limit=${limit}&offset=${offset}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to list media");
+    }
+    return res.json();
+  }
+}
 
 type ItemProps = Record<string, unknown>;
 
@@ -945,9 +1017,8 @@ export default defineConfig({
     basePath: "",
   },
   media: {
-    tina: {
-      publicFolder: "public",
-      mediaRoot: "tina-media",
+    loadCustomStore: async () => {
+      return new S3MediaStore();
     },
   },
   schema,
