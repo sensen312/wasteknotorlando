@@ -1,4 +1,4 @@
-import { MediaStore } from "tinacms";
+import { Media, MediaStore, MediaListOptions } from "tinacms";
 
 export class S3MediaStore implements MediaStore {
   private apiUrl = "/api/s3/media";
@@ -14,8 +14,8 @@ export class S3MediaStore implements MediaStore {
     return "file";
   }
 
-  async persist(media: { file: File; directory: string }[]) {
-    const newFiles = [];
+  async persist(media: { file: File; directory: string }[]): Promise<Media[]> {
+    const newFiles: Media[] = [];
     for (const item of media) {
       const { file, directory } = item;
 
@@ -65,16 +65,23 @@ export class S3MediaStore implements MediaStore {
   }
 
   async delete(media: { id: string }) {
-    await fetch(this.apiUrl, {
+    const res = await fetch(this.apiUrl, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ key: media.id }),
     });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(
+        error.message || `Failed to delete item in media with id: ${media.id}`
+      );
+    }
   }
 
-  async list(options: { directory?: string; offset?: number; limit?: number }) {
+  async list(options: MediaListOptions) {
     const { directory = "", offset, limit } = options;
     const params = new URLSearchParams();
     params.append("prefix", directory);
@@ -90,7 +97,7 @@ export class S3MediaStore implements MediaStore {
     const data = await res.json();
 
     return {
-      ...data,
+      items: data.items,
       nextOffset: data.nextContinuationToken,
     };
   }
