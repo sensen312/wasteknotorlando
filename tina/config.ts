@@ -932,18 +932,9 @@ const schema = defineSchema({
   ],
 });
 
-const clientId =
-  process.env.TINA_CLIENT_ID || process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
-
-if (!clientId) {
-  throw new Error(
-    "TINA_CLIENT_ID or NEXT_PUBLIC_TINA_CLIENT_ID not set in the environment ;-;"
-  );
-}
-
 export default defineConfig({
   branch,
-  clientId: clientId,
+  clientId: "a68d7971-abe3-4d91-93df-a97ddfe00fa5",
   token: process.env.TINA_TOKEN!,
   build: {
     outputFolder: "admin",
