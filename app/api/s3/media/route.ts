@@ -8,6 +8,12 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
 
+if (!process.env.TINA_CLIENT_ID && !process.env.NEXT_PUBLIC_TINA_CLIENT_ID) {
+  console.error(
+    "FATAL: Tina client ID not configured to the Edge enviroment ;-;."
+  );
+}
+
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 

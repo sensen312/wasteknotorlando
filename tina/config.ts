@@ -932,9 +932,18 @@ const schema = defineSchema({
   ],
 });
 
+const clientId =
+  process.env.TINA_CLIENT_ID || process.env.NEXT_PUBLIC_TINA_CLIENT_ID;
+
+if (!clientId) {
+  throw new Error(
+    "TINA_CLIENT_ID or NEXT_PUBLIC_TINA_CLIENT_ID not set in the environment ;-;"
+  );
+}
+
 export default defineConfig({
   branch,
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
+  clientId: clientId,
   token: process.env.TINA_TOKEN!,
   build: {
     outputFolder: "admin",
@@ -945,8 +954,7 @@ export default defineConfig({
     basePath: "",
   },
   media: {
-    loadCustomStore: async () => {
-      const { S3MediaStore } = await import("./s3-media-store");
+    loadCustomStore: () => {
       return S3MediaStore;
     },
   },
