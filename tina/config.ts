@@ -12,6 +12,17 @@ const branch =
 
 class S3MediaStore implements MediaStore {
   private apiUrl = "/api/s3/media";
+  public accept = "image/*,video/*,application/pdf";
+
+  private getMediaType(fileType: string): "image" | "video" | "file" {
+    if (fileType.startsWith("image/")) {
+      return "image";
+    }
+    if (fileType.startsWith("video/")) {
+      return "video";
+    }
+    return "file";
+  }
 
   async persist(media: { file: File; directory: string }[]) {
     const newFiles = [];
@@ -20,6 +31,9 @@ class S3MediaStore implements MediaStore {
 
       const presignRes = await fetch(this.apiUrl, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           fileName: file.name,
           directory,
@@ -43,15 +57,18 @@ class S3MediaStore implements MediaStore {
       });
 
       if (!uploadRes.ok) {
+        const errorText = await uploadRes.text();
+        console.error("S3 Upload Error:", errorText);
         throw new Error("Failed to upload to S3");
       }
 
       newFiles.push({
-        type: "file",
+        type: this.getMediaType(file.type),
         id: key,
         filename: file.name,
         directory: directory,
         src: url,
+        thumbnails: {},
       });
     }
     return newFiles;
@@ -60,21 +77,36 @@ class S3MediaStore implements MediaStore {
   async delete(media: { id: string }) {
     await fetch(this.apiUrl, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ key: media.id }),
     });
   }
 
   async list(options: { directory?: string; offset?: number; limit?: number }) {
-    const { directory = "" } = options;
-    const res = await fetch(
-      `${this.apiUrl}?prefix=${encodeURIComponent(directory)}`
-    );
+    const { directory = "", offset, limit } = options;
+    const params = new URLSearchParams();
+    params.append("prefix", directory);
+    if (offset) params.append("nextContinuationToken", String(offset));
+    if (limit) params.append("limit", String(limit));
+
+    const res = await fetch(`${this.apiUrl}?${params.toString()}`);
 
     if (!res.ok) {
       const error = await res.json();
       throw new Error(error.message || "Failed to list media");
     }
-    return res.json();
+    const data = await res.json();
+
+    return {
+      ...data,
+      nextOffset: data.nextContinuationToken,
+    };
+  }
+
+  async previewSrc(src: string) {
+    return src;
   }
 }
 
