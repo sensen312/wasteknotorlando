@@ -1,134 +1,14 @@
-import {
-  defineConfig,
-  defineSchema,
-  Template,
-  MediaStore,
-  Media,
-} from "tinacms";
+import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
-
+import { S3MediaStore } from "./s3-media-store";
 const branch =
   process.env.CF_PAGES_BRANCH ||
   process.env.GITHUB_BRANCH ||
   process.env.VERCEL_GIT_COMMIT_REF ||
   process.env.HEAD ||
   "main";
-
-class S3MediaStore implements MediaStore {
-  private apiUrl = "/api/s3/media";
-  public accept = "image/*,video/*,application/pdf";
-
-  private getMediaType(fileType: string): "image" | "video" | "file" {
-    if (fileType.startsWith("image/")) {
-      return "image";
-    }
-    if (fileType.startsWith("video/")) {
-      return "video";
-    }
-    return "file";
-  }
-
-  async persist(media: { file: File; directory: string }[]) {
-    console.log("Persist called with:", media);
-    const newFiles = [];
-    for (const item of media) {
-      const { file, directory } = item;
-      console.log(`Persisting file: ${file.name}`);
-
-      const presignRes = await fetch(this.apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          directory,
-          fileType: file.type,
-        }),
-      });
-
-      if (!presignRes.ok) {
-        const error = await presignRes.json();
-        console.error("Failed to get presigned URL", error);
-        throw new Error(error.message || "Failed to get presigned URL");
-      }
-
-      const { uploadURL, url, key } = await presignRes.json();
-      console.log(`Got presigned URL for key yay: ${key}`);
-
-      const uploadRes = await fetch(uploadURL, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type },
-      });
-
-      if (!uploadRes.ok) {
-        const errorText = await uploadRes.text();
-        console.error("S3 Upload Error:", errorText);
-        throw new Error("Failed to upload to S3");
-      }
-      console.log(`uploaded ${file.name} to ${url} yippi`);
-
-      newFiles.push({
-        type: this.getMediaType(file.type),
-        id: key,
-        filename: file.name,
-        directory: directory,
-        src: url,
-        thumbnails: {},
-      });
-    }
-    console.log("Persist complete:", newFiles);
-    return newFiles;
-  }
-
-  async delete(media: Media) {
-    console.log("Deleting:", media.id);
-    await fetch(this.apiUrl, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: media.id }),
-    });
-    console.log(`Delete request for: ${media.id}`);
-  }
-
-  async list(options: { directory?: string; offset?: number; limit?: number }) {
-    console.log("List called, Options:", options);
-    const { directory = "", offset, limit } = options;
-    const params = new URLSearchParams();
-    params.append("prefix", directory);
-    if (offset) params.append("nextContinuationToken", String(offset));
-    if (limit) params.append("limit", String(limit));
-
-    try {
-      const res = await fetch(`${this.apiUrl}?${params.toString()}`);
-      console.log(`List Await API status: ${res.status}`);
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Failed to list media ;-; Error:", errorText);
-        throw new Error(`Error failed to list media: ${errorText}`);
-      }
-
-      const data = await res.json();
-      console.log("List APi response data:", data);
-
-      const result = {
-        ...data,
-        nextOffset: data.nextContinuationToken,
-      };
-      console.log("Returning from list method:", result);
-      return result;
-    } catch (e) {
-      console.error("CRITICAL ERROR ;-; in the list method:", e);
-      throw e;
-    }
-  }
-
-  async previewSrc(src: string) {
-    return src;
-  }
-}
 
 type ItemProps = Record<string, unknown>;
 
