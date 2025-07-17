@@ -950,9 +950,6 @@ export default defineConfig({
     publicFolder: "public",
     basePath: "admin",
   },
-  admin: {
-    basePath: "",
-  },
   media: {
     loadCustomStore: () => {
       return S3MediaStore;
