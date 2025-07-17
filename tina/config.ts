@@ -934,7 +934,7 @@ const schema = defineSchema({
 
 export default defineConfig({
   branch,
-  clientId: "a68d7971-abe3-4d91-93df-a97ddfe00fa5",
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
   token: process.env.TINA_TOKEN!,
   build: {
     outputFolder: "admin",
@@ -942,8 +942,8 @@ export default defineConfig({
     basePath: "",
   },
   media: {
-    loadCustomStore: () => {
-      return S3MediaStore;
+    loadCustomStore: async () => {
+      return new S3MediaStore();
     },
   },
   schema,

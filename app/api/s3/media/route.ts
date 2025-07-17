@@ -8,7 +8,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
 
-if (!process.env.TINA_CLIENT_ID && !process.env.NEXT_PUBLIC_TINA_CLIENT_ID) {
+if (!process.env.TINA_CLIENT_ID) {
   console.error(
     "FATAL: Tina client ID not configured to the Edge enviroment ;-;."
   );
@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 const s3Client = new S3Client({
   region: process.env.NEXT_PUBLIC_S3_REGION,
   credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_S3_ACCESS_KEY as string,
+    accessKeyId: process.env.S3_ACCESS_KEY as string,
     secretAccessKey: process.env.S3_SECRET_KEY as string,
   },
 });
