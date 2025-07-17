@@ -946,9 +946,9 @@ export default defineConfig({
   },
   media: {
     loadCustomStore: async () => {
-      return new S3MediaStore();
+      const { S3MediaStore } = await import("./s3-media-store");
+      return S3MediaStore;
     },
   },
   schema,
-  client: {},
 });
