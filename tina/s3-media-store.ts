@@ -1,16 +1,20 @@
 import { Media, MediaStore, MediaListOptions } from "tinacms";
+import type { Client } from "tinacms";
 
 export class S3MediaStore implements MediaStore {
+  private client: Client;
   private apiUrl = "/api/s3/media";
   public accept = "image/*,video/*,application/pdf";
 
-  private getMediaType(fileType: string): "image" | "video" | "file" {
-    if (fileType.startsWith("image/")) {
-      return "image";
-    }
-    if (fileType.startsWith("video/")) {
-      return "video";
-    }
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  private async fetcher(input: RequestInfo, init?: RequestInit) {
+    return this.client.authProvider.fetchWithToken(input, init);
+  }
+
+  private getMediaType(): "file" {
     return "file";
   }
 
@@ -19,7 +23,7 @@ export class S3MediaStore implements MediaStore {
     for (const item of media) {
       const { file, directory } = item;
 
-      const presignRes = await fetch(this.apiUrl, {
+      const presignRes = await this.fetcher(this.apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,19 +57,23 @@ export class S3MediaStore implements MediaStore {
       }
 
       newFiles.push({
-        type: this.getMediaType(file.type),
+        type: this.getMediaType(),
         id: key,
         filename: file.name,
         directory: directory,
         src: url,
-        thumbnails: {},
+        thumbnails: {
+          "75x75": url,
+          "400x400": url,
+          "1000x1000": url,
+        },
       });
     }
     return newFiles;
   }
 
   async delete(media: { id: string }) {
-    const res = await fetch(this.apiUrl, {
+    const res = await this.fetcher(this.apiUrl, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +96,7 @@ export class S3MediaStore implements MediaStore {
     if (offset) params.append("nextContinuationToken", String(offset));
     if (limit) params.append("limit", String(limit));
 
-    const res = await fetch(`${this.apiUrl}?${params.toString()}`);
+    const res = await this.fetcher(`${this.apiUrl}?${params.toString()}`);
 
     if (!res.ok) {
       const error = await res.json();
