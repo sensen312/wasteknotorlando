@@ -943,7 +943,7 @@ if (!clientId) {
 
 export default defineConfig({
   branch,
-  clientId: clientId,
+  clientId: "a68d7971-abe3-4d91-93df-a97ddfe00fa5",
   token: process.env.TINA_TOKEN!,
   build: {
     outputFolder: "admin",
