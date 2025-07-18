@@ -27,7 +27,7 @@ async function checkAuth(req: NextRequest) {
   }
   try {
     const url = new URL(req.url);
-    const clientId = url.searchParams.get("clientId"); // get client id from request query parameters
+    const clientId = url.searchParams.get("clientId");
     if (!clientId) {
       return {
         isAuthorized: false,
@@ -37,21 +37,20 @@ async function checkAuth(req: NextRequest) {
 
     const authHeader = req.headers.get("X-Tina-Authorization");
     if (authHeader) {
-      const token = authHeader.split(" ")[1];
-      if (token) {
-        const user = await isUserAuthorized({
-          token,
-          clientID: clientId,
-        });
-        if (user && user.verified) {
-          return { isAuthorized: true, error: null };
-        } else {
-          return {
-            isAuthorized: false,
-            error:
-              "Token from custom header was found but failed validation ;-;",
-          };
-        }
+      const token = authHeader;
+
+      const user = await isUserAuthorized({
+        token,
+        clientID: clientId,
+      });
+
+      if (user && user.verified) {
+        return { isAuthorized: true, error: null };
+      } else {
+        return {
+          isAuthorized: false,
+          error: "Token from custom header was found but failed validation ;-;",
+        };
       }
     }
 
