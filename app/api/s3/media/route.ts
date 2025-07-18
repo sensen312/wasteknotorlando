@@ -50,7 +50,8 @@ async function checkAuth(req: NextRequest) {
       } else {
         return {
           isAuthorized: false,
-          error: "Token from custom header was found but failed validation ;-;",
+          error:
+            "Token from custom header was found but failed  validation ;-;",
         };
       }
     }
