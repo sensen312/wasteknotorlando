@@ -941,15 +941,11 @@ export default defineConfig({
     publicFolder: "public",
     basePath: "",
   },
-  admin: {
-    basePath: "",
-  },
   media: {
-    tina: {
-      publicFolder: "public",
-      mediaRoot: "uploads",
+    loadCustomStore: async () => {
+      const { S3MediaStore } = await import("./s3-media-store");
+      return S3MediaStore;
     },
   },
   schema,
-  client: {},
 });
