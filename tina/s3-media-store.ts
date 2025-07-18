@@ -17,7 +17,6 @@ export class S3MediaStore implements MediaStore {
 
   private async fetcher(input: RequestInfo, init?: RequestInit) {
     const token = await this.client.authProvider.getToken();
-
     if (!token) {
       throw new Error(
         "Tina Auth Token is missing ;-;. Cannot make authenticated request."
@@ -25,7 +24,6 @@ export class S3MediaStore implements MediaStore {
     }
 
     const headers = new Headers(init?.headers);
-
     headers.set("X-Tina-Authorization", `Bearer ${token.id_token}`);
 
     const options = {
@@ -34,7 +32,10 @@ export class S3MediaStore implements MediaStore {
       credentials: "include" as RequestCredentials,
     };
 
-    return fetch(input, options);
+    const url = new URL(input.toString(), window.location.origin); // must append the clientID to the URL as a query parameter
+    url.searchParams.append("clientId", this.client.clientId);
+
+    return fetch(url.toString(), options);
   }
 
   async persist(media: { file: File; directory: string }[]): Promise<Media[]> {

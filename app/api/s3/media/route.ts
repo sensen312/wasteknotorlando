@@ -8,12 +8,6 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
 
-if (!process.env.TINA_CLIENT_ID) {
-  console.error(
-    "FATAL: Tina client ID not configured to the Edge enviroment ;-;."
-  );
-}
-
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
@@ -32,13 +26,22 @@ async function checkAuth(req: NextRequest) {
     return { isAuthorized: true, error: null };
   }
   try {
+    const url = new URL(req.url);
+    const clientId = url.searchParams.get("clientId"); // get client id from request query parameters
+    if (!clientId) {
+      return {
+        isAuthorized: false,
+        error: "Client ID is missing from request ;-; BRUH ",
+      };
+    }
+
     const authHeader = req.headers.get("X-Tina-Authorization");
     if (authHeader) {
       const token = authHeader.split(" ")[1];
       if (token) {
         const user = await isUserAuthorized({
           token,
-          clientID: process.env.TINA_CLIENT_ID as string,
+          clientID: clientId,
         });
         if (user && user.verified) {
           return { isAuthorized: true, error: null };
