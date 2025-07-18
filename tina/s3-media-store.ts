@@ -1,5 +1,4 @@
-import { Media, MediaStore, MediaListOptions } from "tinacms";
-import type { Client } from "tinacms";
+import { Media, MediaStore, MediaListOptions, Client } from "tinacms";
 
 export class S3MediaStore implements MediaStore {
   private client: Client;
