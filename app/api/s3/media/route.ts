@@ -105,15 +105,23 @@ export async function GET(req: NextRequest) {
 
     const files =
       Contents?.filter((file) => file.Key !== prefix && file.Size).map(
-        (file) => ({
-          type: "file" as const,
-          id: file.Key,
-          filename: file.Key?.split("/").pop(),
-          directory: file.Key?.substring(0, file.Key.lastIndexOf("/")),
-          lastModified: file.LastModified?.getTime(),
-          size: file.Size,
-          src: `https://${bucketName}.s3.${process.env.NEXT_PUBLIC_S3_REGION}.amazonaws.com/${file.Key}`,
-        })
+        (file) => {
+          const src = `https://${bucketName}.s3.${process.env.NEXT_PUBLIC_S3_REGION}.amazonaws.com/${file.Key}`;
+          return {
+            type: "file" as const,
+            id: file.Key,
+            filename: file.Key?.split("/").pop(),
+            directory: file.Key?.substring(0, file.Key.lastIndexOf("/")),
+            lastModified: file.LastModified?.getTime(),
+            size: file.Size,
+            src: src,
+            thumbnails: {
+              "75x75": src,
+              "400x400": src,
+              "1000x1000": src,
+            },
+          };
+        }
       ) || [];
 
     return NextResponse.json({
@@ -150,7 +158,10 @@ export async function POST(req: NextRequest) {
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
 
-    const key = `${directory ? directory + "/" : ""}${randomStr}-${fileName}`;
+    const cleanDirectory = directory.replace(/^\/|\/$/g, "");
+    const key = [cleanDirectory, `${randomStr}-${fileName}`]
+      .filter(Boolean)
+      .join("/");
 
     const command = new PutObjectCommand({
       Bucket: bucketName,
