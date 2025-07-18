@@ -7,7 +7,7 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { parse } from "cookie";
 
 if (!process.env.TINA_CLIENT_ID) {
   console.error(
@@ -28,33 +28,47 @@ const s3Client = new S3Client({
 
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET as string;
 
-async function checkAuth() {
+async function checkAuth(req: NextRequest) {
   if (process.env.TINA_PUBLIC_IS_LOCAL === "true") {
-    return { isAuthorized: true };
+    return { isAuthorized: true, error: null };
   }
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("tina_oauth_token")?.value;
-
-    if (!token) {
-      return {
-        isAuthorized: false,
-        error: "Auth token not found in cookie ;-;",
-      };
+    const authHeader = req.headers.get("Authorization");
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+      if (token) {
+        const user = await isUserAuthorized({
+          token,
+          clientID: process.env.TINA_CLIENT_ID as string,
+        });
+        if (user && user.verified) {
+          return { isAuthorized: true, error: null };
+        }
+      }
     }
 
-    const user = await isUserAuthorized({
-      token,
-      clientID: process.env.TINA_CLIENT_ID as string,
-    });
-
-    if (user && user.verified) {
-      return { isAuthorized: true };
+    const cookieHeader = req.headers.get("cookie");
+    if (cookieHeader) {
+      const cookies = parse(cookieHeader);
+      const tokenFromCookie = cookies.tina_oauth_token;
+      if (tokenFromCookie) {
+        const user = await isUserAuthorized({
+          token: tokenFromCookie,
+          clientID: process.env.TINA_CLIENT_ID as string,
+        });
+        if (user && user.verified) {
+          return { isAuthorized: true, error: null };
+        }
+      }
     }
-    return { isAuthorized: false, error: "User isnt authorized" };
+
+    return {
+      isAuthorized: false,
+      error: "Auth token not found/ invalid ;-;",
+    };
   } catch (e: unknown) {
+    console.error(e);
     if (e instanceof Error) {
-      console.error(e);
       return { isAuthorized: false, error: e.message };
     }
     return {
@@ -65,12 +79,9 @@ async function checkAuth() {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = await checkAuth();
+  const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
-    return NextResponse.json(
-      { message: auth.error || "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ message: auth.error }, { status: 401 });
   }
 
   try {
@@ -81,25 +92,37 @@ export async function GET(req: NextRequest) {
 
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
+      Delimiter: "/",
       Prefix: prefix,
       ContinuationToken: nextContinuationToken,
     });
 
-    const { Contents, NextContinuationToken } = await s3Client.send(command);
+    const { Contents, NextContinuationToken, CommonPrefixes } =
+      await s3Client.send(command);
 
-    const files =
-      Contents?.map((file) => ({
-        type: "file",
-        id: file.Key,
-        filename: file.Key?.split("/").pop(),
-        directory: file.Key?.substring(0, file.Key.lastIndexOf("/")),
-        lastModified: file.LastModified?.getTime(),
-        size: file.Size,
-        src: `https://${bucketName}.s3.${process.env.NEXT_PUBLIC_S3_REGION}.amazonaws.com/${file.Key}`,
+    const directories =
+      CommonPrefixes?.map((p) => ({
+        type: "dir" as const,
+        id: p.Prefix,
+        filename: p.Prefix?.split("/").slice(-2, -1)[0],
+        directory: p.Prefix?.split("/").slice(0, -2).join("/"),
       })) || [];
 
+    const files =
+      Contents?.filter((file) => file.Key !== prefix && file.Size).map(
+        (file) => ({
+          type: "file" as const,
+          id: file.Key,
+          filename: file.Key?.split("/").pop(),
+          directory: file.Key?.substring(0, file.Key.lastIndexOf("/")),
+          lastModified: file.LastModified?.getTime(),
+          size: file.Size,
+          src: `https://${bucketName}.s3.${process.env.NEXT_PUBLIC_S3_REGION}.amazonaws.com/${file.Key}`,
+        })
+      ) || [];
+
     return NextResponse.json({
-      items: files,
+      items: [...directories, ...files],
       nextContinuationToken: NextContinuationToken,
     });
   } catch (e: unknown) {
@@ -118,12 +141,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await checkAuth();
+  const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
-    return NextResponse.json(
-      { message: auth.error || "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ message: auth.error }, { status: 401 });
   }
 
   try {
@@ -171,12 +191,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const auth = await checkAuth();
+  const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
-    return NextResponse.json(
-      { message: auth.error || "Unauthorized" },
-      { status: 401 }
-    );
+    return NextResponse.json({ message: auth.error }, { status: 401 });
   }
 
   try {
