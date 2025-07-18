@@ -7,7 +7,6 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { parse } from "cookie";
 
 if (!process.env.TINA_CLIENT_ID) {
   console.error(
@@ -33,7 +32,7 @@ async function checkAuth(req: NextRequest) {
     return { isAuthorized: true, error: null };
   }
   try {
-    const authHeader = req.headers.get("Authorization");
+    const authHeader = req.headers.get("X-Tina-Authorization");
     if (authHeader) {
       const token = authHeader.split(" ")[1];
       if (token) {
@@ -43,33 +42,27 @@ async function checkAuth(req: NextRequest) {
         });
         if (user && user.verified) {
           return { isAuthorized: true, error: null };
-        }
-      }
-    }
-
-    const cookieHeader = req.headers.get("cookie");
-    if (cookieHeader) {
-      const cookies = parse(cookieHeader);
-      const tokenFromCookie = cookies.tina_oauth_token;
-      if (tokenFromCookie) {
-        const user = await isUserAuthorized({
-          token: tokenFromCookie,
-          clientID: process.env.TINA_CLIENT_ID as string,
-        });
-        if (user && user.verified) {
-          return { isAuthorized: true, error: null };
+        } else {
+          return {
+            isAuthorized: false,
+            error:
+              "Token from custom header was found but failed validation ;-;",
+          };
         }
       }
     }
 
     return {
       isAuthorized: false,
-      error: "Auth token not found/ invalid ;-;",
+      error: "Auth token not found in custom header ;-;",
     };
   } catch (e: unknown) {
     console.error(e);
     if (e instanceof Error) {
-      return { isAuthorized: false, error: e.message };
+      return {
+        isAuthorized: false,
+        error: `Auth check error: ${e.message}`,
+      };
     }
     return {
       isAuthorized: false,
