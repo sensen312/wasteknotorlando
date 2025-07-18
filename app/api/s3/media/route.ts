@@ -3,6 +3,7 @@ import {
   ListObjectsV2Command,
   DeleteObjectCommand,
   PutObjectCommand,
+  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
@@ -158,10 +159,11 @@ export async function POST(req: NextRequest) {
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
 
-    const cleanDirectory = directory.replace(/^\/|\/$/g, "");
-    const key = [cleanDirectory, `${randomStr}-${fileName}`]
-      .filter(Boolean)
-      .join("/");
+    const cleanedDirectory = directory.replace(/^\/+|\/+$/g, "");
+
+    const key = `${
+      cleanedDirectory ? cleanedDirectory + "/" : ""
+    }${randomStr}-${fileName}`;
 
     const command = new PutObjectCommand({
       Bucket: bucketName,
@@ -211,14 +213,38 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const command = new DeleteObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-    });
+    if (key.endsWith("/")) {
+      const listCommand = new ListObjectsV2Command({
+        Bucket: bucketName,
+        Prefix: key,
+      });
+      const listedObjects = await s3Client.send(listCommand);
 
-    await s3Client.send(command);
+      if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+        return NextResponse.json({ message: "Empty folder deleted!" });
+      }
 
-    return NextResponse.json({ message: "File deleted !" });
+      const deleteParams = {
+        Bucket: bucketName,
+        Delete: {
+          Objects: listedObjects.Contents.map(({ Key }) => ({ Key })),
+        },
+      };
+
+      const deleteCommand = new DeleteObjectsCommand(deleteParams);
+      await s3Client.send(deleteCommand);
+
+      return NextResponse.json({ message: "Folder and its contents deleted!" });
+    } else {
+      const command = new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      });
+
+      await s3Client.send(command);
+
+      return NextResponse.json({ message: "File deleted !" });
+    }
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.error(e);
