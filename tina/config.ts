@@ -2,6 +2,7 @@ import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
+import type { Client } from "tinacms";
 
 const branch =
   process.env.CF_PAGES_BRANCH ||
@@ -942,9 +943,10 @@ export default defineConfig({
     basePath: "",
   },
   media: {
-    loadCustomStore: async () => {
+    // @ts-expect-error - media store must recieve client
+    loadCustomStore: async (client: Client) => {
       const { S3MediaStore } = await import("./s3-media-store");
-      return S3MediaStore;
+      return new S3MediaStore(client);
     },
   },
   schema,
