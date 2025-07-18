@@ -10,7 +10,11 @@ export class S3MediaStore implements MediaStore {
   }
 
   private async fetcher(input: RequestInfo, init?: RequestInit) {
-    return this.client.authProvider.fetchWithToken(input, init);
+    const options = {
+      ...init,
+      credentials: "include" as RequestCredentials,
+    };
+    return this.client.authProvider.fetchWithToken(input, options);
   }
 
   private getMediaType(): "file" {
