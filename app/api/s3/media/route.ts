@@ -82,9 +82,13 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
-    const prefix = searchParams.get("prefix") || "";
+    let prefix = searchParams.get("prefix") || "";
     const nextContinuationToken =
       searchParams.get("nextContinuationToken") || undefined;
+
+    if (prefix && !prefix.endsWith("/")) {
+      prefix += "/";
+    }
 
     const command = new ListObjectsV2Command({
       Bucket: bucketName,
