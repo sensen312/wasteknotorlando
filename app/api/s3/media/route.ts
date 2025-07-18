@@ -5,8 +5,9 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { isAuthorized } from "@tinacms/auth";
+import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 if (!process.env.TINA_CLIENT_ID) {
   console.error(
@@ -27,17 +28,30 @@ const s3Client = new S3Client({
 
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET as string;
 
-async function checkAuth(req: NextRequest) {
+async function checkAuth() {
   if (process.env.TINA_PUBLIC_IS_LOCAL === "true") {
     return { isAuthorized: true };
   }
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const user = await isAuthorized(req as any); // for linter
+    const cookieStore = await cookies();
+    const token = cookieStore.get("tina_oauth_token")?.value;
+
+    if (!token) {
+      return {
+        isAuthorized: false,
+        error: "Auth token not found in cookie ;-;",
+      };
+    }
+
+    const user = await isUserAuthorized({
+      token,
+      clientID: process.env.TINA_CLIENT_ID as string,
+    });
+
     if (user && user.verified) {
       return { isAuthorized: true };
     }
-    return { isAuthorized: false, error: "User isnt not authorized" };
+    return { isAuthorized: false, error: "User isnt authorized" };
   } catch (e: unknown) {
     if (e instanceof Error) {
       console.error(e);
@@ -51,7 +65,7 @@ async function checkAuth(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = await checkAuth(req);
+  const auth = await checkAuth();
   if (!auth.isAuthorized) {
     return NextResponse.json(
       { message: auth.error || "Unauthorized" },
@@ -104,7 +118,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const auth = await checkAuth(req);
+  const auth = await checkAuth();
   if (!auth.isAuthorized) {
     return NextResponse.json(
       { message: auth.error || "Unauthorized" },
@@ -143,7 +157,7 @@ export async function POST(req: NextRequest) {
     if (e instanceof Error) {
       console.error(e);
       return NextResponse.json(
-        { message: "Failed tcreating presigned URL", error: e.message },
+        { message: "Failed creating presigned URL", error: e.message },
         { status: 500 }
       );
     }
@@ -157,7 +171,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const auth = await checkAuth(req);
+  const auth = await checkAuth();
   if (!auth.isAuthorized) {
     return NextResponse.json(
       { message: auth.error || "Unauthorized" },
