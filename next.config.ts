@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path(.+)/admin",
+        destination: "/admin/index.html#/~/:path",
+        permanent: false,
+      },
+    ];
+  },
   images: {
     unoptimized: true,
   },
