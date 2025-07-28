@@ -38,6 +38,10 @@ export class S3MediaStore implements MediaStore {
     return fetch(url.toString(), options);
   }
 
+  public parse = (media: Media): string => {
+    return media.src || "";
+  };
+
   async persist(media: { file: File; directory: string }[]): Promise<Media[]> {
     const newFiles: Media[] = [];
     for (const item of media) {
