@@ -30,10 +30,13 @@ const createImageField = (name = "image", label = "Image") => ({
   label,
   fields: [
     {
-      type: "image" as const,
+      type: "string" as const,
       name: "src",
       label: "Image File",
       required: true,
+      ui: {
+        component: "image" as const,
+      },
     },
     {
       ...createRequiredStringField(
@@ -830,9 +833,12 @@ const schema = defineSchema({
             "Landscape image for homepage event spotlight. Main event image will be used if empty.",
           fields: [
             {
-              type: "image",
+              type: "string",
               name: "src",
               label: "Image File",
+              ui: {
+                component: "image" as const,
+              },
             },
             {
               type: "string",
