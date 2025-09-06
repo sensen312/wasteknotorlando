@@ -6,8 +6,6 @@ import fs from "fs";
 import path from "path";
 import { Metadata } from "next";
 
-export const runtime = "edge";
-
 export async function generateMetadata({
   params,
 }: {
