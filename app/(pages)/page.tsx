@@ -4,8 +4,6 @@ import { PageClient } from "./[...slug]/PageClient";
 import { Event } from "@/tina/__generated__/types";
 import { Metadata } from "next";
 
-export const runtime = "edge";
-
 export async function generateMetadata(): Promise<Metadata> {
   const siteURL = "https://www.wasteknotorlando.org";
   const siteName = "WasteKnot Orlando";
