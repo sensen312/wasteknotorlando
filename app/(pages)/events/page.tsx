@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import ListingPageClient from "./ListingPageClient";
 import { Event } from "@/tina/__generated__/types";
 
+export const runtime = "edge";
+
 export default async function EventsPage() {
   try {
     const pageResult = await client.queries.page({

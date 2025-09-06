@@ -6,6 +6,8 @@ import EventPageClient from "./EventPageClient";
 import { Event } from "@/tina/__generated__/types";
 import { Metadata } from "next";
 
+export const runtime = "edge";
+
 export async function generateMetadata({
   params,
 }: {
