@@ -27,9 +27,7 @@ import {
   LocationOn,
   CalendarToday,
   Instagram,
-  Add as AddIcon,
   Archive as ArchiveIcon,
-  Edit as EditIcon,
   HowToReg,
 } from "@mui/icons-material";
 import { tinaField } from "tinacms/dist/react";
