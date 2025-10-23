@@ -846,12 +846,8 @@ const schema = defineSchema({
           type: "string",
           name: "address",
           label: "Event Address",
-          description:
-            "Paste the full address here once you do wait 1 second and the other maps field should be auto filled (in theory)",
+          description: "Full address for event.",
           required: true,
-          ui: {
-            component: AddressFieldWithGenerator,
-          },
         },
         {
           type: "string",
