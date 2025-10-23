@@ -248,22 +248,6 @@ export default function EventsListing({
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
-  const handleAddEvent = () => {
-    if (!cms) return;
-    cms.redirect("/admin/index.html#/collections/new/event/~");
-  };
-
-  const handleEditEvent = (
-    e: React.MouseEvent,
-    relativePathWithExt: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!cms) return;
-    const relativePath = relativePathWithExt.replace(/\.mdx?$/, "");
-    cms.redirect(`/admin/index.html#/collections/event/${relativePath}`);
-  };
-
   const handleArchiveConfirmation = (event: Event) => {
     setArchiveTarget({
       relativePath: event._sys.filename,
@@ -324,17 +308,6 @@ export default function EventsListing({
           {data.title}
         </PageTitle>
       </PageTitleWrapper>
-      {isClient && isCmsEnabled && (
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAddEvent}
-          >
-            Add New Event
-          </Button>
-        </Box>
-      )}
       <EventListContainer>
         <Stack spacing={5}>
           {upcomingEvents.length > 0 ? (
@@ -346,13 +319,6 @@ export default function EventsListing({
                 >
                   {isClient && isCmsEnabled && (
                     <AdminActions>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => handleEditEvent(e, event._sys.filename)}
-                        aria-label={`Edit ${event.title}`}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
                       <IconButton
                         size="small"
                         onClick={(e) => {
