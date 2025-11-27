@@ -9,6 +9,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
 
+// we need edge runtime for cloudflare pages compatibility
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,9 @@ const s3Client = new S3Client({
 
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET as string;
 
+// helper to make sure only real users touch our bucket
 async function checkAuth(req: NextRequest) {
+  // locally we dont care, just let it pass
   if (process.env.TINA_PUBLIC_IS_LOCAL === "true") {
     return { isAuthorized: true, error: null };
   }
@@ -40,6 +43,7 @@ async function checkAuth(req: NextRequest) {
     if (authHeader) {
       const token = authHeader;
 
+      // verify the token against tina cloud
       const user = await isUserAuthorized({
         token,
         clientID: clientId,
@@ -75,6 +79,7 @@ async function checkAuth(req: NextRequest) {
   }
 }
 
+// lists the files in the bucket for the cms media manager
 export async function GET(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -101,6 +106,7 @@ export async function GET(req: NextRequest) {
     const { Contents, NextContinuationToken, CommonPrefixes } =
       await s3Client.send(command);
 
+    // format folders for tina
     const directories =
       CommonPrefixes?.map((p) => ({
         type: "dir" as const,
@@ -109,6 +115,7 @@ export async function GET(req: NextRequest) {
         directory: p.Prefix?.split("/").slice(0, -2).join("/"),
       })) || [];
 
+    // format files for tina
     const files =
       Contents?.filter((file) => file.Key !== prefix && file.Size).map(
         (file) => {
@@ -121,6 +128,7 @@ export async function GET(req: NextRequest) {
             lastModified: file.LastModified?.getTime(),
             size: file.Size,
             src: src,
+            // we dont actually have thumbnails but tina asks for them
             thumbnails: {
               "75x75": src,
               "400x400": src,
@@ -149,6 +157,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// generates a presigned url so the client can upload directly to s3
 export async function POST(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -158,6 +167,7 @@ export async function POST(req: NextRequest) {
   try {
     const { fileType, directory, fileName } = await req.json();
 
+    // random hash to prevent filename collisions
     const buffer = new Uint8Array(4);
     crypto.getRandomValues(buffer);
     const randomStr = Array.from(buffer)
@@ -177,6 +187,7 @@ export async function POST(req: NextRequest) {
       ACL: "public-read",
     });
 
+    // presigned url expires in 5 minutes
     const presignedUrl = await getSignedUrl(s3Client, command, {
       expiresIn: 300,
     });
@@ -203,6 +214,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// handles deleting files or entire folders
 export async function DELETE(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -218,6 +230,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
+    // if it ends in slash its a folder, we gotta delete all contents first
     if (key.endsWith("/")) {
       const listCommand = new ListObjectsV2Command({
         Bucket: bucketName,

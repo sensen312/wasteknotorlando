@@ -6,6 +6,8 @@ import {
   MediaList,
 } from "tinacms";
 
+// we need this custom class because the official tinacms-s3 plugin
+// doesnt support cloudflare edge runtime. this one talks to our own edge route.
 export class S3MediaStore implements MediaStore {
   private client: Client;
   private apiUrl = "/api/s3/media";
@@ -15,6 +17,7 @@ export class S3MediaStore implements MediaStore {
     this.client = client;
   }
 
+  // helper to attach the tina auth token to requests so api knows its us
   private async fetcher(input: RequestInfo, init?: RequestInit) {
     const token = await this.client.authProvider.getToken();
     if (!token) {
@@ -32,7 +35,8 @@ export class S3MediaStore implements MediaStore {
       credentials: "include" as RequestCredentials,
     };
 
-    const url = new URL(input.toString(), window.location.origin); // must append the clientID to the URL as a query parameter
+    // gotta append clientId for auth check on the backend
+    const url = new URL(input.toString(), window.location.origin);
     url.searchParams.append("clientId", this.client.clientId);
 
     return fetch(url.toString(), options);
@@ -42,6 +46,8 @@ export class S3MediaStore implements MediaStore {
     return media.src || "";
   };
 
+  // uploads file by first getting a presigned url from our api
+  // then putting the file directly to s3
   async persist(media: { file: File; directory: string }[]): Promise<Media[]> {
     const newFiles: Media[] = [];
     for (const item of media) {

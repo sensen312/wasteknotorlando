@@ -28,6 +28,7 @@ import { CanvaEmbedBlock } from "./content/CanvaEmbedBlock";
 import type { TinaCMS } from "tinacms";
 import { BackButtonBlock } from "./specifics/BackButtonBlock";
 
+// massive union type of every possible block created in tina
 type AllBlockTypes =
   | PageBlocks
   | EventAdditional_Blocks
@@ -53,12 +54,15 @@ export const BlockRenderer = ({
   return (
     <>
       {blocks?.map((block, i) => {
+        // if the block is broken or missing type, skip it to avoid crash
         if (!block || !block.__typename) {
           return null;
         }
 
         const typeNameToLog = block.__typename;
 
+        // this switch maps the graphql type name to the actual react component
+        // if you add a block in schema but not here, it wont render
         switch (block.__typename) {
           case "PageBlocksTop_banner":
             return <TopBannerBlock key={i} data={block} />;
