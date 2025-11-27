@@ -102,7 +102,7 @@ The default Tina S3 plugin **does not work** with Cloudflare Pages (Edge Runtime
 - This handles uploading images to AWS S3 and giving us back the URL.
 
 ### Dynamic Block Renderer
-We don't hardcode pages. We use a "Blocks" system.
+We don't hardcode pages. We use a "Blocks" system. So that user can make their own page layouts
 - `app/(pages)/[...slug]/page.tsx` fetches the data.
 - `components/blocks/BlockRenderer.tsx` iterates through the list of blocks and renders the right component.
 - If you add a new block in Tina, you **MUST** add it to the switch statement in the renderer or it won't show up.
@@ -150,6 +150,6 @@ We host on **Cloudflare Pages**.
 
 - **Build Command:** `npm run build` (which runs `tinacms build && next build`)
 - **Output Directory:** `.next`
-- **Compatibility Flag:** `nodejs_compat` (Make sure this is set in Cloudflare settings!)
+- **Compatibility Flag:** `nodejs_compat` (make sure this is set in Cloudflare settings!)
 
 If the build fails, check the environment variables in Cloudflare dashboard first ;-;
