@@ -21,6 +21,7 @@
     "@tinacms/cli": "^1.10.0",
     "cookie": "^0.6.0",
     "date-fns": "^4.1.0",
+    "fs-extra": "^11.2.0",
     "next": "15.3.4",
     "next-tinacms-s3": "^11.0.0",
     "react": "^18",
