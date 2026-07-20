@@ -39,5 +39,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@cloudflare/workers-types": "^4.20240208.0"
   }
 }
