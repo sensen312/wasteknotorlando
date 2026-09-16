@@ -1,3 +1,4 @@
+import React from 'react';
 import { defineConfig, defineSchema, Template } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
