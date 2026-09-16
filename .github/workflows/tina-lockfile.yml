@@ -1,0 +1,23 @@
+name: 'Update Tina Lockfile'
+on:
+  push:
+    paths:
+      - 'tina/config.ts'
+jobs:
+  update-lockfile:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'write'
+    steps:
+      - uses: 'actions/checkout@v3'
+      - uses: 'actions/setup-node@v3'
+        with:
+          node-version: '22'
+      - run: 'npm install'
+      - run: 'npx tinacms build'
+      - run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'bot@noreply.github.com'
+          git add tina/tina-lock.json
+          git commit -m 'chore: update lockfile' || true
+          git push
