@@ -1,5 +1,5 @@
 import React from 'react';
-import { defineConfig, defineSchema, Template } from "tinacms";
+import { defineConfig, defineSchema, Template, wrapFieldsWithMeta } from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
