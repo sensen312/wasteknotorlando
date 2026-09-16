@@ -830,12 +830,11 @@ const schema = defineSchema({
         seoField,
         { type: "string", name: "type", label: "Event Type" },
         {
-          type: 'string', // UPDATED: Was 'datetime'
+          type: 'datetime',
           name: 'date',
-          label: 'Event Date and Time (Local EDT)', // UPDATED
+          label: 'Event Date and Time (Local EDT)',
           required: true,
           ui: {
-            // NEW: Binds the custom component defined above
             component: LocalDateTimeField,
           },
         },
