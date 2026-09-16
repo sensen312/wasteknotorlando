@@ -1,5 +1,5 @@
 import React from 'react';
-import { defineConfig, defineSchema, Template, wrapFieldsWithMeta } from "tinacms";
+import { defineConfig, defineSchema, Template, wrapFieldsWithMeta } from 'tinacms';
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
@@ -9,6 +9,7 @@ const LocalDateTimeField = wrapFieldsWithMeta((props) => {
   const inputProps = props.input;
   
   let currentValue = '';
+  
   if (inputProps.value) {
     currentValue = inputProps.value;
   }
