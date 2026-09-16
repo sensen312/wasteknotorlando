@@ -3,6 +3,27 @@ import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
+// Custom field to force local time and prevent UTC offset bugs
+const LocalDateTimeField = wrapFieldsWithMeta((props) => {
+  const inputProps = props.input;
+  
+  let currentValue = '';
+  if (inputProps.value) {
+    currentValue = inputProps.value;
+  }
+
+  // Returns native HTML5 datetime-local picker
+  return React.createElement('input', {
+    type: 'datetime-local',
+    id: inputProps.name,
+    className: 'tina-form-control',
+    value: currentValue,
+    onChange: (event) => {
+      inputProps.onChange(event.target.value);
+    },
+  });
+});
+
 const branch =
   process.env.CF_PAGES_BRANCH ||
   process.env.GITHUB_BRANCH ||
@@ -808,12 +829,14 @@ const schema = defineSchema({
         seoField,
         { type: "string", name: "type", label: "Event Type" },
         {
-          type: "datetime",
-          name: "date",
-          label: "Date & Time",
+          type: 'string', // UPDATED: Was 'datetime'
+          name: 'date',
+          label: 'Event Date and Time (Local EDT)', // UPDATED
           required: true,
-          description: "(Required)",
-          ui: { timeFormat: "HH:mm" },
+          ui: {
+            // NEW: Binds the custom component defined above
+            component: LocalDateTimeField,
+          },
         },
         {
           type: "rich-text",
