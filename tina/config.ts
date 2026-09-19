@@ -536,7 +536,7 @@ const backButtonBlock: Template = {
       type: "string",
       name: "link",
       label: "Link",
-      description: "Enter the page path like ( /events or /about).",
+      description: "pls Enter the page path like ( /events or /about).",
       required: true,
     },
   ],
