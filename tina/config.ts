@@ -4,7 +4,6 @@ import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
-
 // Custom field to force local time and prevent UTC offset bugs
 const LocalDateTimeField = wrapFieldsWithMeta((props) => {
   const inputProps = props.input;
