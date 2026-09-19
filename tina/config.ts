@@ -514,7 +514,7 @@ const canvaEmbedBlock: Template = {
       name: "embedCode",
       label: "Canva Embed Code",
       required: true,
-      description: "Paste the HTML embed code from Canva here.",
+      description: "Pls paste the HTML embed code from Canva here.",
       ui: {
         component: "textarea",
       },
