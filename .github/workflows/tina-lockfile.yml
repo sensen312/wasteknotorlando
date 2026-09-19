@@ -30,6 +30,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'bot@noreply.github.com'
-          git add tina/
+          git add tina/ tina-lock.json package-lock.json
           git commit -m 'chore: force auto-update tina config via PAT' || true
           git push
