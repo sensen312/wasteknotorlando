@@ -528,7 +528,7 @@ const backButtonBlock: Template = {
     itemProps: (item: { link?: string }) => ({
       label: `Back Button ➞ ${item.link || "No link ;-;"}`,
     }),
-    description: "Back button to link back to a specified page.",
+    description: "Back button to link back for a specified page.",
   },
   fields: [
     {
