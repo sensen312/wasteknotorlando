@@ -13,8 +13,7 @@ jobs:
       - name: 'Checkout Repository with PAT'
         uses: 'actions/checkout@v4'
         with:
-          # This forces GitHub to use your VIP pass, guaranteeing the webhook fires
-          token: ${{ secrets.PAT_TOKEN }} 
+          token: ${{ secrets.PAT_TOKEN }}
       - name: 'Setup Node Environment'
         uses: 'actions/setup-node@v4'
         with:
@@ -30,7 +29,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'bot@noreply.github.com'
-          # The -f flag physically forces the file into the repo even if it is hidden
-          git add -f tina/tina-lock.json 
+          git add -f tina-lock.json tina/
           git commit -m 'chore: force auto-update lockfile via PAT' || true
           git push
