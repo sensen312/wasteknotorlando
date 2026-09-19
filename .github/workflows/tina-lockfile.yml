@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'tina/config.ts'
+      - '.github/workflows/tina-lockfile.yml'
   workflow_dispatch:
 jobs:
   update-lockfile:
@@ -29,6 +30,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'bot@noreply.github.com'
-          git add -f tina-lock.json tina/
-          git commit -m 'chore: force auto-update lockfile via PAT' || true
+          git add tina/
+          git commit -m 'chore: force auto-update tina config via PAT' || true
           git push
