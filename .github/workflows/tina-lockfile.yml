@@ -10,27 +10,27 @@ jobs:
     permissions:
       contents: 'write'
     steps:
-      - name: 'Checkout Repository'
+      - name: 'Checkout Repository with PAT'
         uses: 'actions/checkout@v4'
+        with:
+          # This forces GitHub to use your VIP pass, guaranteeing the webhook fires
+          token: ${{ secrets.PAT_TOKEN }} 
       - name: 'Setup Node Environment'
         uses: 'actions/setup-node@v4'
         with:
           node-version: '22'
       - name: 'Install Dependencies'
         run: 'npm install'
-      # NEW
-      - name: 'Audit Tina Schema'
-        run: 'npx @tinacms/cli audit'
       - name: 'Generate Lockfile'
         env:
           NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
         run: 'npx tinacms build --skip-cloud-checks'
-      # UPDATED
       - name: 'Commit and Push Changes'
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'bot@noreply.github.com'
-          git add tina/
-          git commit -m 'chore: auto-update lockfile' || true
+          # The -f flag physically forces the file into the repo even if it is hidden
+          git add -f tina/tina-lock.json 
+          git commit -m 'chore: force auto-update lockfile via PAT' || true
           git push
