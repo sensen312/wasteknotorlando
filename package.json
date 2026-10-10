@@ -7,7 +7,7 @@
     "build": "npm run prebuild && next build",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "dotenv -- tinacms build"
+    "prebuild": "dotenv -- tinacms build --skip-cloud-checks"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.844.0",

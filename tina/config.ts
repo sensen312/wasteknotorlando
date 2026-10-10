@@ -4,6 +4,7 @@ import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
+
 // Custom field to force local time and prevent UTC offset bugs
 const LocalDateTimeField = wrapFieldsWithMeta((props) => {
   const inputProps = props.input;
@@ -513,7 +514,7 @@ const canvaEmbedBlock: Template = {
       name: "embedCode",
       label: "Canva Embed Code",
       required: true,
-      description: "Paste the HTML embed code from Canva here.",
+      description: "Pls paste the HTML embed code from Canva here.",
       ui: {
         component: "textarea",
       },
@@ -528,14 +529,14 @@ const backButtonBlock: Template = {
     itemProps: (item: { link?: string }) => ({
       label: `Back Button ➞ ${item.link || "No link ;-;"}`,
     }),
-    description: "Back button to link back to a specified page.",
+    description: "Back button to link back for a specified page.",
   },
   fields: [
     {
       type: "string",
       name: "link",
       label: "Link",
-      description: "Enter the page path like ( /events or /about).",
+      description: "pls Enter the page path like ( /events or /about).",
       required: true,
     },
   ],

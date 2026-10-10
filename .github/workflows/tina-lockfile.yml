@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'tina/config.ts'
+      - '.github/workflows/tina-lockfile.yml'
   workflow_dispatch:
 jobs:
   update-lockfile:
@@ -10,8 +11,11 @@ jobs:
     permissions:
       contents: 'write'
     steps:
-      - name: 'Checkout Repository'
+      - name: 'Checkout Repository with PAT'
         uses: 'actions/checkout@v4'
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
       - name: 'Setup Node Environment'
         uses: 'actions/setup-node@v4'
         with:
@@ -27,6 +31,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'bot@noreply.github.com'
-          git add tina/tina-lock.json
-          git commit -m 'chore: auto-update lockfile' || true
+          git add tina/ package-lock.json
+          git commit -m 'chore: force auto-update tina config via PAT' || true
+          git pull --rebase origin main
           git push
