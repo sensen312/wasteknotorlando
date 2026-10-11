@@ -1,7 +1,7 @@
 import { DOMParser } from "@xmldom/xmldom";
 
 if (!globalThis.DOMParser) {
-  globalThis.DOMParser = DOMParser as any;
+  globalThis.DOMParser = DOMParser as unknown as typeof globalThis.DOMParser;
 }
 
 import {
