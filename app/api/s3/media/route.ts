@@ -1,9 +1,4 @@
 import { DOMParser } from "@xmldom/xmldom";
-
-if (!globalThis.DOMParser) {
-  globalThis.DOMParser = DOMParser as unknown as typeof globalThis.DOMParser;
-}
-
 import {
   S3Client,
   ListObjectsV2Command,
@@ -11,28 +6,34 @@ import {
   PutObjectCommand,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
-
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
 
-// we need edge runtime for cloudflare pages compatibility
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-const s3Client = new S3Client({
-  region: process.env.NEXT_PUBLIC_S3_REGION,
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY as string,
-    secretAccessKey: process.env.S3_SECRET_KEY as string,
-  },
-});
+let s3Client: S3Client | null = null;
 
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET as string;
 
-// helper to make sure only real users touch our bucket
+const getS3Client = () => {
+  if (!globalThis.DOMParser) {
+    globalThis.DOMParser = DOMParser as unknown as typeof globalThis.DOMParser;
+  }
+  if (!s3Client) {
+    s3Client = new S3Client({
+      region: process.env.NEXT_PUBLIC_S3_REGION,
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY as string,
+        secretAccessKey: process.env.S3_SECRET_KEY as string,
+      },
+    });
+  }
+  return s3Client;
+};
+
 async function checkAuth(req: NextRequest) {
-  // locally we dont care, just let it pass
   if (process.env.TINA_PUBLIC_IS_LOCAL === "true") {
     return { isAuthorized: true, error: null };
   }
@@ -49,8 +50,6 @@ async function checkAuth(req: NextRequest) {
     const authHeader = req.headers.get("X-Tina-Authorization");
     if (authHeader) {
       const token = authHeader;
-
-      // verify the token against tina cloud
       const user = await isUserAuthorized({
         token,
         clientID: clientId,
@@ -61,8 +60,7 @@ async function checkAuth(req: NextRequest) {
       } else {
         return {
           isAuthorized: false,
-          error:
-            "Token from custom header was found but failed  validation ;-;",
+          error: "Token from custom header was found but failed validation ;-;",
         };
       }
     }
@@ -86,7 +84,6 @@ async function checkAuth(req: NextRequest) {
   }
 }
 
-// lists the files in the bucket for the cms media manager
 export async function GET(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -111,9 +108,8 @@ export async function GET(req: NextRequest) {
     });
 
     const { Contents, NextContinuationToken, CommonPrefixes } =
-      await s3Client.send(command);
+      await getS3Client().send(command);
 
-    // format folders for tina
     const directories =
       CommonPrefixes?.map((p) => ({
         type: "dir" as const,
@@ -122,7 +118,6 @@ export async function GET(req: NextRequest) {
         directory: p.Prefix?.split("/").slice(0, -2).join("/"),
       })) || [];
 
-    // format files for tina
     const files =
       Contents?.filter((file) => file.Key !== prefix && file.Size).map(
         (file) => {
@@ -135,7 +130,6 @@ export async function GET(req: NextRequest) {
             lastModified: file.LastModified?.getTime(),
             size: file.Size,
             src: src,
-            // we dont actually have thumbnails but tina asks for them
             thumbnails: {
               "75x75": src,
               "400x400": src,
@@ -164,7 +158,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// generates a presigned url so the client can upload directly to s3
 export async function POST(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -174,7 +167,6 @@ export async function POST(req: NextRequest) {
   try {
     const { fileType, directory, fileName } = await req.json();
 
-    // random hash to prevent filename collisions
     const buffer = new Uint8Array(4);
     crypto.getRandomValues(buffer);
     const randomStr = Array.from(buffer)
@@ -194,8 +186,7 @@ export async function POST(req: NextRequest) {
       ACL: "public-read",
     });
 
-    // presigned url expires in 5 minutes
-    const presignedUrl = await getSignedUrl(s3Client, command, {
+    const presignedUrl = await getSignedUrl(getS3Client(), command, {
       expiresIn: 300,
     });
 
@@ -221,7 +212,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// handles deleting files or entire folders
 export async function DELETE(req: NextRequest) {
   const auth = await checkAuth(req);
   if (!auth.isAuthorized) {
@@ -237,13 +227,12 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    // if it ends in slash its a folder, we gotta delete all contents first
     if (key.endsWith("/")) {
       const listCommand = new ListObjectsV2Command({
         Bucket: bucketName,
         Prefix: key,
       });
-      const listedObjects = await s3Client.send(listCommand);
+      const listedObjects = await getS3Client().send(listCommand);
 
       if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
         return NextResponse.json({ message: "Empty folder deleted!" });
@@ -257,7 +246,7 @@ export async function DELETE(req: NextRequest) {
       };
 
       const deleteCommand = new DeleteObjectsCommand(deleteParams);
-      await s3Client.send(deleteCommand);
+      await getS3Client().send(deleteCommand);
 
       return NextResponse.json({ message: "Folder and its contents deleted!" });
     } else {
@@ -266,7 +255,7 @@ export async function DELETE(req: NextRequest) {
         Key: key,
       });
 
-      await s3Client.send(command);
+      await getS3Client().send(command);
 
       return NextResponse.json({ message: "File deleted !" });
     }
