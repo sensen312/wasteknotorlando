@@ -1,28 +1,36 @@
-import React from 'react';
-import { defineConfig, defineSchema, Template, wrapFieldsWithMeta } from 'tinacms';
+import React from "react";
+import {
+  defineConfig,
+  defineSchema,
+  Template,
+  wrapFieldsWithMeta,
+} from "tinacms";
 import { format, parseISO } from "date-fns";
 import slugify from "slugify";
 import AddressFieldWithGenerator from "./components/AddressFieldWithGenerator";
 
-
 // Custom field to force local time and prevent UTC offset bugs
 const LocalDateTimeField = wrapFieldsWithMeta((props) => {
   const inputProps = props.input;
-  
-  let currentValue = '';
-  
+  let currentValue = "";
+
   if (inputProps.value) {
-    currentValue = inputProps.value;
+    const date = new Date(inputProps.value);
+    const localDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+    );
+    currentValue = localDate.toISOString().slice(0, 16);
   }
 
-  // Returns native HTML5 datetime-local picker
-  return React.createElement('input', {
-    type: 'datetime-local',
+  return React.createElement("input", {
+    type: "datetime-local",
     id: inputProps.name,
-    className: 'tina-form-control',
+    className: "tina-form-control",
     value: currentValue,
     onChange: (event) => {
-      inputProps.onChange(event.target.value);
+      const val = event.target.value;
+      if (!val) return inputProps.onChange("");
+      inputProps.onChange(new Date(val).toISOString());
     },
   });
 });
@@ -39,7 +47,7 @@ type ItemProps = Record<string, unknown>;
 const createRequiredStringField = (
   label: string,
   name: string,
-  description?: string
+  description?: string,
 ) => ({
   type: "string" as const,
   label,
@@ -63,7 +71,7 @@ const createImageField = (name = "image", label = "Image") => ({
       ...createRequiredStringField(
         "Alternative Text",
         "alt",
-        "For screen readers"
+        "For screen readers",
       ),
     },
   ],
@@ -283,7 +291,7 @@ const quickLinksBlock: Template = {
         createRequiredStringField(
           "Icon Name",
           "icon",
-          "Find icon names from materialUI library."
+          "Find icon names from materialUI library.",
         ),
         createRequiredStringField("URL", "href"),
       ],
@@ -587,7 +595,7 @@ const footerContactBlock: Template = {
         createRequiredStringField(
           "Label",
           "label",
-          "Contact Label (email) (phone#)"
+          "Contact Label (email) (phone#)",
         ),
         createRequiredStringField("Value", "value", "Put the contact here."),
         {
@@ -616,7 +624,7 @@ const footerLinksBlock: Template = {
     createRequiredStringField(
       "Header",
       "header",
-      "Title for the list like our friends or resources."
+      "Title for the list like our friends or resources.",
     ),
     {
       type: "object",
@@ -633,7 +641,7 @@ const footerLinksBlock: Template = {
         createRequiredStringField(
           "Link Text",
           "text",
-          "Text that will be displayed for the link."
+          "Text that will be displayed for the link.",
         ),
         createRequiredStringField("Link URL", "url", "Actual URL"),
       ],
@@ -742,12 +750,12 @@ const schema = defineSchema({
             createRequiredStringField(
               "Platform",
               "platform",
-              "(Instagram) (Facebook) etc"
+              "(Instagram) (Facebook) etc",
             ),
             createRequiredStringField(
               "Icon",
               "icon",
-              "Find icon names from materialUI library."
+              "Find icon names from materialUI library.",
             ),
             createRequiredStringField("URL", "url"),
           ],
@@ -832,9 +840,9 @@ const schema = defineSchema({
         seoField,
         { type: "string", name: "type", label: "Event Type" },
         {
-          type: 'datetime',
-          name: 'date',
-          label: 'Event Date and Time (Local EDT)',
+          type: "datetime",
+          name: "date",
+          label: "Event Date and Time (Local EDT)",
           required: true,
           ui: {
             component: LocalDateTimeField,

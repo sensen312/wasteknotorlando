@@ -19,6 +19,7 @@
     "@mui/material-nextjs": "^7.1.1",
     "@tinacms/auth": "^1.1.0",
     "@tinacms/cli": "^1.10.0",
+    "@xmldom/xmldom": "^0.8.10",
     "cookie": "^0.6.0",
     "date-fns": "^4.1.0",
     "fs-extra": "^11.2.0",

@@ -1,3 +1,9 @@
+import { DOMParser } from "@xmldom/xmldom";
+
+if (!globalThis.DOMParser) {
+  globalThis.DOMParser = DOMParser as any;
+}
+
 import {
   S3Client,
   ListObjectsV2Command,
@@ -5,6 +11,7 @@ import {
   PutObjectCommand,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
+
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isUserAuthorized } from "@tinacms/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -135,7 +142,7 @@ export async function GET(req: NextRequest) {
               "1000x1000": src,
             },
           };
-        }
+        },
       ) || [];
 
     return NextResponse.json({
@@ -147,12 +154,12 @@ export async function GET(req: NextRequest) {
       console.error(e);
       return NextResponse.json(
         { message: "Failed to list the media", error: e.message },
-        { status: 500 }
+        { status: 500 },
       );
     }
     return NextResponse.json(
       { message: "error while listing media." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -202,14 +209,14 @@ export async function POST(req: NextRequest) {
       console.error(e);
       return NextResponse.json(
         { message: "Failed creating presigned URL", error: e.message },
-        { status: 500 }
+        { status: 500 },
       );
     }
     return NextResponse.json(
       {
         message: "Unknown error while creating presigned URL.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -226,7 +233,7 @@ export async function DELETE(req: NextRequest) {
     if (!key) {
       return NextResponse.json(
         { message: "File key missing" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -268,12 +275,12 @@ export async function DELETE(req: NextRequest) {
       console.error(e);
       return NextResponse.json(
         { message: "FAILED TO DELETE FILE!", error: e.message },
-        { status: 500 }
+        { status: 500 },
       );
     }
     return NextResponse.json(
       { message: "Unknown error while deleting file!." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
